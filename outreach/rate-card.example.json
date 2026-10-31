@@ -1,0 +1,34 @@
+{
+  "_note": "Planning numbers. Copy to outreach/rate-card.json (gitignored) and set your real prices. Verify writer cost with 3 real quotes.",
+  "tiers": [
+    {
+      "id": "starter",
+      "name": "Starter",
+      "piecesPerMonth": 4,
+      "priceInr": 25000,
+      "priceUsd": 750,
+      "includes": ["4 answer or comparison pieces a month", "Directory and review listings", "Monthly re-check on the same questions"]
+    },
+    {
+      "id": "growth",
+      "name": "Growth",
+      "piecesPerMonth": 8,
+      "priceInr": 45000,
+      "priceUsd": 1500,
+      "includes": ["8 pieces a month", "Review-collection plan", "2 video scripts a month (you record)", "Technical fixes (schema, llms.txt)", "Monthly re-check"]
+    },
+    {
+      "id": "category",
+      "name": "Category push",
+      "piecesPerMonth": 12,
+      "priceInr": 75000,
+      "priceUsd": 3000,
+      "includes": ["12+ pieces a month", "Comparison pages against several competitors", "4 video scripts a month", "Technical fixes", "Monthly re-check and strategy call"]
+    }
+  ],
+  "minimumMonths": 3,
+  "foundingDiscount": 0.35,
+  "foundingSlots": 3,
+  "writerCostPerPieceInr": 2500,
+  "usdInr": 90
+}

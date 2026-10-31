@@ -1,0 +1,52 @@
+[
+  {
+    "word": "You",
+    "start": 0.092583,
+    "duration": 0.057875
+  },
+  {
+    "word": "see",
+    "start": 0.150458,
+    "duration": 0.162041
+  },
+  {
+    "word": "who",
+    "start": 0.3125,
+    "duration": 0.081
+  },
+  {
+    "word": "gets",
+    "start": 0.3935,
+    "duration": 0.150458
+  },
+  {
+    "word": "named",
+    "start": 0.544,
+    "duration": 0.219875
+  },
+  {
+    "word": "instead",
+    "start": 0.763875,
+    "duration": 0.335666
+  },
+  {
+    "word": "of",
+    "start": 1.099541,
+    "duration": 0.057875
+  },
+  {
+    "word": "you",
+    "start": 1.169,
+    "duration": 0.185166
+  },
+  {
+    "word": "and",
+    "start": 1.574083,
+    "duration": 0.081
+  },
+  {
+    "word": "why",
+    "start": 1.655083,
+    "duration": 0.370375
+  }
+]

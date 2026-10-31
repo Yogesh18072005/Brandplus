@@ -1,0 +1,33 @@
+# BrandPulse
+
+> BrandPulse measures how often AI answers recommend a business compared with its competitors, shows the real AI answers as evidence, and fixes the gaps with done-for-you pages and re-checks. The current production audit engine uses Gemini with Google Search grounding.
+
+## Pages
+
+- [Home](https://www.zerociate.com/): What BrandPulse does and the free AI visibility audit.
+- [Done for you](https://www.zerociate.com/sprint): We find the buyer questions where AI names competitors instead of you, then write, publish and re-check the pages that change the answer.
+- [Methodology](https://www.zerociate.com/methodology): How BrandPulse generates buyer questions, observes answer engines, diagnoses evidence gaps, and what it cannot know.
+- [About](https://www.zerociate.com/about): What BrandPulse is, who it is for, and what it never does.
+
+## Guides
+
+- [Answer engine optimization (AEO)](https://www.zerociate.com/guides/answer-engine-optimization)
+- [Generative engine optimization (GEO)](https://www.zerociate.com/guides/generative-engine-optimization)
+- [Assistive agent optimization (AAO)](https://www.zerociate.com/guides/assistive-agent-optimization)
+- [How to get recommended in ChatGPT](https://www.zerociate.com/guides/how-to-rank-in-chatgpt)
+- [How to get cited in Google AI Overviews and AI Mode](https://www.zerociate.com/guides/google-ai-overviews)
+- [AI crawlers and robots.txt](https://www.zerociate.com/guides/ai-crawlers-robots-txt)
+- [All resources](https://www.zerociate.com/resources): guides, comparisons, services and glossary.
+
+## What We Do
+
+BrandPulse helps businesses:
+- Audit observed visibility in Gemini answers grounded with Google Search
+- Compare observed mentions, recommendations, citations, and competitor presence
+- Review the captured answers and source evidence behind each audit
+- Turn observed gaps into a prioritized action plan
+
+## Legal
+
+- [Privacy](https://www.zerociate.com/privacy)
+- [Terms](https://www.zerociate.com/terms)

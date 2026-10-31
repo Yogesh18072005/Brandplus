@@ -1,0 +1,1331 @@
+{
+  "version": 1,
+  "slug": "kp-webbate-technologies-n9v05i0k",
+  "createdAt": "2026-10-23T10:14:20.533Z",
+  "businessType": "local",
+  "region": "Bangalore",
+  "audience": "small and mid-size businesses",
+  "engine": {
+    "provider": "Google Gemini (with Google Search)",
+    "model": "gemini-2.5-flash",
+    "groundedShare": 1
+  },
+  "competitorsDiscovered": true,
+  "prompts": [
+    {
+      "text": "Which digital marketing agency in Bangalore offers affordable web designing for small businesses?",
+      "intent": "vendor_selection",
+      "intentWeight": 5,
+      "reason": "You offer web design for small businesses in Bangalore, making this a direct lead query."
+    },
+    {
+      "text": "How much does a custom development project cost in Bangalore and which company should I use?",
+      "intent": "transactional",
+      "intentWeight": 5,
+      "reason": "You offer custom development in Bangalore, and this asks for pricing plus company recommendations."
+    },
+    {
+      "text": "How do the top web design and UX studios in Bangalore compare in pricing, and which company should I hire for a startup?",
+      "intent": "comparison",
+      "intentWeight": 4,
+      "reason": "You offer web design and UI/UX services, and Bangalore startups ask this when picking an agency."
+    },
+    {
+      "text": "Who are the top web development companies in Mumbai?",
+      "intent": "location",
+      "intentWeight": 2,
+      "reason": "You provide web development services in Mumbai, which matches this local search query."
+    },
+    {
+      "text": "Where can I find an app development company in Bangalore that builds custom Android and iOS apps?",
+      "intent": "discovery",
+      "intentWeight": 1,
+      "reason": "You offer custom app development services to clients located in Bangalore."
+    },
+    {
+      "text": "Can you recommend a graphic designing studio in Bangalore for startup branding?",
+      "intent": "vendor_selection",
+      "intentWeight": 5,
+      "reason": "You offer graphic design services to startups in Bangalore, matching this recommendation request."
+    },
+    {
+      "text": "How much do digital marketing agencies in Mumbai charge to manage paid advertising, and which agency offers the best packages for small businesses?",
+      "intent": "comparison",
+      "intentWeight": 4,
+      "reason": "You offer paid advertising campaigns, and Mumbai small businesses ask this when comparing agency pricing and services."
+    },
+    {
+      "text": "Who are the best digital marketing agencies in Mumbai for a small business?",
+      "intent": "location",
+      "intentWeight": 2,
+      "reason": "You offer digital marketing to small businesses from your Mumbai office."
+    },
+    {
+      "text": "Which agency in Bangalore is best for responsive web design and mobile-friendly websites?",
+      "intent": "vendor_selection",
+      "intentWeight": 5,
+      "reason": "You offer responsive web design, and Bangalore businesses ask this when rebuilding their site."
+    },
+    {
+      "text": "Which web design agency in Mumbai can handle both product photography and a website redesign?",
+      "intent": "location",
+      "intentWeight": 2,
+      "reason": "You offer both web design and photography services to local clients in Mumbai."
+    },
+    {
+      "text": "Who provides custom software development for mid-size businesses in Bangalore?",
+      "intent": "vendor_selection",
+      "intentWeight": 5,
+      "reason": "You offer custom development to mid-size businesses in Bangalore."
+    },
+    {
+      "text": "Which digital marketing agency in Bangalore gets the best results from paid advertising campaigns?",
+      "intent": "vendor_selection",
+      "intentWeight": 5,
+      "reason": "You run paid advertising campaigns for local digital marketing clients in Bangalore."
+    },
+    {
+      "text": "I need commercial photography services in Bangalore for my products, who should I hire?",
+      "intent": "vendor_selection",
+      "intentWeight": 5,
+      "reason": "You offer product photography services for businesses based in Bangalore."
+    },
+    {
+      "text": "Which SEO agency in Bangalore can help improve search results for a small local business?",
+      "intent": "vendor_selection",
+      "intentWeight": 5,
+      "reason": "You help small businesses improve search results through digital marketing in Bangalore."
+    },
+    {
+      "text": "Who is the best app development freelancer or studio in Mumbai for small businesses?",
+      "intent": "vendor_selection",
+      "intentWeight": 5,
+      "reason": "You offer app development to small businesses located in Mumbai."
+    }
+  ],
+  "report": {
+    "business": {
+      "name": "KP Webbate Technologies",
+      "category": "digital marketing and web design agency",
+      "city": "Bangalore",
+      "website": "kpwebbateplus.com"
+    },
+    "generatedAt": "2026-10-23T10:13:38.652Z",
+    "totals": {
+      "promptCount": 15,
+      "enginesUsed": [
+        "gemini"
+      ],
+      "failedPrompts": 0
+    },
+    "scores": {
+      "visibilityScore": 0,
+      "brandpulseScore": 10,
+      "presenceRate": 0,
+      "recommendationRate": 0,
+      "citationRate": 0,
+      "shareOfVoice": 0,
+      "commercialVisibility": 0,
+      "promptCoverage": 1,
+      "sourceQualityRate": 1,
+      "components": {
+        "mention": 0,
+        "recommendation": 0,
+        "position": 0,
+        "citation": 0,
+        "competitive": 0,
+        "sourceQuality": 100
+      }
+    },
+    "competitors": [
+      {
+        "name": "Probey Services",
+        "presenceRate": 0.27
+      },
+      {
+        "name": "Aalpha Information Systems India Pvt. Ltd.",
+        "presenceRate": 0.2
+      },
+      {
+        "name": "Buzzlink Studios",
+        "presenceRate": 0.2
+      }
+    ],
+    "byEngine": [
+      {
+        "engine": "gemini",
+        "presenceRate": 0
+      }
+    ],
+    "missedPrompts": [
+      {
+        "prompt": "How much does a custom development project cost in Bangalore and which company should I use?",
+        "intent": "transactional",
+        "commercial": true,
+        "competitorsPresent": [
+          "Aalpha Information Systems India Pvt. Ltd.",
+          "Probey Services"
+        ],
+        "evidence": "Here are some highly-rated and reputable firms: Adwest Digital, IndGlobal Digital, Alpha Information Systems, Nextwebi"
+      },
+      {
+        "prompt": "Who is the best app development freelancer or studio in Mumbai for small businesses?",
+        "intent": "vendor_selection",
+        "commercial": true,
+        "competitorsPresent": [
+          "Probey Services",
+          "Buzzlink Studios"
+        ],
+        "evidence": "Several studios are consistently recognized for their quality of work, client satisfaction, and experience with small to medium-sized businesses"
+      },
+      {
+        "prompt": "Which digital marketing agency in Bangalore offers affordable web designing for small businesses?",
+        "intent": "vendor_selection",
+        "commercial": true,
+        "competitorsPresent": [
+          "Probey Services"
+        ],
+        "evidence": "Several digital marketing agencies and web design companies in Bangalore offer affordable web designing services specifically catering to small businesses"
+      },
+      {
+        "prompt": "Which agency in Bangalore is best for responsive web design and mobile-friendly websites?",
+        "intent": "vendor_selection",
+        "commercial": true,
+        "competitorsPresent": [
+          "Aalpha Information Systems India Pvt. Ltd."
+        ],
+        "evidence": "several companies stand out for their specialized services and client-focused approaches: **Zinavo Pvt Ltd** is recognized"
+      },
+      {
+        "prompt": "Who are the top web development companies in Mumbai?",
+        "intent": "location",
+        "commercial": false,
+        "competitorsPresent": [
+          "Probey Services",
+          "Buzzlink Studios"
+        ],
+        "evidence": "Here are some of the top web development companies in Mumbai, known for their expertise, client satisfaction"
+      },
+      {
+        "prompt": "Where can I find an app development company in Bangalore that builds custom Android and iOS apps?",
+        "intent": "discovery",
+        "commercial": false,
+        "competitorsPresent": [
+          "Aalpha Information Systems India Pvt. Ltd."
+        ],
+        "evidence": "DxMinds Innovation Labs is consistently ranked as a top mobile app development company in Bangalore"
+      },
+      {
+        "prompt": "Who are the best digital marketing agencies in Mumbai for a small business?",
+        "intent": "location",
+        "commercial": false,
+        "competitorsPresent": [
+          "Buzzlink Studios"
+        ],
+        "evidence": "DGmark Agency is highly recommended for startups and small businesses, known for offering comprehensive digital marketing solutions"
+      }
+    ],
+    "citationGap": [
+      {
+        "domain": "clutch.co",
+        "count": 9
+      },
+      {
+        "domain": "designrush.com",
+        "count": 5
+      },
+      {
+        "domain": "semrush.com",
+        "count": 5
+      },
+      {
+        "domain": "reddit.com",
+        "count": 4
+      },
+      {
+        "domain": "themanifest.com",
+        "count": 4
+      },
+      {
+        "domain": "goodfirms.co",
+        "count": 3
+      },
+      {
+        "domain": "builtin.com",
+        "count": 2
+      },
+      {
+        "domain": "digimarkagency.com",
+        "count": 2
+      },
+      {
+        "domain": "fruitbowldigital.com",
+        "count": 2
+      },
+      {
+        "domain": "honeycombindia.net",
+        "count": 2
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEUUXc9onAO_FqVjCEWC4e4cQ7YeZNQqVeYu9Yiwgrew084hG2IwqDX95PL-NN_tgd35fg8WN1XCVuasb_ylOojumiHdP3U3IN9dTa9POE-erz57vL7b6nOin7xJO4AGbtX4zl8SPTkeL36g9oNEg==",
+        "domain": "aimbeat.com",
+        "title": "aimbeat.com",
+        "sourceType": "other",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGuXQYIhirNWl49KhLi2EEeegt1Pxt26VDdhNv1apnoHq-IT67iJKG3aODLXJFtQejSskbZj2R7gJDD_t-VRNLTuEvXMEC6jgcIKYEqMnIqA7JEJlOXO_MIgQ4r7tCho1CXZAk0Gw2xoXbmKTA6rtqAZm--X_EdeM2SoLqdx7Y_",
+        "domain": "appenius.com",
+        "title": "appenius.com",
+        "sourceType": "other",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGNk1O-7kI3ickr0eKVGGD-WNIidw2wgc1ph_fQ4kAr9D7rifwEHlkzGy6LSEeeC5T3xJ44IRwFsEBRXDVKg3Oy4cpkNo0amf1ziApZzzudDMGQU-gevJMoJUC4Y_OSnSufugVRhw==",
+        "domain": "artriva.com",
+        "title": "artriva.com",
+        "sourceType": "other",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHGGVsygajQQUlwjNbPZzQ8751ncq8IHK5MyB01B1OLpP7ptaF68pg2CgVDTcs-obwBhPCJqjc4HRw0STDqOVxagJL7r3GexX8k-KZoBvWWikLIPxT8QALdfSfqWknl5v2uCCArxgYyogPboAdNzFFEzJsKptJGfBi2rSkQ_Sj6QSE=",
+        "domain": "asthatechnologies.org",
+        "title": "asthatechnologies.org",
+        "sourceType": "other",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEVm1li8dOm558THySRmU_BOuJwT5yxx9GcLzgD5e94qxBRNkiHHKBFhsbx6CiI5CPtF23Z_H3ABMG6tYcyaPtfSgcqaf7BbB3-h1dWE03Irnf8Zk_TgmtV_0k_bSctVUFaGCc=",
+        "domain": "baluwatechnology.com",
+        "title": "baluwatechnology.com",
+        "sourceType": "other",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFUCzmrTSjyxWQjpXSkFWh5mGZbQ4-RrHAtPe9QAD3zrgbDRTgDCC6sfN_-NRflb00d_rzZmFCrMgH9NlL7WhooBSAup6cC2ZeasQYYdjHZViPKbukM3smsiQtqs9Dr4i9qM_4eLB2iPExstEdoOA==",
+        "domain": "beedev.co.in",
+        "title": "beedev.co.in",
+        "sourceType": "other",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGfytpEn_5mdcVnE4N7RsizTDNX5G44bggBJs6skXjxnrZGt_592xzK-ZRYx3mqOvd-lVKuLEFlUZWF6dc0J0mZJTOJkxaT2NIxMB6Eie62U_SEeFQQxokhl_6ELVgrx7OxSo6UECAtrXwHAnZvSUay",
+        "domain": "bigboxstudio.in",
+        "title": "bigboxstudio.in",
+        "sourceType": "other",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQH13dgBYP2F5HV-BJxLdiLCg4r8-ogm6V1pPC22Rn3ZEGqEXWSyDhoklwL6sOBI1OlyLqtPSOKkdpKOOm2fJbaB5wcRnyo_kkmXjlFtXd9xzWd9EdMENdHJ6PwzcMBGahnHpDbcSmCjIzyGBCBoHpucLheSgu70wx_245dfqbBt",
+        "domain": "blackthorn-vision.com",
+        "title": "blackthorn-vision.com",
+        "sourceType": "other",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFlFoaToTv_teXcv-ya9xfC8_sal8CCa2ovR9D2T2dL4u0nIKqBeitOLnM-ZhADlVk4jYiVt7UOGaEtIz_5XpegydY6P8CO87ElpB10y6d0ixQcF5gZuIp6N4SYS98gLzebC-A5bOrPB6FAuTsuJEo5Kt5onXsYb2h4gvJFNWjV8n_xnLlEUqN8PEPvccc34CmL6bGy-f2plw==",
+        "domain": "blurify.com",
+        "title": "blurify.com",
+        "sourceType": "other",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEMu4bON1hFOYw_wXamXGK-u44qznLEb1tpJWSuDFUdtDqDiT8GBJInRUNLJtSe1MNikdZZf9IuiweZmzLWiLNGBK6f4L62XaU1FRFkcz-LgwRJBuJH8kWMvtUUJr_c_mSf8E_H6MOQiGLSFW0HRum3gEGyaR3NLw==",
+        "domain": "builtin.com",
+        "title": "builtin.com",
+        "sourceType": "other",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHyxnCygqwS9OmppcJBAq3uk-fffL5TbPI-oirvAqrzoYdy1OvA4_VNneY1MyqXRpIvFqriCFgNxZd3Q0CdaZA5naepWxYz3AjM41wnvq2F1qBPZqtgqyt1sHY6qdy9_WVdAAKJ5XSrw-dgvO8XSayXROczlXzHkg==",
+        "domain": "builtin.com",
+        "title": "builtin.com",
+        "sourceType": "other",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFa7MkelpgN4fw-jcv2oyOBd3qQ2QTNj6gr-_XID96Dyemjo80e5k-TRr0zyOvjkZm2-kWmA1DIIgKoBZkrxNoxv-nQDEupdGBEbdAJ50WJutcmYycwfcTAgLNNzYqvgiwzfjtXTorRuIRf8U0kKdD3tUc=",
+        "domain": "carmatec.com",
+        "title": "carmatec.com",
+        "sourceType": "other",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQF7O_KufAi9It3LP7Z7oz3Su8XmJpiY9Q3aAQ13kyUMLkfc3u6k54NNOHuSb9JQLyPpoi9-m9AvN8KqCUqnMrLk3JMH7-KdezzmXOXCqMBklHA7IoMX-5jbPyak92A7ROXB-LFmEUGcvV0ejovOSQ0t1NLpEiOV3iBpgqieRZXlLDVGVPyozvrp_eo_3NGTK5yWljmX_Gw2",
+        "domain": "channelsoftech.com",
+        "title": "channelsoftech.com",
+        "sourceType": "other",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHxFQHmC6Kbj0WaRQGiWpNg4it7Jzd1Kfwd5gBc-RSIjYV7dihOjV_PjrEhx_KAzru9Jxah6zXf02N5qnGQ4mfdC_l3LT3xt1jSvoJ-Btv7rF1CR1gP9l6YQPDrTQJNVxM4NoZmz84dIg6gFYgscAyaVkOzpIjooc_Nd6MRgiykBU_aZ0w=",
+        "domain": "clutch.co",
+        "title": "clutch.co",
+        "sourceType": "directory",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFsOxIPmFzV18W0A-P3dGqUNYK0Ru-hsIDCvCGA_K-HcLpTse7_1zMjp6NsHA4I-fb1JkvZ-qiSOmMNQk6tEJsapuotaBqHlHUwz-is_L27WR7DVb55MMa8aOhbcy20RDVkYqVd",
+        "domain": "clutch.co",
+        "title": "clutch.co",
+        "sourceType": "directory",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFmVPbRsvmMtxJGg_RvufskbjdRShm5N3sqZuYpjSTD2yL5TwA2ydzs-qPBGz1t3S3h6dVQ-YBgSHwdAD4tg-4fwoNbljC2pURi-mo5ns23n3J_uhTS_Y_S9ieAz4AsrdDI6JRyYH2An-V9WA==",
+        "domain": "clutch.co",
+        "title": "clutch.co",
+        "sourceType": "directory",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGXbTyUE-S8pDHWOJSjFLrA-4Xc1YKbJEQGn4me69BuehEnpwd97CWqzAATTmP3o72aiyKFmLkxyIDwH6GlH7PvxrMIOuxOzRPgMyXgEoXaxLrrtjtJ63I4zogg_N3pLxvw3tPQ-RQ0-C885lp4",
+        "domain": "clutch.co",
+        "title": "clutch.co",
+        "sourceType": "directory",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGCoJ_cAX59enTDQ0M-sbx6KUrFMf9bfr9Q_ABnRO4jHYUhxC0Gv4_RirEP-Iog1AaqzAeodxSq1apAgaCBHS9zn9nMjQMMz1EYGU6HKeAN7gTLyhcie-0KyCEYUN7F6UCr2gait68V",
+        "domain": "clutch.co",
+        "title": "clutch.co",
+        "sourceType": "directory",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHBJ1xuauVEsJNtJNsX6M4kgcCEfFm20ru0ZAd8uYG8Wvgg27elC2W3XKkH31XQr9cBwTliZNoEcTS5dOHXy2fxO3jKxLNk50_BYeSQMGquuVYAeo7vbKe2L26VUcEMamQ6YBU5Gwc=",
+        "domain": "clutch.co",
+        "title": "clutch.co",
+        "sourceType": "directory",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHWv24vH58vv-y3uoH4A6Y-6bzZZ91OISQ0DKn1YVgZwZeMdaM5p5fbgBcPNxOkoGYSPJthxJwXXFZJ9LEtTzZmYtr7wqm_G9OHyi4e5Ol2FQLRYNf8RPqp_A6p4SeqKLze78hsgHDzDQ==",
+        "domain": "clutch.co",
+        "title": "clutch.co",
+        "sourceType": "directory",
+        "observedCount": 1
+      }
+    ],
+    "fixPlan": {
+      "generatedAt": "2026-10-23T10:13:38.661Z",
+      "sections": [
+        {
+          "key": "answer_questions",
+          "title": "Win back the searches you’re losing",
+          "intro": "On these real buyer searches, AI named Probey Services and not you. Each block below is one page worth writing — it maps directly to the searches it recovers. Start at the top.",
+          "items": [
+            {
+              "id": "content-development",
+              "title": "Publish a page that answers: “How much does a custom development project cost in Bangalore and which company should I use?”",
+              "detail": "AI named Aalpha Information Systems India Pvt. Ltd., Probey Services, Buzzlink Studios — not you — on 4 searches this page would target:\n   • How much does a custom development project cost in Bangalore and which company should I use?\n   • Who is the best app development freelancer or studio in Mumbai for small businesses?\n   • Who are the top web development companies in Mumbai?\n   • Where can I find an app development company in Bangalore that builds custom Android and iOS apps? These are high-intent, ready-to-buy searches — the most valuable to win back.",
+              "effort": "medium",
+              "impact": "high",
+              "status": "todo",
+              "actionable": true,
+              "targetsQueries": [
+                "How much does a custom development project cost in Bangalore and which company should I use?",
+                "Who is the best app development freelancer or studio in Mumbai for small businesses?",
+                "Who are the top web development companies in Mumbai?",
+                "Where can I find an app development company in Bangalore that builds custom Android and iOS apps?"
+              ]
+            },
+            {
+              "id": "content-small",
+              "title": "Publish a page that answers: “Which digital marketing agency in Bangalore offers affordable web designing for small businesses?”",
+              "detail": "AI named Probey Services — not you — on 1 search this page would target:\n   • Which digital marketing agency in Bangalore offers affordable web designing for small businesses? These are high-intent, ready-to-buy searches — the most valuable to win back.",
+              "effort": "medium",
+              "impact": "high",
+              "status": "todo",
+              "actionable": true,
+              "targetsQueries": [
+                "Which digital marketing agency in Bangalore offers affordable web designing for small businesses?"
+              ]
+            },
+            {
+              "id": "content-friendly",
+              "title": "Publish a page that answers: “Which agency in Bangalore is best for responsive web design and mobile-friendly websites?”",
+              "detail": "AI named Aalpha Information Systems India Pvt. Ltd. — not you — on 1 search this page would target:\n   • Which agency in Bangalore is best for responsive web design and mobile-friendly websites? These are high-intent, ready-to-buy searches — the most valuable to win back.",
+              "effort": "medium",
+              "impact": "high",
+              "status": "todo",
+              "actionable": true,
+              "targetsQueries": [
+                "Which agency in Bangalore is best for responsive web design and mobile-friendly websites?"
+              ]
+            },
+            {
+              "id": "content-mumbai",
+              "title": "Publish a page that answers: “Who are the best digital marketing agencies in Mumbai for a small business?”",
+              "detail": "AI named Buzzlink Studios — not you — on 1 search this page would target:\n   • Who are the best digital marketing agencies in Mumbai for a small business?",
+              "effort": "medium",
+              "impact": "medium",
+              "status": "todo",
+              "actionable": true,
+              "targetsQueries": [
+                "Who are the best digital marketing agencies in Mumbai for a small business?"
+              ]
+            }
+          ]
+        },
+        {
+          "key": "get_listed",
+          "title": "Get onto the sources AI already trusts",
+          "intro": "AI reuses a handful of sources across your category. Getting onto the ones it already cites is the fastest lever — you borrow a page AI trusts instead of waiting to build your own authority.",
+          "items": [
+            {
+              "id": "listing-clutch.co",
+              "title": "Get fully listed on clutch.co — AI already cites it 9×",
+              "detail": "AI pulled from clutch.co in 9 of 15 answers in your category. A complete, accurate listing puts your business on a source the audit already observed; it does not guarantee an AI mention.",
+              "effort": "easy",
+              "impact": "high",
+              "status": "todo",
+              "actionable": true
+            },
+            {
+              "id": "why-losing",
+              "title": "Why they win: AI trusts their own pages",
+              "detail": "AI leans on designrush.com (5×), semrush.com (5×), themanifest.com (4×), goodfirms.co (3×) — competitor and provider sites with deep, readable content AI can quote. You can’t edit their pages; you displace them with the pages above and the listings here, giving AI a reason to name you instead.",
+              "effort": "medium",
+              "impact": "medium",
+              "status": "todo",
+              "actionable": false
+            }
+          ]
+        },
+        {
+          "key": "structured_data",
+          "title": "Validate structured data",
+          "intro": "Technical validation only. Publish markup after a person verifies every business fact and writes the visible page content it describes.",
+          "items": [
+            {
+              "id": "jsonld-organization",
+              "title": "Verify an Organization markup draft",
+              "detail": "Confirm the legal name and canonical website before implementation. The audit did not verify an address, phone number, service area, or other LocalBusiness facts.",
+              "effort": "easy",
+              "impact": "low",
+              "status": "todo",
+              "actionable": false
+            },
+            {
+              "id": "jsonld-faqpage",
+              "title": "Write and verify answers before considering FAQ markup",
+              "detail": "Only mark up answers that are truthful, visible on the published page, and approved by the business. The audit supplies questions, not business claims.",
+              "effort": "medium",
+              "impact": "low",
+              "status": "todo",
+              "actionable": false
+            }
+          ]
+        },
+        {
+          "key": "foundations",
+          "title": "Validation checklist",
+          "intro": "These checks require direct inspection. They remain informational until evidence confirms a specific problem.",
+          "items": [
+            {
+              "id": "foundation-gbp",
+              "title": "Check whether a Google Business Profile is relevant and current",
+              "detail": "Confirm the business is eligible, then inspect its current fields and verification state. This audit did not inspect the profile, so no change is prescribed yet.",
+              "effort": "easy",
+              "impact": "low",
+              "status": "todo",
+              "actionable": false
+            },
+            {
+              "id": "foundation-nap",
+              "title": "Verify business identity details across owned profiles",
+              "detail": "Compare the approved legal or trading name, contact details, and service area. This audit did not observe inconsistencies.",
+              "effort": "easy",
+              "impact": "low",
+              "status": "todo",
+              "actionable": false
+            },
+            {
+              "id": "foundation-reviews",
+              "title": "Review the current customer-proof strategy",
+              "detail": "Inspect the quantity, recency, authenticity, and policy compliance of existing reviews before setting a target. This audit did not measure them.",
+              "effort": "medium",
+              "impact": "low",
+              "status": "todo",
+              "actionable": false
+            },
+            {
+              "id": "foundation-text",
+              "title": "Check whether key services are visible in readable page text",
+              "detail": "Inspect the live site before changing it. The answer audit did not crawl or validate the website content.",
+              "effort": "easy",
+              "impact": "low",
+              "status": "todo",
+              "actionable": false
+            }
+          ]
+        }
+      ],
+      "executionQueue": [
+        {
+          "id": "content-development",
+          "title": "Publish a page that answers: “How much does a custom development project cost in Bangalore and which company should I use?”",
+          "detail": "AI named Aalpha Information Systems India Pvt. Ltd., Probey Services, Buzzlink Studios — not you — on 4 searches this page would target:\n   • How much does a custom development project cost in Bangalore and which company should I use?\n   • Who is the best app development freelancer or studio in Mumbai for small businesses?\n   • Who are the top web development companies in Mumbai?\n   • Where can I find an app development company in Bangalore that builds custom Android and iOS apps? These are high-intent, ready-to-buy searches — the most valuable to win back.",
+          "effort": "medium",
+          "impact": "high",
+          "status": "todo",
+          "actionable": true,
+          "targetsQueries": [
+            "How much does a custom development project cost in Bangalore and which company should I use?",
+            "Who is the best app development freelancer or studio in Mumbai for small businesses?",
+            "Who are the top web development companies in Mumbai?",
+            "Where can I find an app development company in Bangalore that builds custom Android and iOS apps?"
+          ],
+          "rank": 1,
+          "sourceSection": "answer_questions",
+          "whyItMatters": "AI named Aalpha Information Systems India Pvt. Ltd., Probey Services, Buzzlink Studios — not you — on 4 searches this page would target:",
+          "deliverable": "One service or FAQ page draft that directly answers 4 target buyer questions. Include your offer, service area, verifiable proof (such as a case study, certification, or customer result), and one clear enquiry action. Review it, then publish it on your website."
+        },
+        {
+          "id": "listing-clutch.co",
+          "title": "Get fully listed on clutch.co — AI already cites it 9×",
+          "detail": "AI pulled from clutch.co in 9 of 15 answers in your category. A complete, accurate listing puts your business on a source the audit already observed; it does not guarantee an AI mention.",
+          "effort": "easy",
+          "impact": "high",
+          "status": "todo",
+          "actionable": true,
+          "rank": 2,
+          "sourceSection": "get_listed",
+          "whyItMatters": "AI pulled from clutch.co in 9 of 15 answers in your category. A complete, accurate listing puts your business on a source the audit already observed; it does not guarantee an AI mention.",
+          "deliverable": "A complete clutch.co business profile using the same name, phone, address or service area, category, description, services, proof photos, and website URL as your site. Submit it manually and save the live profile URL for the re-check.",
+          "targetsQueries": []
+        },
+        {
+          "id": "content-small",
+          "title": "Publish a page that answers: “Which digital marketing agency in Bangalore offers affordable web designing for small businesses?”",
+          "detail": "AI named Probey Services — not you — on 1 search this page would target:\n   • Which digital marketing agency in Bangalore offers affordable web designing for small businesses? These are high-intent, ready-to-buy searches — the most valuable to win back.",
+          "effort": "medium",
+          "impact": "high",
+          "status": "todo",
+          "actionable": true,
+          "targetsQueries": [
+            "Which digital marketing agency in Bangalore offers affordable web designing for small businesses?"
+          ],
+          "rank": 3,
+          "sourceSection": "answer_questions",
+          "whyItMatters": "AI named Probey Services — not you — on 1 search this page would target:",
+          "deliverable": "One service or FAQ page draft that directly answers 1 target buyer question. Include your offer, service area, verifiable proof (such as a case study, certification, or customer result), and one clear enquiry action. Review it, then publish it on your website."
+        }
+      ],
+      "jsonLd": {
+        "localBusiness": {
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": "KP Webbate Technologies",
+          "url": "https://kpwebbateplus.com",
+          "_status": "draft_requires_business_verification"
+        },
+        "faqPage": {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "_status": "verified_answer_required_before_publication",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "How much does a custom development project cost in Bangalore and which company should I use?",
+              "_status": "verified_answer_required_before_publication"
+            },
+            {
+              "@type": "Question",
+              "name": "Who is the best app development freelancer or studio in Mumbai for small businesses?",
+              "_status": "verified_answer_required_before_publication"
+            },
+            {
+              "@type": "Question",
+              "name": "Which digital marketing agency in Bangalore offers affordable web designing for small businesses?",
+              "_status": "verified_answer_required_before_publication"
+            },
+            {
+              "@type": "Question",
+              "name": "Which agency in Bangalore is best for responsive web design and mobile-friendly websites?",
+              "_status": "verified_answer_required_before_publication"
+            },
+            {
+              "@type": "Question",
+              "name": "Who are the top web development companies in Mumbai?",
+              "_status": "verified_answer_required_before_publication"
+            }
+          ]
+        }
+      },
+      "summary": {
+        "totalActions": 5,
+        "quickWins": 1,
+        "leadInsight": "You’re losing 4 ready-to-buy searches to Probey Services. Start with the first item below."
+      }
+    }
+  },
+  "current": {
+    "observedAt": "2026-10-23T10:14:20.533Z",
+    "questions": [
+      {
+        "text": "Which digital marketing agency in Bangalore offers affordable web designing for small businesses?",
+        "intent": "vendor_selection",
+        "outcome": "absent",
+        "competitors": [
+          "Probey Services"
+        ],
+        "quote": "Probey Services is well-suited for small to mid-sized businesses looking for affordable web design bundled with digital marketing.",
+        "sources": [
+          "queprachara.com",
+          "baluwatechnology.com",
+          "channelsoftech.com",
+          "webzplot.com",
+          "dexusmedia.com",
+          "digimarkagency.com"
+        ],
+        "reason": "You offer web design for small businesses in Bangalore, making this a direct lead query."
+      },
+      {
+        "text": "How much does a custom development project cost in Bangalore and which company should I use?",
+        "intent": "transactional",
+        "outcome": "absent",
+        "competitors": [
+          "Aalpha Information Systems India Pvt. Ltd.",
+          "Probey Services"
+        ],
+        "quote": "Probey Services: Ranked highly on Goodfirms with a 5.0-star rating and 152 verified reviews.",
+        "sources": [
+          "softwarestudiopro.com",
+          "developers.dev",
+          "webeventuals.com",
+          "rannlab.com",
+          "ethersofts.com",
+          "digitalxbrand.com"
+        ],
+        "reason": "You offer custom development in Bangalore, and this asks for pricing plus company recommendations."
+      },
+      {
+        "text": "How do the top web design and UX studios in Bangalore compare in pricing, and which company should I hire for a startup?",
+        "intent": "comparison",
+        "outcome": "absent",
+        "competitors": [],
+        "quote": "Ultimately, the best company for your startup will be one that aligns with your vision",
+        "sources": [
+          "paperblog.com",
+          "zethic.com",
+          "tentackles.com",
+          "emergedigital.co",
+          "clutch.co",
+          "itrate.co"
+        ],
+        "reason": "You offer web design and UI/UX services, and Bangalore startups ask this when picking an agency."
+      },
+      {
+        "text": "Who are the top web development companies in Mumbai?",
+        "intent": "location",
+        "outcome": "absent",
+        "competitors": [
+          "Probey Services",
+          "Buzzlink Studios"
+        ],
+        "quote": "Probey Services is highly rated for its web development and design services.",
+        "sources": [
+          "goodfirms.co",
+          "designrush.com",
+          "clutch.co",
+          "sortlist.com",
+          "mumbaiwebdesign.in",
+          "semrush.com"
+        ],
+        "reason": "You provide web development services in Mumbai, which matches this local search query."
+      },
+      {
+        "text": "Where can I find an app development company in Bangalore that builds custom Android and iOS apps?",
+        "intent": "discovery",
+        "outcome": "absent",
+        "competitors": [
+          "Aalpha Information Systems India Pvt. Ltd."
+        ],
+        "quote": "Aalpha Information Systems India Pvt. Ltd., praised for professionalism and expertise in both iOS and Android development.",
+        "sources": [
+          "dxminds.com",
+          "websenor.com",
+          "asthatechnologies.org",
+          "renderinfotech.com",
+          "nextbraintech.com",
+          "w2ssolutions.com"
+        ],
+        "reason": "You offer custom app development services to clients located in Bangalore."
+      },
+      {
+        "text": "Can you recommend a graphic designing studio in Bangalore for startup branding?",
+        "intent": "vendor_selection",
+        "outcome": "absent",
+        "competitors": [],
+        "quote": "For startups in Bangalore seeking a graphic designing studio for branding, several highly-regarded agencies offer expertise",
+        "sources": [
+          "wearetenet.com",
+          "mellowdesigns.co",
+          "studiosorted.com",
+          "rezonant.net",
+          "designrush.com",
+          "revenuebase.ai"
+        ],
+        "reason": "You offer graphic design services to startups in Bangalore, matching this recommendation request."
+      },
+      {
+        "text": "How much do digital marketing agencies in Mumbai charge to manage paid advertising, and which agency offers the best packages for small businesses?",
+        "intent": "comparison",
+        "outcome": "absent",
+        "competitors": [],
+        "quote": "Several digital marketing agencies in Mumbai are noted for their services and potentially suitable packages for small businesses",
+        "sources": [
+          "iamgroupofcompanies.com",
+          "pagetraffic.in",
+          "thanksweb.in",
+          "rightwebsolution.com",
+          "themediaant.com",
+          "digitalsky360.com"
+        ],
+        "reason": "You offer paid advertising campaigns, and Mumbai small businesses ask this when comparing agency pricing and services."
+      },
+      {
+        "text": "Who are the best digital marketing agencies in Mumbai for a small business?",
+        "intent": "location",
+        "outcome": "absent",
+        "competitors": [
+          "Buzzlink Studios"
+        ],
+        "quote": "Buzzlink Studios is praised by clients for timely delivery, excellent project management, and innovative solutions across web development and digital marketing.",
+        "sources": [
+          "reddit.com",
+          "fruitbowldigital.com",
+          "semrush.com",
+          "clutch.co"
+        ],
+        "reason": "You offer digital marketing to small businesses from your Mumbai office."
+      },
+      {
+        "text": "Which agency in Bangalore is best for responsive web design and mobile-friendly websites?",
+        "intent": "vendor_selection",
+        "outcome": "absent",
+        "competitors": [
+          "Aalpha Information Systems India Pvt. Ltd."
+        ],
+        "quote": "Aalpha Information Systems India Pvt. Ltd: A versatile company specializing in responsive web design, custom website development, and UI/UX design, with 100% positive feedback for timely delivery and professionalism.",
+        "sources": [
+          "zinavo.com",
+          "appenius.com",
+          "webrankey.com",
+          "swaragh.com",
+          "clutch.co",
+          "reddit.com"
+        ],
+        "reason": "You offer responsive web design, and Bangalore businesses ask this when rebuilding their site."
+      },
+      {
+        "text": "Which web design agency in Mumbai can handle both product photography and a website redesign?",
+        "intent": "location",
+        "outcome": "absent",
+        "competitors": [],
+        "quote": "Several web design agencies in Mumbai offer both product photography and website redesign services.",
+        "sources": [
+          "wedigitalcreatives.com",
+          "digimag.co.in",
+          "yellowad.in"
+        ],
+        "reason": "You offer both web design and photography services to local clients in Mumbai."
+      },
+      {
+        "text": "Who provides custom software development for mid-size businesses in Bangalore?",
+        "intent": "vendor_selection",
+        "outcome": "absent",
+        "competitors": [],
+        "quote": "Several companies in Bangalore provide custom software development services for mid-size businesses",
+        "sources": [
+          "enaviya.com",
+          "clutch.co",
+          "themanifest.com",
+          "nextwebi.com",
+          "builtin.com",
+          "iqlance.com"
+        ],
+        "reason": "You offer custom development to mid-size businesses in Bangalore."
+      },
+      {
+        "text": "Which digital marketing agency in Bangalore gets the best results from paid advertising campaigns?",
+        "intent": "vendor_selection",
+        "outcome": "absent",
+        "competitors": [],
+        "quote": "Several digital marketing agencies in Bangalore are recognized for their effectiveness in delivering strong results from paid advertising campaigns",
+        "sources": [
+          "clutch.co",
+          "intellipaat.com",
+          "lengreo.com",
+          "contentstudio.io",
+          "noirandblanco.com",
+          "gbim.com"
+        ],
+        "reason": "You run paid advertising campaigns for local digital marketing clients in Bangalore."
+      },
+      {
+        "text": "I need commercial photography services in Bangalore for my products, who should I hire?",
+        "intent": "vendor_selection",
+        "outcome": "absent",
+        "competitors": [],
+        "quote": "For commercial product photography services in Bangalore, several studios offer specialized expertise to help showcase your products effectively.",
+        "sources": [
+          "ksstudiophoto.com",
+          "theimpressio.in",
+          "bigboxstudio.in",
+          "photobangalore.com",
+          "artriva.com",
+          "mangobox.studio"
+        ],
+        "reason": "You offer product photography services for businesses based in Bangalore."
+      },
+      {
+        "text": "Which SEO agency in Bangalore can help improve search results for a small local business?",
+        "intent": "vendor_selection",
+        "outcome": "absent",
+        "competitors": [],
+        "quote": "Here are some SEO agencies in Bangalore that can help small local businesses:",
+        "sources": [
+          "zeroado.com",
+          "promozseo.com",
+          "themanifest.com",
+          "semrush.com",
+          "zinavo.com",
+          "digimarkagency.com"
+        ],
+        "reason": "You help small businesses improve search results through digital marketing in Bangalore."
+      },
+      {
+        "text": "Who is the best app development freelancer or studio in Mumbai for small businesses?",
+        "intent": "vendor_selection",
+        "outcome": "absent",
+        "competitors": [
+          "Probey Services",
+          "Buzzlink Studios"
+        ],
+        "quote": "Probey Services stands out with a 5.0-star rating from 158 reviews and an hourly rate of less than $25, indicating a strong track record and affordability, which can be beneficial for small businesses.",
+        "sources": [
+          "goodfirms.co",
+          "clutch.co",
+          "aimbeat.com",
+          "stymeta.com",
+          "themanifest.com",
+          "freelancesantoshyadav.com"
+        ],
+        "reason": "You offer app development to small businesses located in Mumbai."
+      }
+    ]
+  },
+  "site": {
+    "checkedAt": "2026-10-23T10:09:42.635Z",
+    "reachable": true,
+    "finalUrl": "https://kpwebbateplus.com/",
+    "https": true,
+    "homepage": {
+      "title": "kpwebbateplus.com",
+      "metaDescription": "",
+      "visibleWords": 584,
+      "appShell": false,
+      "jsonLdTypes": [],
+      "hasFaqSchema": false,
+      "questionHeadings": 2,
+      "profiles": [
+        "linkedin",
+        "instagram",
+        "facebook"
+      ],
+      "sections": {
+        "pricing": false,
+        "faq": true,
+        "comparison": false,
+        "content": false,
+        "docs": false,
+        "caseStudies": false
+      }
+    },
+    "robots": {
+      "found": true,
+      "crawlers": {
+        "GPTBot": "unspecified",
+        "OAI-SearchBot": "unspecified",
+        "ChatGPT-User": "unspecified",
+        "ClaudeBot": "unspecified",
+        "PerplexityBot": "unspecified",
+        "Google-Extended": "unspecified",
+        "Bingbot": "unspecified",
+        "Applebot-Extended": "unspecified"
+      },
+      "explicitlyNamed": [],
+      "blocked": []
+    },
+    "llmsTxt": false,
+    "sitemap": true,
+    "pages": [
+      {
+        "url": "https://kpwebbateplus.com/",
+        "status": 200,
+        "loadMs": 675,
+        "title": "kpwebbateplus.com",
+        "metaDescription": "",
+        "h1": [],
+        "words": 584,
+        "questionHeadings": 3,
+        "answerBlocks": [
+          "Do You Want To Boost Your Business?"
+        ],
+        "jsonLdTypes": [],
+        "hasAuthor": false
+      },
+      {
+        "url": "https://kpwebbateplus.com/about-us/",
+        "status": 200,
+        "loadMs": 834,
+        "title": "ABOUT US – kpwebbateplus.com",
+        "metaDescription": "",
+        "h1": [],
+        "words": 505,
+        "questionHeadings": 1,
+        "answerBlocks": [
+          "Do You Want To Boost Your Business?"
+        ],
+        "jsonLdTypes": [],
+        "hasAuthor": false
+      },
+      {
+        "url": "https://kpwebbateplus.com/faq/",
+        "status": 200,
+        "loadMs": 1147,
+        "title": "FAQ – kpwebbateplus.com",
+        "metaDescription": "",
+        "h1": [],
+        "words": 820,
+        "questionHeadings": 1,
+        "answerBlocks": [
+          "Do You Want To Boost Your Business?"
+        ],
+        "jsonLdTypes": [],
+        "hasAuthor": false
+      },
+      {
+        "url": "https://kpwebbateplus.com/services/",
+        "status": 200,
+        "loadMs": 494,
+        "title": "SERVICES – kpwebbateplus.com",
+        "metaDescription": "",
+        "h1": [],
+        "words": 661,
+        "questionHeadings": 2,
+        "answerBlocks": [
+          "What Can We Do For You ?",
+          "Do You Want To Boost Your Business?"
+        ],
+        "jsonLdTypes": [],
+        "hasAuthor": false
+      },
+      {
+        "url": "https://kpwebbateplus.com/projects/",
+        "status": 200,
+        "loadMs": 490,
+        "title": "PROJECTS – kpwebbateplus.com",
+        "metaDescription": "",
+        "h1": [],
+        "words": 266,
+        "questionHeadings": 1,
+        "answerBlocks": [
+          "Do You Want To Boost Your Business?"
+        ],
+        "jsonLdTypes": [],
+        "hasAuthor": false
+      },
+      {
+        "url": "https://kpwebbateplus.com/contact-us/",
+        "status": 200,
+        "loadMs": 709,
+        "title": "CONTACT US – kpwebbateplus.com",
+        "metaDescription": "",
+        "h1": [],
+        "words": 210,
+        "questionHeadings": 1,
+        "answerBlocks": [
+          "Do You Want To Boost Your Business?"
+        ],
+        "jsonLdTypes": [],
+        "hasAuthor": false
+      },
+      {
+        "url": "https://kpwebbateplus.com/career/",
+        "status": 200,
+        "loadMs": 332,
+        "title": "CAREER – kpwebbateplus.com",
+        "metaDescription": "",
+        "h1": [],
+        "words": 343,
+        "questionHeadings": 1,
+        "answerBlocks": [
+          "Do You Want To Boost Your Business?"
+        ],
+        "jsonLdTypes": [],
+        "hasAuthor": false
+      },
+      {
+        "url": "https://kpwebbateplus.com/hello-world/",
+        "status": 200,
+        "loadMs": 832,
+        "title": "Hello world! – kpwebbateplus.com",
+        "metaDescription": "",
+        "h1": [
+          "Hello world!"
+        ],
+        "words": 217,
+        "questionHeadings": 0,
+        "answerBlocks": [],
+        "jsonLdTypes": [],
+        "hasAuthor": true
+      }
+    ],
+    "hypeClaims": [
+      {
+        "phrase": "Best Digital Marketing Company",
+        "sentence": "Welcome to KP Webbate Technologies as a Best Digital Marketing Company in Bangalore, where we’re not just another digital marketing Agency; we’re your partners in nurturing online triumphs.",
+        "url": "https://kpwebbateplus.com/"
+      },
+      {
+        "phrase": "Top Digital Marketing Agency",
+        "sentence": "we take pride in our journey as a Top Digital Marketing Agency in Bangalore.",
+        "url": "https://kpwebbateplus.com/"
+      },
+      {
+        "phrase": "Best Digital Marketing Agency",
+        "sentence": "KP Webbate Technologies Provide Best Digital Marketing Agency in Bangalore Including Website Designing Project, UX UI Designing Project, Graphic Designing Project, Photography, Poster Designing Projec…",
+        "url": "https://kpwebbateplus.com/about-us/"
+      },
+      {
+        "phrase": "Best Digital Marketing Agency",
+        "sentence": "Our reports are created to provide clients with an understanding of the efforts that have gone into their campaign and the results that’s why we are Best Digital Marketing Agency in Bangalore.",
+        "url": "https://kpwebbateplus.com/about-us/"
+      },
+      {
+        "phrase": "the Best Website Designing company",
+        "sentence": "We are the Best Website Designing company in Bangalore.",
+        "url": "https://kpwebbateplus.com/faq/"
+      },
+      {
+        "phrase": "a leading",
+        "sentence": "We are a leading digital marketing agency in Bangalore, and we are always looking for talented and motivated individuals to join our team.",
+        "url": "https://kpwebbateplus.com/career/"
+      }
+    ],
+    "errors": []
+  },
+  "footprint": {
+    "checkedAt": "2026-10-23T10:14:20.533Z",
+    "probe": {
+      "question": "What is KP Webbate Technologies (kpwebbateplus.com)? What do they do, where are they based, and who are their customers?",
+      "verdict": "accurate",
+      "summary": "The AI accurately identifies your services, Bangalore/Mumbai location details, and target client base.",
+      "quote": "KP Webbate Technologies (kpwebbateplus.com) is a digital solutions company that offers a range of services including web and graphic design, web and app development, UI/UX design, and digital marketing.",
+      "issues": [],
+      "sources": [
+        "google.com",
+        "getprojects.ai",
+        "kpwebbateplus.in",
+        "companyseekers.com",
+        "ueniweb.com",
+        "kpwebbateplus.com"
+      ]
+    },
+    "citedPages": [
+      {
+        "url": "https://www.nextwebi.com/service/software-development-company-in-bangalore",
+        "domain": "nextwebi.com",
+        "citedIn": 2,
+        "status": "read",
+        "brandNamed": false,
+        "competitorsNamed": []
+      },
+      {
+        "url": "https://clutch.co/in/developers/bengaluru",
+        "domain": "clutch.co",
+        "citedIn": 2,
+        "status": "blocked",
+        "brandNamed": false,
+        "competitorsNamed": []
+      },
+      {
+        "url": "https://builtin.com/articles/software-companies-in-bangalore",
+        "domain": "builtin.com",
+        "citedIn": 2,
+        "status": "read",
+        "brandNamed": false,
+        "competitorsNamed": []
+      },
+      {
+        "url": "https://www.fruitbowldigital.com/blog/digital-marketing-agencies-in-mumbai/",
+        "domain": "fruitbowldigital.com",
+        "citedIn": 2,
+        "status": "read",
+        "brandNamed": false,
+        "competitorsNamed": []
+      },
+      {
+        "url": "https://agencies.semrush.com/list/mumbai/small-business/",
+        "domain": "semrush.com",
+        "citedIn": 2,
+        "status": "read",
+        "brandNamed": false,
+        "competitorsNamed": []
+      },
+      {
+        "url": "https://queprachara.com/affordable-website-design-and-seo/",
+        "domain": "queprachara.com",
+        "citedIn": 1,
+        "status": "read",
+        "brandNamed": false,
+        "competitorsNamed": []
+      },
+      {
+        "url": "https://baluwatechnology.com/web-design/",
+        "domain": "baluwatechnology.com",
+        "citedIn": 1,
+        "status": "read",
+        "brandNamed": false,
+        "competitorsNamed": []
+      },
+      {
+        "url": "https://www.channelsoftech.com/affordable-website-builders-in-bangalore-for-small-businesses",
+        "domain": "channelsoftech.com",
+        "citedIn": 1,
+        "status": "read",
+        "brandNamed": false,
+        "competitorsNamed": []
+      },
+      {
+        "url": "https://webzplot.com/low-cost-web-design-in-bangalore-cheap-website-designing-companies-in-bangalore-webzplot/",
+        "domain": "webzplot.com",
+        "citedIn": 1,
+        "status": "read",
+        "brandNamed": false,
+        "competitorsNamed": []
+      },
+      {
+        "url": "https://dexusmedia.com/location/bengaluru",
+        "domain": "dexusmedia.com",
+        "citedIn": 1,
+        "status": "read",
+        "brandNamed": false,
+        "competitorsNamed": []
+      },
+      {
+        "url": "https://www.digimarkagency.com/website-designing-and-development-company-in-bangalore.html",
+        "domain": "digimarkagency.com",
+        "citedIn": 1,
+        "status": "read",
+        "brandNamed": false,
+        "competitorsNamed": []
+      },
+      {
+        "url": "https://www.designrush.com/agency/website-design-development/in/bengaluru",
+        "domain": "designrush.com",
+        "citedIn": 1,
+        "status": "blocked",
+        "brandNamed": false,
+        "competitorsNamed": []
+      },
+      {
+        "url": "https://www.softwarestudiopro.com/blog/custom-software-development-cost/",
+        "domain": "softwarestudiopro.com",
+        "citedIn": 1,
+        "status": "read",
+        "brandNamed": false,
+        "competitorsNamed": []
+      },
+      {
+        "url": "https://www.developers.dev/tech-talk/custom-software-development-cost-in-india.html",
+        "domain": "developers.dev",
+        "citedIn": 1,
+        "status": "read",
+        "brandNamed": false,
+        "competitorsNamed": []
+      },
+      {
+        "url": "https://webeventuals.com/blog/how-much-does-custom-software-development-cost/",
+        "domain": "webeventuals.com",
+        "citedIn": 1,
+        "status": "read",
+        "brandNamed": false,
+        "competitorsNamed": []
+      },
+      {
+        "url": "https://rannlab.com/the-cost-of-building-custom-software-in-india-a-complete-guide/",
+        "domain": "rannlab.com",
+        "citedIn": 1,
+        "status": "blocked",
+        "brandNamed": false,
+        "competitorsNamed": []
+      },
+      {
+        "url": "https://ethersofts.com/blog/custom-software-development-cost-india",
+        "domain": "ethersofts.com",
+        "citedIn": 1,
+        "status": "read",
+        "brandNamed": false,
+        "competitorsNamed": []
+      },
+      {
+        "url": "https://digitalxbrand.com/blog/custom-software-development-cost-india",
+        "domain": "digitalxbrand.com",
+        "citedIn": 1,
+        "status": "read",
+        "brandNamed": false,
+        "competitorsNamed": []
+      },
+      {
+        "url": "https://blurify.com/blog/custom-software-development-cost-7-factors-that-determine-the-price/",
+        "domain": "blurify.com",
+        "citedIn": 1,
+        "status": "read",
+        "brandNamed": false,
+        "competitorsNamed": []
+      },
+      {
+        "url": "https://medium.com/@closeloop_tech/12-factors-that-affect-software-development-cost-e524f5014a57",
+        "domain": "medium.com",
+        "citedIn": 1,
+        "status": "blocked",
+        "brandNamed": false,
+        "competitorsNamed": []
+      }
+    ],
+    "directories": [
+      {
+        "domain": "clutch.co",
+        "citedIn": 9,
+        "listed": false,
+        "how": "search"
+      },
+      {
+        "domain": "designrush.com",
+        "citedIn": 5,
+        "listed": false,
+        "how": "search"
+      },
+      {
+        "domain": "themanifest.com",
+        "citedIn": 4,
+        "listed": false,
+        "how": "search"
+      },
+      {
+        "domain": "goodfirms.co",
+        "citedIn": 3,
+        "listed": false,
+        "how": "search"
+      }
+    ],
+    "errors": []
+  }
+}

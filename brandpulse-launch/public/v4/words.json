@@ -1,0 +1,127 @@
+[
+  {
+    "word": "Your",
+    "start": 0.1952,
+    "end": 0.2829
+  },
+  {
+    "word": "buyers",
+    "start": 0.2939,
+    "end": 0.6338
+  },
+  {
+    "word": "stopped",
+    "start": 0.6448,
+    "end": 0.9847
+  },
+  {
+    "word": "Googling",
+    "start": 0.9847,
+    "end": 1.3795
+  },
+  {
+    "word": "They",
+    "start": 2.0922,
+    "end": 2.1908
+  },
+  {
+    "word": "ask",
+    "start": 2.1909,
+    "end": 2.4321
+  },
+  {
+    "word": "AI",
+    "start": 2.4321,
+    "end": 2.8378
+  },
+  {
+    "word": "And",
+    "start": 4.093,
+    "end": 4.1831
+  },
+  {
+    "word": "AI",
+    "start": 4.1921,
+    "end": 4.5164
+  },
+  {
+    "word": "names",
+    "start": 4.5164,
+    "end": 4.8316
+  },
+  {
+    "word": "three",
+    "start": 4.8406,
+    "end": 5.1829
+  },
+  {
+    "word": "companies",
+    "start": 5.1829,
+    "end": 5.6964
+  },
+  {
+    "word": "None",
+    "start": 6.0937,
+    "end": 6.1705
+  },
+  {
+    "word": "of",
+    "start": 6.1705,
+    "end": 6.2034
+  },
+  {
+    "word": "them",
+    "start": 6.2034,
+    "end": 6.2801
+  },
+  {
+    "word": "are",
+    "start": 6.2911,
+    "end": 6.4336
+  },
+  {
+    "word": "you",
+    "start": 6.4336,
+    "end": 6.6091
+  },
+  {
+    "word": "Zero",
+    "start": 8.0982,
+    "end": 8.3614
+  },
+  {
+    "word": "out",
+    "start": 8.3614,
+    "end": 8.4271
+  },
+  {
+    "word": "of",
+    "start": 8.4381,
+    "end": 8.5039
+  },
+  {
+    "word": "ten",
+    "start": 8.5039,
+    "end": 8.8109
+  },
+  {
+    "word": "Meet",
+    "start": 12.0954,
+    "end": 12.3317
+  },
+  {
+    "word": "Zero",
+    "start": 12.3425,
+    "end": 12.7186
+  },
+  {
+    "word": "see",
+    "start": 12.7293,
+    "end": 13.0194
+  },
+  {
+    "word": "ate",
+    "start": 13.0194,
+    "end": 13.2451
+  }
+]

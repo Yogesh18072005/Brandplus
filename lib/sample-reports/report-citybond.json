@@ -1,0 +1,447 @@
+{
+  "business": {
+    "name": "Citybond",
+    "category": "aluminium composite panel (ACP) cladding",
+    "city": "Delhi",
+    "website": "citybond.in"
+  },
+  "generatedAt": "2026-07-07T15:26:53.871Z",
+  "totals": {
+    "promptCount": 40,
+    "enginesUsed": [
+      "gemini"
+    ],
+    "failedPrompts": 0
+  },
+  "scores": {
+    "visibilityScore": 24,
+    "presenceRate": 0.4,
+    "shareOfVoice": 0.2
+  },
+  "competitors": [
+    {
+      "name": "Viva",
+      "presenceRate": 0.9
+    },
+    {
+      "name": "Alomax",
+      "presenceRate": 0.05
+    },
+    {
+      "name": "Aludecor",
+      "presenceRate": 0.65
+    }
+  ],
+  "byEngine": [
+    {
+      "engine": "gemini",
+      "presenceRate": 0.4
+    }
+  ],
+  "missedPrompts": [
+    {
+      "prompt": "ACP sheets supplier Noida Gurgaon Delhi NCR",
+      "competitorsPresent": [
+        "Viva",
+        "Aludecor",
+        "Alomax"
+      ],
+      "evidence": ""
+    },
+    {
+      "prompt": "top aluminium composite panel manufacturers in Delhi NCR",
+      "competitorsPresent": [
+        "Aludecor",
+        "Viva"
+      ],
+      "evidence": ""
+    },
+    {
+      "prompt": "best ACP cladding brand for building facade in Delhi",
+      "competitorsPresent": [
+        "Aludecor",
+        "Viva"
+      ],
+      "evidence": ""
+    },
+    {
+      "prompt": "cheap ACP cladding sheets supplier Delhi",
+      "competitorsPresent": [
+        "Viva",
+        "Aludecor"
+      ],
+      "evidence": ""
+    },
+    {
+      "prompt": "ACP panel wholesale price Delhi bulk order",
+      "competitorsPresent": [
+        "Viva",
+        "Aludecor"
+      ],
+      "evidence": ""
+    },
+    {
+      "prompt": "where to buy FR grade ACP sheets in Delhi",
+      "competitorsPresent": [
+        "Viva",
+        "Aludecor"
+      ],
+      "evidence": ""
+    },
+    {
+      "prompt": "wood finish ACP sheets dealer Delhi",
+      "competitorsPresent": [
+        "Viva",
+        "Aludecor"
+      ],
+      "evidence": ""
+    },
+    {
+      "prompt": "Alomax vs Viva ACP panel comparison India",
+      "competitorsPresent": [
+        "Viva",
+        "Alomax"
+      ],
+      "evidence": ""
+    },
+    {
+      "prompt": "is Aludecor ACP good quality for commercial building",
+      "competitorsPresent": [
+        "Aludecor",
+        "Viva"
+      ],
+      "evidence": "Yes, Aludecor ACP is generally considered to be of good quality for commercial buildings"
+    },
+    {
+      "prompt": "which ACP brand do architects recommend in Delhi",
+      "competitorsPresent": [
+        "Viva",
+        "Aludecor"
+      ],
+      "evidence": ""
+    }
+  ],
+  "citationGap": [
+    {
+      "domain": "vivaacp.com",
+      "count": 36
+    },
+    {
+      "domain": "pioneerpanels.com",
+      "count": 33
+    },
+    {
+      "domain": "allcorpanels.com",
+      "count": 25
+    },
+    {
+      "domain": "aludecor.com",
+      "count": 25
+    },
+    {
+      "domain": "indiamart.com",
+      "count": 17
+    },
+    {
+      "domain": "virgoacp.com",
+      "count": 15
+    },
+    {
+      "domain": "slinteriorllp.com",
+      "count": 13
+    },
+    {
+      "domain": "woodxlaminate.com",
+      "count": 13
+    },
+    {
+      "domain": "justdial.com",
+      "count": 11
+    },
+    {
+      "domain": "reynobondindia.com",
+      "count": 9
+    }
+  ],
+  "fixPlan": {
+    "generatedAt": "2026-07-07T15:26:53.881Z",
+    "sections": [
+      {
+        "key": "get_listed",
+        "title": "Get listed where AI looks",
+        "intro": "AI builds its answers from a handful of sources it trusts. These are the ones it used in your category — being present and accurate on them is the groundwork.",
+        "items": [
+          {
+            "id": "listing-indiamart.com",
+            "title": "Claim or create your free listing on indiamart.com",
+            "detail": "Cited in 17 of 40 AI answers in your category. This is a source AI reads directly — a complete, accurate profile here is one of the fastest ways to start showing up. Do this one this week.",
+            "effort": "easy",
+            "impact": "high",
+            "status": "todo",
+            "actionable": true
+          },
+          {
+            "id": "listing-justdial.com",
+            "title": "Claim or create your free listing on justdial.com",
+            "detail": "Cited in 11 of 40 AI answers in your category. This is a source AI reads directly — a complete, accurate profile here is one of the fastest ways to start showing up. Do this one this week.",
+            "effort": "easy",
+            "impact": "high",
+            "status": "todo",
+            "actionable": true
+          },
+          {
+            "id": "provider-pioneerpanels.com",
+            "title": "pioneerpanels.com is another provider AI recommends",
+            "detail": "Cited in 33 of 40 AI answers in your category. You can't edit their site — you displace them by getting listed on the directories above and answering the questions below, so AI has a reason to name you instead.",
+            "effort": "medium",
+            "impact": "medium",
+            "status": "todo",
+            "actionable": true
+          },
+          {
+            "id": "provider-allcorpanels.com",
+            "title": "allcorpanels.com is another provider AI recommends",
+            "detail": "Cited in 25 of 40 AI answers in your category. You can't edit their site — you displace them by getting listed on the directories above and answering the questions below, so AI has a reason to name you instead.",
+            "effort": "medium",
+            "impact": "medium",
+            "status": "todo",
+            "actionable": true
+          },
+          {
+            "id": "provider-virgoacp.com",
+            "title": "virgoacp.com is another provider AI recommends",
+            "detail": "Cited in 15 of 40 AI answers in your category. You can't edit their site — you displace them by getting listed on the directories above and answering the questions below, so AI has a reason to name you instead.",
+            "effort": "medium",
+            "impact": "medium",
+            "status": "todo",
+            "actionable": true
+          },
+          {
+            "id": "provider-slinteriorllp.com",
+            "title": "slinteriorllp.com is another provider AI recommends",
+            "detail": "Cited in 13 of 40 AI answers in your category. You can't edit their site — you displace them by getting listed on the directories above and answering the questions below, so AI has a reason to name you instead.",
+            "effort": "medium",
+            "impact": "medium",
+            "status": "todo",
+            "actionable": true
+          },
+          {
+            "id": "provider-woodxlaminate.com",
+            "title": "woodxlaminate.com is another provider AI recommends",
+            "detail": "Cited in 13 of 40 AI answers in your category. You can't edit their site — you displace them by getting listed on the directories above and answering the questions below, so AI has a reason to name you instead.",
+            "effort": "medium",
+            "impact": "medium",
+            "status": "todo",
+            "actionable": true
+          },
+          {
+            "id": "provider-reynobondindia.com",
+            "title": "reynobondindia.com is another provider AI recommends",
+            "detail": "Cited in 9 of 40 AI answers in your category. You can't edit their site — you displace them by getting listed on the directories above and answering the questions below, so AI has a reason to name you instead.",
+            "effort": "medium",
+            "impact": "medium",
+            "status": "todo",
+            "actionable": true
+          }
+        ]
+      },
+      {
+        "key": "answer_questions",
+        "title": "Answer the questions you’re losing",
+        "intro": "These are the real buyer questions where AI named a competitor instead of you. Each cluster below is one page or FAQ worth writing — start at the top.",
+        "items": [
+          {
+            "id": "content-sheets",
+            "title": "Create a page or FAQ answering your \"sheets\" questions",
+            "detail": "AI named a competitor and not you on 4 questions here. Write one clear page that directly answers them:\n   • ACP sheets supplier Noida Gurgaon Delhi NCR\n   • cheap ACP cladding sheets supplier Delhi\n   • where to buy FR grade ACP sheets in Delhi\n   • wood finish ACP sheets dealer Delhi",
+            "effort": "medium",
+            "impact": "high",
+            "status": "todo",
+            "actionable": true
+          },
+          {
+            "id": "content-brand",
+            "title": "Create a page or FAQ answering your \"brand\" questions",
+            "detail": "AI named a competitor and not you on 2 questions here. Write one clear page that directly answers them:\n   • best ACP cladding brand for building facade in Delhi\n   • which ACP brand do architects recommend in Delhi",
+            "effort": "medium",
+            "impact": "high",
+            "status": "todo",
+            "actionable": true
+          },
+          {
+            "id": "content-manufacturers",
+            "title": "Create a page or FAQ answering your \"manufacturers\" questions",
+            "detail": "AI named a competitor and not you on 1 question here. Write one clear page that directly answers them:\n   • top aluminium composite panel manufacturers in Delhi NCR",
+            "effort": "medium",
+            "impact": "medium",
+            "status": "todo",
+            "actionable": true
+          },
+          {
+            "id": "content-bulk",
+            "title": "Create a page or FAQ answering your \"bulk\" questions",
+            "detail": "AI named a competitor and not you on 1 question here. Write one clear page that directly answers them:\n   • ACP panel wholesale price Delhi bulk order",
+            "effort": "medium",
+            "impact": "medium",
+            "status": "todo",
+            "actionable": true
+          },
+          {
+            "id": "content-alomax",
+            "title": "Create a page or FAQ answering your \"alomax\" questions",
+            "detail": "AI named a competitor and not you on 1 question here. Write one clear page that directly answers them:\n   • Alomax vs Viva ACP panel comparison India",
+            "effort": "medium",
+            "impact": "medium",
+            "status": "todo",
+            "actionable": true
+          },
+          {
+            "id": "content-building",
+            "title": "Create a page or FAQ answering your \"building\" questions",
+            "detail": "AI named a competitor and not you on 1 question here. Write one clear page that directly answers them:\n   • is Aludecor ACP good quality for commercial building",
+            "effort": "medium",
+            "impact": "medium",
+            "status": "todo",
+            "actionable": true
+          }
+        ]
+      },
+      {
+        "key": "structured_data",
+        "title": "Add structured data",
+        "intro": "Structured data is a small block of code that tells AI exactly what your business is and what it answers. We’ve pre-filled it with your details — paste it into your site.",
+        "items": [
+          {
+            "id": "jsonld-localbusiness",
+            "title": "Add the LocalBusiness markup to your homepage",
+            "detail": "Paste the LocalBusiness block below inside the <head> of your homepage. It states your name, category, and city in a format AI reads directly.",
+            "effort": "easy",
+            "impact": "medium",
+            "status": "todo",
+            "actionable": true
+          },
+          {
+            "id": "jsonld-faqpage",
+            "title": "Add the FAQ markup answering your top questions",
+            "detail": "Fill in the answers in the FAQPage block below (we listed your highest-value questions), then paste it on your FAQ or services page.",
+            "effort": "medium",
+            "impact": "medium",
+            "status": "todo",
+            "actionable": true
+          }
+        ]
+      },
+      {
+        "key": "foundations",
+        "title": "Get the foundations right",
+        "intro": "The basics AI checks for every business. None of these are optional, and all of them are within your control today.",
+        "items": [
+          {
+            "id": "foundation-gbp",
+            "title": "Complete your Google Business Profile 100%",
+            "detail": "Fill in every field — hours, photos, categories, services, a full description. AI leans heavily on complete, verified profiles.",
+            "effort": "easy",
+            "impact": "high",
+            "status": "todo",
+            "actionable": true
+          },
+          {
+            "id": "foundation-nap",
+            "title": "Use the exact same name, address and phone everywhere",
+            "detail": "AI cross-checks your details across sites. Even small inconsistencies (Pvt Ltd vs Private Limited, old phone numbers) make it trust you less.",
+            "effort": "easy",
+            "impact": "high",
+            "status": "todo",
+            "actionable": true
+          },
+          {
+            "id": "foundation-reviews",
+            "title": "Build a steady flow of genuine reviews",
+            "detail": "Ask happy customers to review you, a few each week, and reply to every one. Steady, recent reviews are a strong trust signal — never buy or fake them.",
+            "effort": "medium",
+            "impact": "high",
+            "status": "todo",
+            "actionable": true
+          },
+          {
+            "id": "foundation-text",
+            "title": "Put your services and city in plain text on your site",
+            "detail": "AI reads text, not pictures. Make sure what you do and where you do it is written out clearly — not trapped inside images or a logo.",
+            "effort": "easy",
+            "impact": "medium",
+            "status": "todo",
+            "actionable": true
+          }
+        ]
+      }
+    ],
+    "jsonLd": {
+      "localBusiness": {
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        "name": "Citybond",
+        "url": "https://citybond.in",
+        "description": "aluminium composite panel (ACP) cladding in Delhi.",
+        "areaServed": "Delhi",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Delhi",
+          "addressCountry": "IN"
+        },
+        "knowsAbout": [
+          "aluminium composite panel (ACP) cladding"
+        ]
+      },
+      "faqPage": {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "ACP sheets supplier Noida Gurgaon Delhi NCR",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "[Write a clear, specific answer to \"ACP sheets supplier Noida Gurgaon Delhi NCR\" that mentions Citybond, aluminium composite panel (ACP) cladding in Delhi.]"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "top aluminium composite panel manufacturers in Delhi NCR",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "[Write a clear, specific answer to \"top aluminium composite panel manufacturers in Delhi NCR\" that mentions Citybond, aluminium composite panel (ACP) cladding in Delhi.]"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "best ACP cladding brand for building facade in Delhi",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "[Write a clear, specific answer to \"best ACP cladding brand for building facade in Delhi\" that mentions Citybond, aluminium composite panel (ACP) cladding in Delhi.]"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "cheap ACP cladding sheets supplier Delhi",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "[Write a clear, specific answer to \"cheap ACP cladding sheets supplier Delhi\" that mentions Citybond, aluminium composite panel (ACP) cladding in Delhi.]"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "ACP panel wholesale price Delhi bulk order",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "[Write a clear, specific answer to \"ACP panel wholesale price Delhi bulk order\" that mentions Citybond, aluminium composite panel (ACP) cladding in Delhi.]"
+            }
+          }
+        ]
+      }
+    },
+    "summary": {
+      "totalActions": 20,
+      "quickWins": 4
+    }
+  }
+}

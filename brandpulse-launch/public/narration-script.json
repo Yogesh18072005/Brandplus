@@ -1,0 +1,68 @@
+[
+  {
+    "id": "hook",
+    "start": 0,
+    "duration": 6,
+    "text": "Your next customer just asked AI. Did it name you?"
+  },
+  {
+    "id": "problem",
+    "start": 6,
+    "duration": 6,
+    "text": "Missing from the answer. A score alone won’t tell you what to change."
+  },
+  {
+    "id": "reveal",
+    "start": 12,
+    "duration": 4,
+    "text": "Meet BrandPulse. Find the gap. Find your next move."
+  },
+  {
+    "id": "intent",
+    "start": 16,
+    "duration": 5.5,
+    "text": "Start with your business. Discover the questions your buyers actually ask."
+  },
+  {
+    "id": "evidence",
+    "start": 21.5,
+    "duration": 5.5,
+    "text": "Record the answers. Follow the sources. See why competitors get named."
+  },
+  {
+    "id": "action",
+    "start": 27,
+    "duration": 5.5,
+    "text": "Turn that evidence into a prioritized plan. Make the changes that matter."
+  },
+  {
+    "id": "recheck",
+    "start": 32.5,
+    "duration": 5.5,
+    "text": "Then recheck the same questions. Compare the evidence. Learn what changed."
+  },
+  {
+    "id": "engine",
+    "start": 38,
+    "duration": 6,
+    "text": "Not just an audit. One connected loop, from buyer intent to action."
+  },
+  {
+    "id": "provenance",
+    "start": 44,
+    "duration": 6,
+    "text": "Every answer preserved. Every action connected. Clear limits on what the evidence shows."
+  },
+  {
+    "id": "entry",
+    "start": 50,
+    "duration": 6,
+    "text": "Start with ten buyer questions. No account. No card. Find your first step."
+  },
+  {
+    "id": "close",
+    "start": 56,
+    "duration": 4,
+    "text": "BrandPulse. Understand. Improve. Get found."
+  }
+]

@@ -1,0 +1,31 @@
+.report-v2-opportunity a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+}
+
+@media (max-width: 700px) {
+  .report-v2-sources a {
+    display: flex;
+    min-height: 44px;
+    align-items: center;
+  }
+}
+
+@media print {
+  .report-v2 section {
+    break-inside: auto !important;
+    page-break-inside: auto !important;
+  }
+
+  .report-v2 .report-v2-evidence-card,
+  .report-v2 .report-v2-action,
+  .report-v2 .report-v2-answer,
+  .report-v2 .report-v2-acceptance,
+  .report-v2 .report-v2-context,
+  .report-v2 .report-v2-methodology,
+  .report-v2 .report-v2-sources li {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+}

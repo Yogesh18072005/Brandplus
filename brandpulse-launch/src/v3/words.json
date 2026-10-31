@@ -1,0 +1,492 @@
+[
+  {
+    "word": "A",
+    "start": 0.2914,
+    "end": 0.3377
+  },
+  {
+    "word": "buyer",
+    "start": 0.3492,
+    "end": 0.5923
+  },
+  {
+    "word": "just",
+    "start": 0.6039,
+    "end": 0.8354
+  },
+  {
+    "word": "asked",
+    "start": 0.9395,
+    "end": 1.2983
+  },
+  {
+    "word": "AI",
+    "start": 1.4141,
+    "end": 1.9349
+  },
+  {
+    "word": "who",
+    "start": 1.9465,
+    "end": 2.097
+  },
+  {
+    "word": "to",
+    "start": 2.1085,
+    "end": 2.1664
+  },
+  {
+    "word": "choose",
+    "start": 2.1664,
+    "end": 2.7335
+  },
+  {
+    "word": "It",
+    "start": 3.5512,
+    "end": 3.609
+  },
+  {
+    "word": "names",
+    "start": 3.609,
+    "end": 3.9331
+  },
+  {
+    "word": "three",
+    "start": 3.9794,
+    "end": 4.3382
+  },
+  {
+    "word": "companies",
+    "start": 4.3498,
+    "end": 4.998
+  },
+  {
+    "word": "None",
+    "start": 6.1876,
+    "end": 6.2917
+  },
+  {
+    "word": "of",
+    "start": 6.2917,
+    "end": 6.338
+  },
+  {
+    "word": "them",
+    "start": 6.3496,
+    "end": 6.4422
+  },
+  {
+    "word": "are",
+    "start": 6.4422,
+    "end": 6.6043
+  },
+  {
+    "word": "you",
+    "start": 6.6158,
+    "end": 6.801
+  },
+  {
+    "word": "And",
+    "start": 7.1714,
+    "end": 7.2524
+  },
+  {
+    "word": "you'd",
+    "start": 7.264,
+    "end": 7.3913
+  },
+  {
+    "word": "never",
+    "start": 7.3913,
+    "end": 7.7038
+  },
+  {
+    "word": "even",
+    "start": 7.7038,
+    "end": 7.8774
+  },
+  {
+    "word": "know",
+    "start": 7.8774,
+    "end": 8.1552
+  },
+  {
+    "word": "Meet",
+    "start": 12.2431,
+    "end": 12.4746
+  },
+  {
+    "word": "Zero",
+    "start": 12.4861,
+    "end": 12.8681
+  },
+  {
+    "word": "see",
+    "start": 12.8681,
+    "end": 13.2037
+  },
+  {
+    "word": "ate",
+    "start": 13.2037,
+    "end": 13.4352
+  },
+  {
+    "word": "We",
+    "start": 13.8171,
+    "end": 13.8866
+  },
+  {
+    "word": "find",
+    "start": 13.8866,
+    "end": 14.0949
+  },
+  {
+    "word": "the",
+    "start": 14.0949,
+    "end": 14.1412
+  },
+  {
+    "word": "gap",
+    "start": 14.1412,
+    "end": 14.4421
+  },
+  {
+    "word": "We",
+    "start": 16.1944,
+    "end": 16.3448
+  },
+  {
+    "word": "ask",
+    "start": 16.3448,
+    "end": 16.6457
+  },
+  {
+    "word": "AI",
+    "start": 16.7384,
+    "end": 17.0509
+  },
+  {
+    "word": "the",
+    "start": 17.0509,
+    "end": 17.1435
+  },
+  {
+    "word": "real",
+    "start": 17.1435,
+    "end": 17.5601
+  },
+  {
+    "word": "questions",
+    "start": 17.5717,
+    "end": 18.0115
+  },
+  {
+    "word": "your",
+    "start": 18.0115,
+    "end": 18.0925
+  },
+  {
+    "word": "buyers",
+    "start": 18.0925,
+    "end": 18.4166
+  },
+  {
+    "word": "ask",
+    "start": 18.4282,
+    "end": 18.8795
+  },
+  {
+    "word": "We",
+    "start": 21.6971,
+    "end": 21.7781
+  },
+  {
+    "word": "capture",
+    "start": 21.7896,
+    "end": 22.2642
+  },
+  {
+    "word": "every",
+    "start": 22.4494,
+    "end": 22.7271
+  },
+  {
+    "word": "answer",
+    "start": 22.7271,
+    "end": 23.1901
+  },
+  {
+    "word": "and",
+    "start": 23.5605,
+    "end": 23.7341
+  },
+  {
+    "word": "every",
+    "start": 23.8961,
+    "end": 24.1276
+  },
+  {
+    "word": "source",
+    "start": 24.1276,
+    "end": 24.4517
+  },
+  {
+    "word": "it",
+    "start": 24.4517,
+    "end": 24.5096
+  },
+  {
+    "word": "trusts",
+    "start": 24.5096,
+    "end": 25.123
+  },
+  {
+    "word": "You",
+    "start": 27.1916,
+    "end": 27.2495
+  },
+  {
+    "word": "see",
+    "start": 27.2495,
+    "end": 27.4116
+  },
+  {
+    "word": "who",
+    "start": 27.4116,
+    "end": 27.4926
+  },
+  {
+    "word": "gets",
+    "start": 27.4926,
+    "end": 27.643
+  },
+  {
+    "word": "named",
+    "start": 27.6431,
+    "end": 27.8629
+  },
+  {
+    "word": "instead",
+    "start": 27.8629,
+    "end": 28.1986
+  },
+  {
+    "word": "of",
+    "start": 28.1986,
+    "end": 28.2565
+  },
+  {
+    "word": "you",
+    "start": 28.2681,
+    "end": 28.4532
+  },
+  {
+    "word": "and",
+    "start": 28.6731,
+    "end": 28.7541
+  },
+  {
+    "word": "why",
+    "start": 28.7541,
+    "end": 29.1245
+  },
+  {
+    "word": "Then",
+    "start": 32.6891,
+    "end": 32.8049
+  },
+  {
+    "word": "we",
+    "start": 32.8165,
+    "end": 32.9206
+  },
+  {
+    "word": "write",
+    "start": 32.9206,
+    "end": 33.129
+  },
+  {
+    "word": "the",
+    "start": 33.1405,
+    "end": 33.21
+  },
+  {
+    "word": "pages",
+    "start": 33.2215,
+    "end": 33.835
+  },
+  {
+    "word": "publish",
+    "start": 34.0086,
+    "end": 34.4137
+  },
+  {
+    "word": "them",
+    "start": 34.4252,
+    "end": 34.6567
+  },
+  {
+    "word": "and",
+    "start": 35.0387,
+    "end": 35.166
+  },
+  {
+    "word": "re-check",
+    "start": 35.166,
+    "end": 35.7678
+  },
+  {
+    "word": "Real",
+    "start": 38.2963,
+    "end": 38.5509
+  },
+  {
+    "word": "answers",
+    "start": 38.5625,
+    "end": 39.1412
+  },
+  {
+    "word": "as",
+    "start": 39.2917,
+    "end": 39.6621
+  },
+  {
+    "word": "evidence",
+    "start": 39.7662,
+    "end": 40.3565
+  },
+  {
+    "word": "Your",
+    "start": 40.7269,
+    "end": 40.8195
+  },
+  {
+    "word": "competitors",
+    "start": 40.8195,
+    "end": 41.5139
+  },
+  {
+    "word": "side",
+    "start": 41.6875,
+    "end": 41.919
+  },
+  {
+    "word": "by",
+    "start": 41.919,
+    "end": 42.0464
+  },
+  {
+    "word": "side",
+    "start": 42.0579,
+    "end": 42.4977
+  },
+  {
+    "word": "Every",
+    "start": 42.8681,
+    "end": 43.0417
+  },
+  {
+    "word": "fix",
+    "start": 43.0417,
+    "end": 43.5046
+  },
+  {
+    "word": "re-checked",
+    "start": 43.6436,
+    "end": 44.2107
+  },
+  {
+    "word": "Start",
+    "start": 47.0949,
+    "end": 47.3611
+  },
+  {
+    "word": "with",
+    "start": 47.3611,
+    "end": 47.4653
+  },
+  {
+    "word": "a",
+    "start": 47.4653,
+    "end": 47.5116
+  },
+  {
+    "word": "free",
+    "start": 47.5116,
+    "end": 47.8704
+  },
+  {
+    "word": "audit",
+    "start": 47.8704,
+    "end": 48.1945
+  },
+  {
+    "word": "Ten",
+    "start": 48.5649,
+    "end": 48.7385
+  },
+  {
+    "word": "buyer",
+    "start": 48.75,
+    "end": 48.9584
+  },
+  {
+    "word": "questions",
+    "start": 48.9584,
+    "end": 49.5949
+  },
+  {
+    "word": "No",
+    "start": 49.9653,
+    "end": 50.1505
+  },
+  {
+    "word": "account",
+    "start": 50.1505,
+    "end": 50.5325
+  },
+  {
+    "word": "No",
+    "start": 50.9144,
+    "end": 51.0649
+  },
+  {
+    "word": "card",
+    "start": 51.0649,
+    "end": 51.4236
+  },
+  {
+    "word": "Zero",
+    "start": 54.4983,
+    "end": 54.7877
+  },
+  {
+    "word": "see",
+    "start": 54.7992,
+    "end": 55.1002
+  },
+  {
+    "word": "ate",
+    "start": 55.1002,
+    "end": 55.3317
+  },
+  {
+    "word": "Get",
+    "start": 55.7136,
+    "end": 55.8062
+  },
+  {
+    "word": "named",
+    "start": 55.8062,
+    "end": 56.003
+  },
+  {
+    "word": "by",
+    "start": 56.003,
+    "end": 56.1997
+  },
+  {
+    "word": "AI",
+    "start": 56.2113,
+    "end": 56.6627
+  }
+]

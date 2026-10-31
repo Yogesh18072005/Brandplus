@@ -1,0 +1,290 @@
+@import "tailwindcss" source(none);
+@source "../app";
+@source "../components";
+@source "../lib";
+@source "../src";
+
+@theme {
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-display: var(--font-inter), system-ui, sans-serif;
+  --font-mono: var(--font-plexmono), ui-monospace, 'SFMono-Regular', monospace;
+
+  /* BrandPulse: cool paper, near-black ink, brand indigo (see components/layout/NightPanel for the dark sky). */
+  --color-bone: #F3F3F6;
+  --color-paper: #FFFFFF;
+  --color-ink: #171425;
+  --color-ink-soft: #524F6D;
+
+  --color-surface: #F3F3F6;
+  --color-surface-raised: #FFFFFF;
+  --color-surface-overlay: #ECECF1;
+  --color-surface-glass: rgba(255, 255, 255, 0.92);
+
+  --color-content: #171425;
+  --color-secondary: #524F6D;
+  --color-tertiary: #676480;
+  --color-muted: #64617D;
+
+  /* Brand = the homepage hero background (radial #7371F4 → #463EDA → #2A1BCC → #1B0E6F). */
+  --color-brand-light: #7371F4;
+  --color-brand: #463EDA;
+  --color-brand-deep: #2A1BCC;
+  --color-brand-night: #1B0E6F;
+  --color-brand-ink: #261D5A;
+
+  --animate-feed-in: feed-in .5s ease-out both;
+  --animate-arrow-loop: arrow-loop .55s cubic-bezier(.2, .8, .2, 1);
+  @keyframes feed-in {
+    from { opacity: 0; translate: 0 14px; }
+  }
+  @keyframes arrow-loop {
+    0% { transform: translateX(0); opacity: 1; }
+    45% { transform: translateX(14px); opacity: 0; }
+    46% { transform: translateX(-14px); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
+  }
+
+  --color-signal: #553BF3;
+  --color-signal-bright: #846DF7;
+  --color-signal-dim: #3321AB;
+  --color-signal-deep: #1D125C;
+
+  --color-presence: #1F8A5B;
+  --color-presence-bright: #22A06B;
+  --color-absence: #D64545;
+  --color-absence-bright: #E05555;
+  --color-warning: #C47A00;
+
+  --color-rule: #E4E3EB;
+  --color-rule-subtle: rgba(18, 16, 38, 0.04);
+  --color-hairline: #E4E3EB;
+
+  --color-interactive: #4E36DB;
+  --color-interactive-hover: #341FB6;
+
+  --color-ink-raised: #1C1A33;
+
+  /* shadcn-compatible semantic aliases used by open-code chart components */
+  --color-background: #FFFFFF;
+  --color-foreground: #221855;
+  --color-primary: #221855;
+  --color-muted-foreground: #67658A;
+  --color-border: #CFD0EE;
+}
+
+body {
+  background: var(--color-bone);
+  color: var(--color-ink);
+}
+
+.brandpulse-reel-chip {
+  border: 1px solid rgb(59 43 233 / 0.16);
+  border-radius: 0.65rem;
+  background: rgb(255 255 255 / 0.7);
+  padding: 0.4rem 0.65rem;
+  font-size: 0.7rem;
+  font-weight: 550;
+  color: #383673;
+}
+
+.skip-link {
+  position: fixed;
+  left: 1rem;
+  top: 1rem;
+  z-index: 60;
+  transform: translateY(-200%);
+  background: var(--color-ink);
+  color: white;
+  padding: 0.7rem 1rem;
+}
+
+.skip-link:focus { transform: translateY(0); }
+
+.hero-grid {
+  background-image:
+    linear-gradient(rgba(85, 59, 243, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(85, 59, 243, 0.045) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: linear-gradient(180deg, black, transparent 76%);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Apple-style section rhythm — one idea per beat */
+.section-pad {
+  padding-top: clamp(5rem, 12vh, 8rem);
+  padding-bottom: clamp(5rem, 12vh, 8rem);
+}
+
+.font-display {
+  letter-spacing: -0.035em;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+@keyframes shimmer-x {
+  0%, 100% { background-position: 200% 0; }
+  50% { background-position: -200% 0; }
+}
+
+.text-signal-accent {
+  color: var(--color-signal);
+}
+
+.card-shadow {
+  box-shadow: 0 1px 2px rgb(18 16 38 / 0.06);
+}
+
+.card-shadow-hover {
+  box-shadow: 0 8px 24px rgb(18 16 38 / 0.10);
+}
+
+.btn-primary {
+  background: var(--color-signal);
+  color: #fff;
+  transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1), opacity 0.35s ease;
+}
+
+.btn-primary:hover {
+  transform: scale(1.02);
+  opacity: 0.92;
+}
+
+::selection {
+  background: rgba(85, 59, 243, 0.14);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-signal);
+  outline-offset: 2px;
+}
+
+/* ── Report watermark ── */
+.report-watermark {
+  pointer-events: none;
+  user-select: none;
+}
+
+.report-watermark-text {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  z-index: 0;
+  transform: translate(-50%, -50%) rotate(-32deg);
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 12vw, 7rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  color: rgba(18, 16, 38, 0.025);
+}
+
+@media print {
+  @page {
+    margin: 1.4cm 1.6cm 2cm;
+    size: A4;
+  }
+
+  body {
+    background: #fff !important;
+    color: #111 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .print-report {
+    background: #fff !important;
+    color: #111 !important;
+    position: relative;
+  }
+
+  .print-report,
+  .print-report * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .report-watermark-text {
+    position: fixed !important;
+    color: rgba(0, 0, 0, 0.045) !important;
+    z-index: 0;
+  }
+
+  .print-report main,
+  .print-report main > div {
+    position: relative;
+    z-index: 1;
+  }
+
+  .print-report-footer {
+    display: block !important;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 8px 0;
+    text-align: center;
+    font-size: 9px;
+    color: #888 !important;
+    border-top: 1px solid #e5e5e5;
+    background: #fff;
+  }
+
+  .print-report [class*='text-content'],
+  .print-report h1,
+  .print-report h2,
+  .print-report h3,
+  .print-report strong {
+    color: #111 !important;
+  }
+
+  .print-report [class*='text-secondary'],
+  .print-report [class*='text-tertiary'],
+  .print-report [class*='text-muted'] {
+    color: #444 !important;
+  }
+
+  .print-report [class*='bg-surface'] {
+    background: #fff !important;
+  }
+
+  .print-report [class*='border-'] {
+    border-color: #ddd !important;
+  }
+
+  .print-report [class*='text-absence'] {
+    color: #b91c1c !important;
+  }
+
+  .print-report [class*='text-presence'] {
+    color: #047857 !important;
+  }
+
+  .print-report [class*='text-signal'] {
+    color: #5235e0 !important;
+  }
+
+  .print-report section {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .print-report a[href]::after {
+    content: none !important;
+  }
+}
+
+/* Logo on dark or blue surfaces: reversed ring (white) with the light mint dot.
+   The ring and dot colours come from components/brand/Logo via these variables. */
+.signal-site .clarity-nav,
+.signal-footer { --zc-ring: #ffffff; --zc-dot: #A9FFDF; }

@@ -1,0 +1,42 @@
+[
+  {
+    "word": "A",
+    "start": 0.081,
+    "duration": 0.0462909
+  },
+  {
+    "word": "buyer",
+    "start": 0.138875,
+    "duration": 0.243041
+  },
+  {
+    "word": "just",
+    "start": 0.3935,
+    "duration": 0.2315
+  },
+  {
+    "word": "asked",
+    "start": 0.729166,
+    "duration": 0.358791
+  },
+  {
+    "word": "AI",
+    "start": 1.203708,
+    "duration": 0.520833
+  },
+  {
+    "word": "who",
+    "start": 1.736125,
+    "duration": 0.150458
+  },
+  {
+    "word": "to",
+    "start": 1.898166,
+    "duration": 0.057833
+  },
+  {
+    "word": "choose",
+    "start": 1.956,
+    "duration": 0.567125
+  }
+]

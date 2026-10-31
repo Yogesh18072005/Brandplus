@@ -1,0 +1,52 @@
+[
+  {
+    "word": "Your",
+    "start": 0.092583,
+    "duration": 0.057875
+  },
+  {
+    "word": "next",
+    "start": 0.150458,
+    "duration": 0.19675
+  },
+  {
+    "word": "customer",
+    "start": 0.358791,
+    "duration": 0.405083
+  },
+  {
+    "word": "just",
+    "start": 0.891208,
+    "duration": 0.243041
+  },
+  {
+    "word": "asked",
+    "start": 1.145833,
+    "duration": 0.324083
+  },
+  {
+    "word": "AI",
+    "start": 1.469916,
+    "duration": 0.451375
+  },
+  {
+    "word": "Did",
+    "start": 2.30325,
+    "duration": 0.081
+  },
+  {
+    "word": "it",
+    "start": 2.38425,
+    "duration": 0.057875
+  },
+  {
+    "word": "name",
+    "start": 2.442125,
+    "duration": 0.19675
+  },
+  {
+    "word": "you",
+    "start": 2.638875,
+    "duration": 0.173625
+  }
+]

@@ -1,0 +1,12 @@
+{
+  "hyperframesPixelIdentical": true,
+  "hash": "7e4deb8e14e906cf4a2c47eae61b94d933fe37a73cb798e5af959d28236dbb9b",
+  "audio": {
+    "duration": 15,
+    "sampleRate": 48000,
+    "channels": 2,
+    "peak": 0.879974365234375,
+    "peakDb": -1.1105995842560359,
+    "rms": 0.0817507178221143
+  }
+}

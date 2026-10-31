@@ -1,0 +1,62 @@
+[
+  {
+    "word": "Start",
+    "start": 0.092583,
+    "duration": 0.266208
+  },
+  {
+    "word": "with",
+    "start": 0.358791,
+    "duration": 0.104166
+  },
+  {
+    "word": "a",
+    "start": 0.462958,
+    "duration": 0.0462909
+  },
+  {
+    "word": "free",
+    "start": 0.50925,
+    "duration": 0.358791
+  },
+  {
+    "word": "audit",
+    "start": 0.868041,
+    "duration": 0.324083
+  },
+  {
+    "word": "Ten",
+    "start": 1.5625,
+    "duration": 0.173625
+  },
+  {
+    "word": "buyer",
+    "start": 1.747666,
+    "duration": 0.208333
+  },
+  {
+    "word": "questions",
+    "start": 1.956,
+    "duration": 0.636583
+  },
+  {
+    "word": "No",
+    "start": 2.962958,
+    "duration": 0.185166
+  },
+  {
+    "word": "account",
+    "start": 3.148166,
+    "duration": 0.381958
+  },
+  {
+    "word": "No",
+    "start": 3.912041,
+    "duration": 0.150458
+  },
+  {
+    "word": "card",
+    "start": 4.0625,
+    "duration": 0.358791
+  }
+]

@@ -1,0 +1,69 @@
+/* The night panel ("horizon"): one framed night sky inset in the light page,
+   with a brand-blue planet rim as the light source, faint stars, a grid with a
+   few lit cells and the brandpulse wordmark ghosted under the curve.
+   `.hz` is the panel; `--rim` sets how far above the panel's bottom edge the
+   horizon sits, so the same sky fits the homepage hero, page headers, the
+   sign-in panel and the report cover (components/layout/NightPanel).
+   Motion = one settle on load (transform + opacity). Decoration is aria-hidden. */
+
+.hz-wrap { position: relative; padding: 8px 8px 0; }
+.hz-form > button { flex-shrink: 0; }
+.hz { --rim: 340px; position: relative; isolation: isolate; overflow: hidden; border-radius: 28px; background: #06040c; color: #fff; }
+.hz-home { padding-top: 176px; }
+
+/* Sky: stars, grid, a few lit cells. */
+.hz-stars { position: absolute; inset: 0; z-index: -3; opacity: .6; background-image:
+  radial-gradient(1px 1px at 12% 18%, #fff, transparent), radial-gradient(1px 1px at 28% 9%, #d9d4fd, transparent),
+  radial-gradient(1px 1px at 41% 24%, #fff, transparent), radial-gradient(1.5px 1.5px at 57% 12%, #fff, transparent),
+  radial-gradient(1px 1px at 66% 28%, #d9d4fd, transparent), radial-gradient(1px 1px at 79% 8%, #fff, transparent),
+  radial-gradient(1px 1px at 88% 21%, #fff, transparent), radial-gradient(1px 1px at 7% 36%, #d9d4fd, transparent),
+  radial-gradient(1.5px 1.5px at 34% 40%, #fff, transparent), radial-gradient(1px 1px at 93% 38%, #fff, transparent),
+  radial-gradient(1px 1px at 50% 33%, #d9d4fd, transparent), radial-gradient(1px 1px at 72% 44%, #fff, transparent),
+  radial-gradient(1px 1px at 19% 52%, #fff, transparent), radial-gradient(1px 1px at 83% 55%, #d9d4fd, transparent); }
+.hz-grid { position: absolute; inset: 0; z-index: -3; background-image: linear-gradient(rgb(255 255 255 / .045) 1px, transparent 1px), linear-gradient(90deg, rgb(255 255 255 / .045) 1px, transparent 1px); background-size: 72px 72px; background-position: calc(50% + 36px) 0; mask-image: radial-gradient(85% 55% at 50% 15%, #000 25%, transparent 75%); }
+.hz-cell { position: absolute; z-index: -3; width: 72px; height: 72px; background: linear-gradient(180deg, rgb(92 77 246 / .09), rgb(92 77 246 / .015)); }
+
+/* The horizon: a vast planet whose rim catches blue light. */
+.hz-planet { position: absolute; z-index: -1; left: 50%; bottom: calc(var(--rim) - 2600px); width: 2600px; height: 2600px; margin-left: -1300px; border-radius: 50%; background: #06040c; border-top: 1px solid rgb(176 170 251 / .8);
+  box-shadow: 0 -2px 30px rgb(109 99 247 / .6), 0 -40px 140px rgb(70 62 218 / .45), inset 0 50px 100px rgb(70 62 218 / .2); animation: hz-rise 1.4s cubic-bezier(.2, .8, .2, 1) both; }
+.hz-glow { position: absolute; z-index: -2; left: 50%; bottom: calc(var(--rim) - 10px); width: 1300px; height: 420px; margin-left: -650px; background: radial-gradient(50% 55% at 50% 100%, rgb(92 77 246 / .5), rgb(42 27 204 / .16) 55%, transparent 75%); filter: blur(12px); animation: hz-fade 1.6s ease-out both; }
+.hz-mark { position: absolute; z-index: -1; left: 50%; bottom: -.24em; translate: -50% 0; margin: 0; font-size: clamp(140px, 22vw, 340px); line-height: 1; font-weight: 650; letter-spacing: -.07em; white-space: nowrap; color: transparent; background: linear-gradient(180deg, rgb(255 255 255 / .1), rgb(255 255 255 / .01) 80%); -webkit-background-clip: text; background-clip: text; pointer-events: none; user-select: none; }
+
+/* Copy. */
+.hz-inner { width: min(1296px, calc(100% - 64px)); margin: 0 auto; display: grid; grid-template-columns: 1fr 380px; gap: 64px; align-items: end; }
+.hz-badge { display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px 4px 4px; border-radius: 999px; background: rgb(255 255 255 / .05); border: 1px solid rgb(255 255 255 / .1); font-size: 13px; color: rgb(255 255 255 / .78); }
+.hz-badge b { padding: 3px 9px; border-radius: 999px; background: rgb(255 255 255 / .12); font-weight: 600; color: #fff; }
+.hz-title { margin: 22px 0 0; font-size: clamp(42px, 4.9vw, 74px); line-height: 1.02; font-weight: 650; letter-spacing: -.05em; text-wrap: balance; }
+.hz-title span { display: block; color: transparent; background: linear-gradient(180deg, #e8e6fe 10%, #948df9); -webkit-background-clip: text; background-clip: text; padding-bottom: .06em; }
+.hz-side { padding-bottom: 10px; }
+.hz-sub { font-size: 18px; line-height: 1.55; color: rgb(255 255 255 / .75); text-wrap: pretty; }
+.hz-form { display: flex; align-items: center; gap: 8px; margin-top: 26px; padding: 6px 6px 6px 18px; border-radius: 17px; background: rgb(255 255 255 / .06); border: 1px solid rgb(255 255 255 / .14); box-shadow: inset 0 1px 0 rgb(255 255 255 / .06); transition: border-color .2s, box-shadow .2s; }
+.hz-form:focus-within { border-color: rgb(148 141 249 / .8); box-shadow: 0 0 0 4px rgb(92 77 246 / .22); }
+.hz-form input { flex: 1; min-width: 0; background: transparent; border: 0; outline: 0; font-size: 15.5px; color: #fff; }
+.hz-form input::placeholder { color: rgb(255 255 255 / .55); }
+.hz-note { margin-top: 12px; font-size: 13px; color: rgb(255 255 255 / .62); }
+
+/* Room under the copy for the horizon and the ghosted wordmark. */
+.hz-space { height: clamp(300px, 34vw, 440px); }
+
+@keyframes hz-rise { from { transform: translateY(80px); opacity: 0; } }
+@keyframes hz-fade { from { opacity: 0; } }
+
+@media (max-width: 960px) {
+  .hz-home { padding-top: 136px; }
+  .hz-inner { grid-template-columns: 1fr; gap: 28px; }
+  .hz-space { height: 300px; }
+}
+@media (max-width: 600px) {
+  .hz-wrap { padding: 6px 6px 0; }
+  .hz { --rim: 210px; border-radius: 22px; }
+  .hz-home { padding-top: 116px; }
+  .hz-inner { width: calc(100% - 32px); }
+  .hz-sub { font-size: 16.5px; }
+  .hz-cell { display: none; }
+  .hz-space { height: 280px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hz-planet, .hz-glow { animation: none; }
+  .hz-form { transition: none; }
+}

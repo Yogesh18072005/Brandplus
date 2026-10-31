@@ -1,0 +1,232 @@
+[
+ {
+  "time": 0.12,
+  "tier": "C",
+  "name": "field focus"
+ },
+ {
+  "time": 1.5,
+  "tier": "B",
+  "name": "whip cut"
+ },
+ {
+  "time": 2.17,
+  "tier": "C",
+  "name": "answer loading"
+ },
+ {
+  "time": 3.5,
+  "tier": "B",
+  "name": "blade cut"
+ },
+ {
+  "time": 4.98,
+  "tier": "C",
+  "name": "not-mentioned pill"
+ },
+ {
+  "time": 5.0,
+  "tier": "B",
+  "name": "match cut"
+ },
+ {
+  "time": 6.0,
+  "tier": "B",
+  "name": "glitch cut"
+ },
+ {
+  "time": 6.616,
+  "tier": "A",
+  "name": "you slam"
+ },
+ {
+  "time": 7.0,
+  "tier": "B",
+  "name": "split cut"
+ },
+ {
+  "time": 8.5,
+  "tier": "B",
+  "name": "flash cut"
+ },
+ {
+  "time": 8.55,
+  "tier": "A",
+  "name": "zero of ten lands"
+ },
+ {
+  "time": 10.5,
+  "tier": "B",
+  "name": "zoom cut"
+ },
+ {
+  "time": 10.743,
+  "tier": "B",
+  "name": "riser into reveal"
+ },
+ {
+  "time": 12.0,
+  "tier": "B",
+  "name": "iris cut"
+ },
+ {
+  "time": 12.243,
+  "tier": "A",
+  "name": "brand reveal"
+ },
+ {
+  "time": 12.95,
+  "tier": "C",
+  "name": "dot pops"
+ },
+ {
+  "time": 14.0,
+  "tier": "B",
+  "name": "zoom cut"
+ },
+ {
+  "time": 14.141,
+  "tier": "A",
+  "name": "gap found"
+ },
+ {
+  "time": 14.75,
+  "tier": "C",
+  "name": "gap found pill"
+ },
+ {
+  "time": 16.0,
+  "tier": "B",
+  "name": "blade cut"
+ },
+ {
+  "time": 16.738,
+  "tier": "A",
+  "name": "AI chip"
+ },
+ {
+  "time": 17.167,
+  "tier": "B",
+  "name": "zoom cut"
+ },
+ {
+  "time": 19.1,
+  "tier": "C",
+  "name": "question pulled"
+ },
+ {
+  "time": 21.5,
+  "tier": "B",
+  "name": "match cut"
+ },
+ {
+  "time": 22.0,
+  "tier": "C",
+  "name": "answer captured"
+ },
+ {
+  "time": 24.0,
+  "tier": "B",
+  "name": "whip cut"
+ },
+ {
+  "time": 27.0,
+  "tier": "B",
+  "name": "iris cut"
+ },
+ {
+  "time": 28.268,
+  "tier": "A",
+  "name": "instead of you"
+ },
+ {
+  "time": 28.733,
+  "tier": "B",
+  "name": "split cut"
+ },
+ {
+  "time": 28.75,
+  "tier": "A",
+  "name": "why slam"
+ },
+ {
+  "time": 32.5,
+  "tier": "B",
+  "name": "blade cut"
+ },
+ {
+  "time": 34.3,
+  "tier": "C",
+  "name": "published live"
+ },
+ {
+  "time": 36.0,
+  "tier": "B",
+  "name": "whip cut"
+ },
+ {
+  "time": 36.45,
+  "tier": "C",
+  "name": "named tile"
+ },
+ {
+  "time": 38.0,
+  "tier": "B",
+  "name": "flash cut"
+ },
+ {
+  "time": 38.296,
+  "tier": "A",
+  "name": "real answers"
+ },
+ {
+  "time": 40.167,
+  "tier": "B",
+  "name": "whip cut"
+ },
+ {
+  "time": 42.667,
+  "tier": "B",
+  "name": "zoom cut"
+ },
+ {
+  "time": 43.644,
+  "tier": "A",
+  "name": "re-checked"
+ },
+ {
+  "time": 45.0,
+  "tier": "B",
+  "name": "blade cut"
+ },
+ {
+  "time": 47.0,
+  "tier": "B",
+  "name": "flash cut"
+ },
+ {
+  "time": 49.833,
+  "tier": "B",
+  "name": "whip cut"
+ },
+ {
+  "time": 52.67,
+  "tier": "C",
+  "name": "button click"
+ },
+ {
+  "time": 54.0,
+  "tier": "B",
+  "name": "zoom cut"
+ },
+ {
+  "time": 56.211,
+  "tier": "A",
+  "name": "end tagline"
+ },
+ {
+  "time": 57.3,
+  "tier": "C",
+  "name": "CTA"
+ }
+]

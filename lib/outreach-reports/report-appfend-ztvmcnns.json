@@ -1,0 +1,1294 @@
+{
+  "version": 1,
+  "slug": "appfend-ztvmcnns",
+  "createdAt": "2026-10-27T00:33:17.292Z",
+  "businessType": "software",
+  "region": "Global",
+  "audience": "engineering and application security teams",
+  "engine": {
+    "provider": "Google Gemini (with Google Search)",
+    "model": "gemini-2.5-flash",
+    "groundedShare": 1
+  },
+  "competitorsDiscovered": false,
+  "prompts": [
+    {
+      "text": "What are the best secure coding training platforms for developers?",
+      "intent": "discovery",
+      "intentWeight": 1,
+      "reason": "Head-term category query; the first thing an AppSec lead asks an AI."
+    },
+    {
+      "text": "What interactive developer training platforms support compliance mapping across NIS2, PCI DSS, and HIPAA simultaneously?",
+      "intent": "comparison",
+      "intentWeight": 4,
+      "reason": "You offer compliance framework mapping, and application security teams ask this to compare platform capabilities."
+    },
+    {
+      "text": "What developer training options support SCORM, xAPI, and LTI standards for LMS integration?",
+      "intent": "product",
+      "intentWeight": 4,
+      "reason": "You support SCORM, xAPI, and LTI integrations, matching buyers looking for compatible developer training platforms."
+    },
+    {
+      "text": "What are the best alternatives to Secure Code Warrior for hands-on developer security training?",
+      "intent": "comparison",
+      "intentWeight": 4,
+      "reason": "Competitor-alternative query where Appfend should be named."
+    },
+    {
+      "text": "Are there secure coding training platforms mapped to HIPAA and NIS2 standards for compliance audits?",
+      "intent": "discovery",
+      "intentWeight": 1,
+      "reason": "You map labs to compliance frameworks for audit evidence, matching this buyer search query."
+    },
+    {
+      "text": "Can enterprise security training providers develop custom labs for unusual or non-standard software stacks?",
+      "intent": "vendor_selection",
+      "intentWeight": 5,
+      "reason": "You offer custom labs for proprietary stacks, and enterprise engineering teams ask this when hiring vendors."
+    },
+    {
+      "text": "What developer security training options integrate real cloud environments like AWS, Azure, or GCP into browser labs?",
+      "intent": "comparison",
+      "intentWeight": 4,
+      "reason": "You provide real browser-based training environments, and developers ask this when comparing hands-on training tools."
+    },
+    {
+      "text": "Which developer security training platforms cover AI/LLM security and reviewing AI-generated code?",
+      "intent": "product",
+      "intentWeight": 4,
+      "reason": "Appfend runs AI/LLM security labs and AI-generated code review labs."
+    },
+    {
+      "text": "Which application security training providers feature manager dashboards with realistic team performance data?",
+      "intent": "vendor_selection",
+      "intentWeight": 5,
+      "reason": "You provide manager dashboards with realistic team data, matching this application security buyer search."
+    },
+    {
+      "text": "What training platforms provide interactive AI hints instead of giving developers direct solutions during coding labs?",
+      "intent": "discovery",
+      "intentWeight": 1,
+      "reason": "You feature an AI tutor that gives hints, which buyers specifically look for when evaluating platforms."
+    },
+    {
+      "text": "Which vendors provide customized security engineering labs alongside pre-built training content?",
+      "intent": "vendor_selection",
+      "intentWeight": 5,
+      "reason": "You offer custom labs alongside pre-built training content, matching buyers looking for specialized security vendors."
+    },
+    {
+      "text": "What interactive platforms exist for developer secure coding training that run in browser environments?",
+      "intent": "discovery",
+      "intentWeight": 1,
+      "reason": "You offer browser-based secure coding training for developers, matching buyers seeking interactive platforms."
+    },
+    {
+      "text": "Which global vendors offer interactive security engineering training for software developers?",
+      "intent": "vendor_selection",
+      "intentWeight": 5,
+      "reason": "You offer interactive security engineering training globally, matching what software engineering buyers ask."
+    },
+    {
+      "text": "What hands-on security training tools operate directly within a developer's browser without requiring local setup?",
+      "intent": "discovery",
+      "intentWeight": 1,
+      "reason": "You provide zero-setup browser-based coding labs, matching buyers searching for accessible developer training tools."
+    },
+    {
+      "text": "Which secure coding training platforms help meet DORA developer training requirements?",
+      "intent": "compliance",
+      "intentWeight": 1,
+      "reason": "Appfend supports DORA/NIS2 training obligations; EU financial buyers ask this."
+    }
+  ],
+  "report": {
+    "business": {
+      "name": "Appfend",
+      "category": "secure coding training platform for developers",
+      "city": "Global",
+      "website": "appfend.com"
+    },
+    "generatedAt": "2026-10-27T00:32:28.354Z",
+    "totals": {
+      "promptCount": 15,
+      "enginesUsed": [
+        "gemini"
+      ],
+      "failedPrompts": 0
+    },
+    "scores": {
+      "visibilityScore": 0,
+      "brandpulseScore": 10,
+      "presenceRate": 0,
+      "recommendationRate": 0,
+      "citationRate": 0,
+      "shareOfVoice": 0,
+      "commercialVisibility": 0,
+      "promptCoverage": 1,
+      "sourceQualityRate": 1,
+      "components": {
+        "mention": 0,
+        "recommendation": 0,
+        "position": 0,
+        "citation": 0,
+        "competitive": 0,
+        "sourceQuality": 100
+      }
+    },
+    "competitors": [
+      {
+        "name": "Secure Code Warrior",
+        "presenceRate": 0.53
+      },
+      {
+        "name": "SecureFlag",
+        "presenceRate": 0.47
+      }
+    ],
+    "byEngine": [
+      {
+        "engine": "gemini",
+        "presenceRate": 0
+      }
+    ],
+    "missedPrompts": [
+      {
+        "prompt": "What are the best alternatives to Secure Code Warrior for hands-on developer security training?",
+        "intent": "comparison",
+        "commercial": true,
+        "competitorsPresent": [
+          "Secure Code Warrior",
+          "SecureFlag"
+        ],
+        "evidence": "For hands-on developer security training, several robust alternatives to Secure Code Warrior offer interactive and practical learning experiences."
+      },
+      {
+        "prompt": "Which global vendors offer interactive security engineering training for software developers?",
+        "intent": "vendor_selection",
+        "commercial": true,
+        "competitorsPresent": [
+          "Secure Code Warrior",
+          "SecureFlag"
+        ],
+        "evidence": "Key global vendors in this space include: Secure Code Warrior provides an enterprise secure coding training platform"
+      },
+      {
+        "prompt": "What interactive developer training platforms support compliance mapping across NIS2, PCI DSS, and HIPAA simultaneously?",
+        "intent": "comparison",
+        "commercial": true,
+        "competitorsPresent": [
+          "Secure Code Warrior"
+        ],
+        "evidence": "Leading platforms in this area include:\n\n*   **Secure Code Warrior** explicitly aligns its content"
+      },
+      {
+        "prompt": "Can enterprise security training providers develop custom labs for unusual or non-standard software stacks?",
+        "intent": "vendor_selection",
+        "commercial": true,
+        "competitorsPresent": [
+          "SecureFlag"
+        ],
+        "evidence": "Providers like SecureFlag offer \"Custom Labs\" that allow companies to build fully customizable code review labs"
+      },
+      {
+        "prompt": "Which developer security training platforms cover AI/LLM security and reviewing AI-generated code?",
+        "intent": "product",
+        "commercial": true,
+        "competitorsPresent": [
+          "Secure Code Warrior"
+        ],
+        "evidence": "Several developer security training platforms are now offering specialized programs that cover AI/LLM security"
+      },
+      {
+        "prompt": "Which application security training providers feature manager dashboards with realistic team performance data?",
+        "intent": "vendor_selection",
+        "commercial": true,
+        "competitorsPresent": [
+          "Secure Code Warrior"
+        ],
+        "evidence": "Security Journey stands out by directly mentioning the collection of \"realistic data to measure the effectiveness"
+      },
+      {
+        "prompt": "Which vendors provide customized security engineering labs alongside pre-built training content?",
+        "intent": "vendor_selection",
+        "commercial": true,
+        "competitorsPresent": [
+          "SecureFlag"
+        ],
+        "evidence": "Several vendors provide both customized security engineering labs and pre-built training content to help organizations develop cybersecurity skills."
+      },
+      {
+        "prompt": "What are the best secure coding training platforms for developers?",
+        "intent": "discovery",
+        "commercial": false,
+        "competitorsPresent": [
+          "Secure Code Warrior",
+          "SecureFlag"
+        ],
+        "evidence": "Here are some of the leading secure coding training platforms for developers:"
+      },
+      {
+        "prompt": "Are there secure coding training platforms mapped to HIPAA and NIS2 standards for compliance audits?",
+        "intent": "discovery",
+        "commercial": false,
+        "competitorsPresent": [
+          "Secure Code Warrior",
+          "SecureFlag"
+        ],
+        "evidence": "Platforms that specifically address both HIPAA and NIS2 compliance include: CyberCoach"
+      },
+      {
+        "prompt": "What interactive platforms exist for developer secure coding training that run in browser environments?",
+        "intent": "discovery",
+        "commercial": false,
+        "competitorsPresent": [
+          "Secure Code Warrior"
+        ],
+        "evidence": "Several interactive platforms offer secure coding training for developers within browser environments, providing hands-on experience"
+      }
+    ],
+    "citationGap": [
+      {
+        "domain": "appsecengineer.com",
+        "count": 6
+      },
+      {
+        "domain": "gartner.com",
+        "count": 6
+      },
+      {
+        "domain": "secureflag.com",
+        "count": 5
+      },
+      {
+        "domain": "immersivelabs.com",
+        "count": 4
+      },
+      {
+        "domain": "securecodewarrior.com",
+        "count": 4
+      },
+      {
+        "domain": "guideflow.com",
+        "count": 3
+      },
+      {
+        "domain": "pwnedlabs.io",
+        "count": 3
+      },
+      {
+        "domain": "ransomleak.com",
+        "count": 3
+      },
+      {
+        "domain": "sans.org",
+        "count": 3
+      },
+      {
+        "domain": "securityjourney.com",
+        "count": 3
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHQGrQSdLweTLUqEb1vG86oOY85x02Gqkp_g6EgdgYvc6IYShP6P3fm8IlXA72MhmBZk1M-7TkMkou5L1udlWsW3LqbAQRHVIWa8rJM7WHwimSOY6C7HYbLaQOymcp2G59nzMAMmksVee3Yf1AtNvOtrfj61D-QKLq1bi5WhzmZkKuko0BtLmCR_paZGSmAq-oYyy5Z46lwDRBsv7KPYLyKHTeGVQk=",
+        "domain": "algocademy.com",
+        "title": "algocademy.com",
+        "sourceType": "other",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFR3Q-e_Bs6FCiizGG53hrdRG6R_vIuxt7IfR5_pfmrcEgW2tn3fLM28ZITJwfhxIPT93jBdGSxFnE-mgObFFmtOnbs_v2lyjAcf6FVSimDjsHsBnF0w0EtQ7uG6xur95LTa5MsFwtbrFMAVN0wKSs7rF91QTf-",
+        "domain": "approach-cyber.com",
+        "title": "approach-cyber.com",
+        "sourceType": "other",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHIrRg4MH-zW4cKbK2IGjYmz3mKcErYCKG4AkHf75NgCIkiujY9nLyBRUmBYfJwf2K12XGziGDTtT5bSk7D71IwfriKH4YLUYPQTVk1HAKwdsheIRX8Q93CyW_dQ4U8AWT4xuCopOOCYQbyvqT3WuuJ_UcQOBE3",
+        "domain": "approach-cyber.com",
+        "title": "approach-cyber.com",
+        "sourceType": "other",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGg1Bktm4ALyYSUeCUlij472onClV6Z3MwTimewjVBvFcfG-2ZSAA6qYpZJ_IGprVHP3H3zlOdKaxqz_uIRBcAJbOFw8UT9umInn-jHunHt1-cmj3qBFx1OI9zXyCZNEpIkhFLcziU_imjLOj7jiKvgtjqrgVnRy3zKLu7DMe2HcAWRiQID0SRJd2JGfNGPzDfWwVV0TAa5573nuN019c5t0yxZdqx02IM0",
+        "domain": "appsecengineer.com",
+        "title": "appsecengineer.com",
+        "sourceType": "other",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQExUnxTupk78T7q5tk4Hgs2RlhIiFeozrjRST_I7nT8AM4WRciKFM2qhLnd8oTpYX_DSO7A6SHjR3WBypV3o_vjfoq1HA-7hPnNm-VCNe0ObvxX0SQThmOph7GDpi91yvM929V91WVlorIA5KZ9WbFoJkosBIKu-kqglIAutAR2K0vYrGkKP0vYcnonxCXW8-P5kFbqTfpJ9kK0jTRDutiajp1xTVKFXi_GzQ==",
+        "domain": "appsecengineer.com",
+        "title": "appsecengineer.com",
+        "sourceType": "other",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQH6Bh0w1LvxOYgIDqL0GqaRzLGUpeZzNwYClTZKtQlwRWJ3h-YeOqQbuwvPRNtsaPY-kTSwFEG5kdWVs_p0c_D7aVpcu_64EsVSDwoD02yBm5m8qGgPq6MO8q5l7gIkamFPCOVPJSQCCPqqGg==",
+        "domain": "appsecengineer.com",
+        "title": "appsecengineer.com",
+        "sourceType": "other",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEWaeTAgXNR0gt8twwpzaim05EkR3IVhva6yjo9Ro-LnSm0VUUKJBG_7ud6p1XJV06hfqdzu3EsVdyrjZDuh3qW2i_dWLdx9ddlCFbfdyXM_tqUifZUz2QaWJ7Qc2Uq3PsYpoAq-M0q_fBW",
+        "domain": "appsecengineer.com",
+        "title": "appsecengineer.com",
+        "sourceType": "other",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGTnuEVpxeQEOs2wTXO16ZdFdKCVgPjGXh0E9ZAx7siai0_ZP4YfRMFPc8IyIUNoghM7ZKrBPJ42ls6N5iRi_Fv0Dn7s6j7yrzUZhFjZgb7oPX3i7AkkkzZlc7vdNbUXu2NdPX7w2oZw5DPcb6YMS-kWAxXDteK4RDlN_UNi2eflA==",
+        "domain": "appsecengineer.com",
+        "title": "appsecengineer.com",
+        "sourceType": "other",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQG9CtUbhz2FwgNdeCGA2JedzZxxcPDTMmnJ_EcETMr4UkkXOG3aoiruupnhYUGx0F8AaY5EDWleAgxvD3_AVYoMATRZhIs7teJcfrF1fuHUQIkCxjthnnmrh5p9ZbnLnvVhyXFiDgUQtjMl",
+        "domain": "appsecengineer.com",
+        "title": "appsecengineer.com",
+        "sourceType": "other",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGpUTOkCZ71DftlBktIQ9BUxqUWNaqO0BEoh_L4E3WM29cGwtUjRoamoQhr9g6wAghy2grQ8e_D6hu2nsi8dCrSF0tsvJ2h5gunncmg9qRwtU0hlmQTU8yqiKklr2xWpzv6SAMW_MMXwCkPQV5DHsQ=",
+        "domain": "aristeksystems.com",
+        "title": "aristeksystems.com",
+        "sourceType": "other",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFpK1Ny84f-m6dkAn_HLuGSn8Suz9TLhMCYyI-1Q0faEJ4kH30rZKSbFecFahTqpGUYmJ3GGgyDcSKWpSmwKF1nuRPw_pywp7AQg_gjvGlWlX39vzbxY906zTGlWFCxcHGcGKcoEQ18flz7pf24UpQSQ9eY",
+        "domain": "bitlogic.io",
+        "title": "bitlogic.io",
+        "sourceType": "other",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGRYLD7jRln5YcXBjyj4iM1gmpNernj9Rf-k0TNqlJ6_xV8ohManGUoeFpqotqKqvFWvw6rkM0HT3MY-P6QDR5uJ8mtZtCdO4WRIpdMyaj57sTn8t1BNvmzwSjExLSU8-S9MWOEbJ_7TvIfLiWTXSXOhoRlMHY=",
+        "domain": "blackduck.com",
+        "title": "blackduck.com",
+        "sourceType": "other",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHsAxOlrQj4EjATUbFRbzXg-PCVuGUEJfxqwXfSBCNlZwjsknWoaFzFBSwBkerRpulaWa1-QOrsWuve2oEMTLoul5N9rboVL_hZeXsJssDxBATCRqmK-c2XB4Tj-MBrwu8zavoUoCoRA-ZErdJFdePhgw1D0LZvT3IhPaZdfBTp74UlLhxfUA==",
+        "domain": "brside.com",
+        "title": "brside.com",
+        "sourceType": "other",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFXh-HeMbpqZs6zg3SCJ0TcrVk-8hbMdQP8d4qlU8OmVwn4Vd5leo4UExMO3kPya_9unMZFWtroCDtA3ZIeUKmLQQ7mM2nNhlBk9nTgVwYi0vtcBRVuTSVXFTyg",
+        "domain": "byronlabs.io",
+        "title": "byronlabs.io",
+        "sourceType": "other",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEwKkdHGEPi-C15zJ0I-9LxVLuB8aW6ptuLXLUTF23igz62mXgyxoahzlM5JVFIKvDwFbf3CmkIwpFUHW5GXfTS3rZXXcQjsXNRiA9TkswUp6DiAx6OCP1RBaSYc-laj6a6h0m13xDXVxj8wN1SThV4OJ9WGxizl_BfpQPYZbGbWzkIoD4-Y_6y_VOoQMnYHPgWy4Efxly5DJI=",
+        "domain": "checkmarx.com",
+        "title": "checkmarx.com",
+        "sourceType": "other",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHH57g25Mx5e__knpQYjby_e7E0jnjQK8daXF4YdjsumqY71KODg86-QSSqVtIzXCWe07LGsJiwXldTlETH3STeHX_Ajzd4acWxZgp8BDoJHAlpgdpLiZfsnM8Z1G1Qvv_a4QfCFw==",
+        "domain": "classcentral.com",
+        "title": "classcentral.com",
+        "sourceType": "other",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQE88VX5Yt4HXor4ndBtHdySVy6Wjx_kZhYYT58EKJiUEDvj7cHV4viNE2fNZuRFg96tjApsfCScqGu6Ttob6_zcUO_0vsTsBPSbm8lgmyV2jGRSw9c5XOjH75gbkQ==",
+        "domain": "codeblu.ai",
+        "title": "codeblu.ai",
+        "sourceType": "other",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHHkd7vdfQMgGJxT5hL2tB0QG_EEFl4JSmQjdrB_bFgGGA0xWxVGtl5ebliFy2RPn8TCFxEfLxb-lzqShpKfviw7YKQfxgjtgyQEoWMZyg5vxGDbzUi0psWgInwF0OueNhJMPS_",
+        "domain": "codio.com",
+        "title": "codio.com",
+        "sourceType": "other",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHyt_H6p5rtrG6RV1Ivn-Xihjos8i6_K4suGfVhL18Lh8O-0CExxnDWFvxGsWEHMbhPPCyPGT34xFkw4BZ4I7MA_wJQmvaKN2vD0EYgFlWb9SCF-kA7NzfQWIVY06E5lwASgaW87131kB9DWEX4wVTc2zF5Ag==",
+        "domain": "coursera.org",
+        "title": "coursera.org",
+        "sourceType": "other",
+        "observedCount": 1
+      },
+      {
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQF674rphYZGPCXWqmF1BhPQtolYHd9on5NNyIxC2IyIrw9UJbY6k1T7Us69SDNzMkQg6j-EefBbAPabnc3lzlOEUH4VE1sRkpv1_Tt7SYaxKZRqlPHAt9WlyGBwIQ5yzmq0SkM9b2_4E1x2jKKDikob1ksEqYY=",
+        "domain": "croz.net",
+        "title": "croz.net",
+        "sourceType": "other",
+        "observedCount": 1
+      }
+    ],
+    "fixPlan": {
+      "generatedAt": "2026-10-27T00:32:28.384Z",
+      "sections": [
+        {
+          "key": "answer_questions",
+          "title": "Win back the searches you’re losing",
+          "intro": "On these real buyer searches, AI named Secure Code Warrior and not you. Each block below is one page worth writing — it maps directly to the searches it recovers. Start at the top.",
+          "items": [
+            {
+              "id": "content-security",
+              "title": "Publish a page that answers: “What are the best alternatives to Secure Code Warrior for hands-on developer security training?”",
+              "detail": "AI named Secure Code Warrior, SecureFlag — not you — on 6 searches this page would target:\n   • What are the best alternatives to Secure Code Warrior for hands-on developer security training?\n   • Which global vendors offer interactive security engineering training for software developers?\n   • Can enterprise security training providers develop custom labs for unusual or non-standard software stacks?\n   • Which developer security training platforms cover AI/LLM security and reviewing AI-generated code?\n   • Which application security training providers feature manager dashboards with realistic team performance data?\n   • Which vendors provide customized security engineering labs alongside pre-built training content? These are high-intent, ready-to-buy searches — the most valuable to win back.",
+              "effort": "medium",
+              "impact": "high",
+              "status": "todo",
+              "actionable": true,
+              "targetsQueries": [
+                "What are the best alternatives to Secure Code Warrior for hands-on developer security training?",
+                "Which global vendors offer interactive security engineering training for software developers?",
+                "Can enterprise security training providers develop custom labs for unusual or non-standard software stacks?",
+                "Which developer security training platforms cover AI/LLM security and reviewing AI-generated code?",
+                "Which application security training providers feature manager dashboards with realistic team performance data?",
+                "Which vendors provide customized security engineering labs alongside pre-built training content?"
+              ]
+            },
+            {
+              "id": "content-platforms",
+              "title": "Publish a page that answers: “What are the best secure coding training platforms for developers?”",
+              "detail": "AI named Secure Code Warrior, SecureFlag — not you — on 4 searches this page would target:\n   • What interactive developer training platforms support compliance mapping across NIS2, PCI DSS, and HIPAA simultaneously?\n   • What are the best secure coding training platforms for developers?\n   • Are there secure coding training platforms mapped to HIPAA and NIS2 standards for compliance audits?\n   • What interactive platforms exist for developer secure coding training that run in browser environments? These are high-intent, ready-to-buy searches — the most valuable to win back.",
+              "effort": "medium",
+              "impact": "high",
+              "status": "todo",
+              "actionable": true,
+              "targetsQueries": [
+                "What interactive developer training platforms support compliance mapping across NIS2, PCI DSS, and HIPAA simultaneously?",
+                "What are the best secure coding training platforms for developers?",
+                "Are there secure coding training platforms mapped to HIPAA and NIS2 standards for compliance audits?",
+                "What interactive platforms exist for developer secure coding training that run in browser environments?"
+              ]
+            }
+          ]
+        },
+        {
+          "key": "get_listed",
+          "title": "Get onto the sources AI already trusts",
+          "intro": "AI reuses a handful of sources across your category. Getting onto the ones it already cites is the fastest lever — you borrow a page AI trusts instead of waiting to build your own authority.",
+          "items": [
+            {
+              "id": "why-losing",
+              "title": "Why they win: AI trusts their own pages",
+              "detail": "AI leans on appsecengineer.com (6×), gartner.com (6×), secureflag.com (5×), immersivelabs.com (4×) — competitor and provider sites with deep, readable content AI can quote. You can’t edit their pages; you displace them with the pages above and the listings here, giving AI a reason to name you instead.",
+              "effort": "medium",
+              "impact": "medium",
+              "status": "todo",
+              "actionable": false
+            }
+          ]
+        },
+        {
+          "key": "structured_data",
+          "title": "Validate structured data",
+          "intro": "Technical validation only. Publish markup after a person verifies every business fact and writes the visible page content it describes.",
+          "items": [
+            {
+              "id": "jsonld-organization",
+              "title": "Verify an Organization markup draft",
+              "detail": "Confirm the legal name and canonical website before implementation. The audit did not verify an address, phone number, service area, or other LocalBusiness facts.",
+              "effort": "easy",
+              "impact": "low",
+              "status": "todo",
+              "actionable": false
+            },
+            {
+              "id": "jsonld-faqpage",
+              "title": "Write and verify answers before considering FAQ markup",
+              "detail": "Only mark up answers that are truthful, visible on the published page, and approved by the business. The audit supplies questions, not business claims.",
+              "effort": "medium",
+              "impact": "low",
+              "status": "todo",
+              "actionable": false
+            }
+          ]
+        },
+        {
+          "key": "foundations",
+          "title": "Validation checklist",
+          "intro": "These checks require direct inspection. They remain informational until evidence confirms a specific problem.",
+          "items": [
+            {
+              "id": "foundation-gbp",
+              "title": "Check whether a Google Business Profile is relevant and current",
+              "detail": "Confirm the business is eligible, then inspect its current fields and verification state. This audit did not inspect the profile, so no change is prescribed yet.",
+              "effort": "easy",
+              "impact": "low",
+              "status": "todo",
+              "actionable": false
+            },
+            {
+              "id": "foundation-nap",
+              "title": "Verify business identity details across owned profiles",
+              "detail": "Compare the approved legal or trading name, contact details, and service area. This audit did not observe inconsistencies.",
+              "effort": "easy",
+              "impact": "low",
+              "status": "todo",
+              "actionable": false
+            },
+            {
+              "id": "foundation-reviews",
+              "title": "Review the current customer-proof strategy",
+              "detail": "Inspect the quantity, recency, authenticity, and policy compliance of existing reviews before setting a target. This audit did not measure them.",
+              "effort": "medium",
+              "impact": "low",
+              "status": "todo",
+              "actionable": false
+            },
+            {
+              "id": "foundation-text",
+              "title": "Check whether key services are visible in readable page text",
+              "detail": "Inspect the live site before changing it. The answer audit did not crawl or validate the website content.",
+              "effort": "easy",
+              "impact": "low",
+              "status": "todo",
+              "actionable": false
+            }
+          ]
+        }
+      ],
+      "executionQueue": [
+        {
+          "id": "content-security",
+          "title": "Publish a page that answers: “What are the best alternatives to Secure Code Warrior for hands-on developer security training?”",
+          "detail": "AI named Secure Code Warrior, SecureFlag — not you — on 6 searches this page would target:\n   • What are the best alternatives to Secure Code Warrior for hands-on developer security training?\n   • Which global vendors offer interactive security engineering training for software developers?\n   • Can enterprise security training providers develop custom labs for unusual or non-standard software stacks?\n   • Which developer security training platforms cover AI/LLM security and reviewing AI-generated code?\n   • Which application security training providers feature manager dashboards with realistic team performance data?\n   • Which vendors provide customized security engineering labs alongside pre-built training content? These are high-intent, ready-to-buy searches — the most valuable to win back.",
+          "effort": "medium",
+          "impact": "high",
+          "status": "todo",
+          "actionable": true,
+          "targetsQueries": [
+            "What are the best alternatives to Secure Code Warrior for hands-on developer security training?",
+            "Which global vendors offer interactive security engineering training for software developers?",
+            "Can enterprise security training providers develop custom labs for unusual or non-standard software stacks?",
+            "Which developer security training platforms cover AI/LLM security and reviewing AI-generated code?",
+            "Which application security training providers feature manager dashboards with realistic team performance data?"
+          ],
+          "rank": 1,
+          "sourceSection": "answer_questions",
+          "whyItMatters": "AI named Secure Code Warrior, SecureFlag — not you — on 6 searches this page would target:",
+          "deliverable": "One service or FAQ page draft that directly answers 6 target buyer questions. Include your offer, service area, verifiable proof (such as a case study, certification, or customer result), and one clear enquiry action. Review it, then publish it on your website."
+        },
+        {
+          "id": "content-platforms",
+          "title": "Publish a page that answers: “What are the best secure coding training platforms for developers?”",
+          "detail": "AI named Secure Code Warrior, SecureFlag — not you — on 4 searches this page would target:\n   • What interactive developer training platforms support compliance mapping across NIS2, PCI DSS, and HIPAA simultaneously?\n   • What are the best secure coding training platforms for developers?\n   • Are there secure coding training platforms mapped to HIPAA and NIS2 standards for compliance audits?\n   • What interactive platforms exist for developer secure coding training that run in browser environments? These are high-intent, ready-to-buy searches — the most valuable to win back.",
+          "effort": "medium",
+          "impact": "high",
+          "status": "todo",
+          "actionable": true,
+          "targetsQueries": [
+            "What interactive developer training platforms support compliance mapping across NIS2, PCI DSS, and HIPAA simultaneously?",
+            "What are the best secure coding training platforms for developers?",
+            "Are there secure coding training platforms mapped to HIPAA and NIS2 standards for compliance audits?",
+            "What interactive platforms exist for developer secure coding training that run in browser environments?"
+          ],
+          "rank": 2,
+          "sourceSection": "answer_questions",
+          "whyItMatters": "AI named Secure Code Warrior, SecureFlag — not you — on 4 searches this page would target:",
+          "deliverable": "One service or FAQ page draft that directly answers 4 target buyer questions. Include your offer, service area, verifiable proof (such as a case study, certification, or customer result), and one clear enquiry action. Review it, then publish it on your website."
+        }
+      ],
+      "jsonLd": {
+        "localBusiness": {
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": "Appfend",
+          "url": "https://appfend.com",
+          "_status": "draft_requires_business_verification"
+        },
+        "faqPage": {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "_status": "verified_answer_required_before_publication",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What are the best alternatives to Secure Code Warrior for hands-on developer security training?",
+              "_status": "verified_answer_required_before_publication"
+            },
+            {
+              "@type": "Question",
+              "name": "Which global vendors offer interactive security engineering training for software developers?",
+              "_status": "verified_answer_required_before_publication"
+            },
+            {
+              "@type": "Question",
+              "name": "What interactive developer training platforms support compliance mapping across NIS2, PCI DSS, and HIPAA simultaneously?",
+              "_status": "verified_answer_required_before_publication"
+            },
+            {
+              "@type": "Question",
+              "name": "Can enterprise security training providers develop custom labs for unusual or non-standard software stacks?",
+              "_status": "verified_answer_required_before_publication"
+            },
+            {
+              "@type": "Question",
+              "name": "Which developer security training platforms cover AI/LLM security and reviewing AI-generated code?",
+              "_status": "verified_answer_required_before_publication"
+            }
+          ]
+        }
+      },
+      "summary": {
+        "totalActions": 2,
+        "quickWins": 0,
+        "leadInsight": "You’re losing 7 ready-to-buy searches to Secure Code Warrior. Start with the first item below."
+      }
+    }
+  },
+  "current": {
+    "observedAt": "2026-10-27T00:33:17.292Z",
+    "questions": [
+      {
+        "text": "What are the best secure coding training platforms for developers?",
+        "intent": "discovery",
+        "outcome": "absent",
+        "competitors": [
+          "Secure Code Warrior",
+          "SecureFlag"
+        ],
+        "quote": "Secure Code Warrior This platform is a prominent independent vendor in the secure coding training space, offering over 600 hours of content across more than 70 language and framework combinations.",
+        "sources": [
+          "ransomleak.com",
+          "reddit.com",
+          "gartner.com",
+          "secureflag.com",
+          "guideflow.com",
+          "appsecengineer.com"
+        ],
+        "reason": "Head-term category query; the first thing an AppSec lead asks an AI."
+      },
+      {
+        "text": "What interactive developer training platforms support compliance mapping across NIS2, PCI DSS, and HIPAA simultaneously?",
+        "intent": "comparison",
+        "outcome": "absent",
+        "competitors": [
+          "Secure Code Warrior"
+        ],
+        "quote": "Leading platforms in this area include: Secure Code Warrior explicitly aligns its content",
+        "sources": [
+          "google.com",
+          "securecodewarrior.com",
+          "snyk.io",
+          "cybercoach.com",
+          "approach-cyber.com"
+        ],
+        "reason": "You offer compliance framework mapping, and application security teams ask this to compare platform capabilities."
+      },
+      {
+        "text": "What developer training options support SCORM, xAPI, and LTI standards for LMS integration?",
+        "intent": "product",
+        "outcome": "absent",
+        "competitors": [],
+        "quote": "developers seeking to master SCORM, xAPI, and LTI for LMS integration should consider a multi-faceted approach",
+        "sources": [
+          "elearningindustry.com",
+          "mindsmith.ai",
+          "ofashandfire.com",
+          "evnedev.com",
+          "classcentral.com",
+          "aristeksystems.com"
+        ],
+        "reason": "You support SCORM, xAPI, and LTI integrations, matching buyers looking for compatible developer training platforms."
+      },
+      {
+        "text": "What are the best alternatives to Secure Code Warrior for hands-on developer security training?",
+        "intent": "comparison",
+        "outcome": "absent",
+        "competitors": [
+          "Secure Code Warrior",
+          "SecureFlag"
+        ],
+        "quote": "For hands-on developer security training, several robust alternatives to Secure Code Warrior offer interactive and practical learning experiences.",
+        "sources": [
+          "guideflow.com",
+          "appsecengineer.com",
+          "gartner.com",
+          "cybersectools.com",
+          "g2.com",
+          "reddit.com"
+        ],
+        "reason": "Competitor-alternative query where Appfend should be named."
+      },
+      {
+        "text": "Are there secure coding training platforms mapped to HIPAA and NIS2 standards for compliance audits?",
+        "intent": "discovery",
+        "outcome": "absent",
+        "competitors": [
+          "Secure Code Warrior",
+          "SecureFlag"
+        ],
+        "quote": "Secure Code Warrior offers content aligned with various industry standards, including NIS2, OWASP Top 10, NIST, PCI DSS, and CRA.",
+        "sources": [
+          "microsoft.com",
+          "approach-cyber.com",
+          "securecodewarrior.com",
+          "ransomleak.com",
+          "gartner.com",
+          "inovex.de"
+        ],
+        "reason": "You map labs to compliance frameworks for audit evidence, matching this buyer search query."
+      },
+      {
+        "text": "Can enterprise security training providers develop custom labs for unusual or non-standard software stacks?",
+        "intent": "vendor_selection",
+        "outcome": "absent",
+        "competitors": [
+          "SecureFlag"
+        ],
+        "quote": "Providers like SecureFlag offer \"Custom Labs\" that allow companies to build fully customizable code review labs",
+        "sources": [
+          "secureflag.com",
+          "immersivelabs.com",
+          "byronlabs.io",
+          "darksoloforge.com",
+          "deployopen.com"
+        ],
+        "reason": "You offer custom labs for proprietary stacks, and enterprise engineering teams ask this when hiring vendors."
+      },
+      {
+        "text": "What developer security training options integrate real cloud environments like AWS, Azure, or GCP into browser labs?",
+        "intent": "comparison",
+        "outcome": "absent",
+        "competitors": [],
+        "quote": "Key options for developer security training with real cloud environment integration include:",
+        "sources": [
+          "immersivelabs.com",
+          "hackthebox.com",
+          "csoh.org",
+          "pwnedlabs.io",
+          "sans.org",
+          "appsecengineer.com"
+        ],
+        "reason": "You provide real browser-based training environments, and developers ask this when comparing hands-on training tools."
+      },
+      {
+        "text": "Which developer security training platforms cover AI/LLM security and reviewing AI-generated code?",
+        "intent": "product",
+        "outcome": "absent",
+        "competitors": [
+          "Secure Code Warrior"
+        ],
+        "quote": "Secure Code Warrior offers an AI Software Governance platform designed to enhance AI literacy and secure coding capabilities across development teams.",
+        "sources": [
+          "securityjourney.com",
+          "securecodewarrior.com",
+          "coursera.org",
+          "appsecengineer.com",
+          "sans.org",
+          "wiz.io"
+        ],
+        "reason": "Appfend runs AI/LLM security labs and AI-generated code review labs."
+      },
+      {
+        "text": "Which application security training providers feature manager dashboards with realistic team performance data?",
+        "intent": "vendor_selection",
+        "outcome": "absent",
+        "competitors": [
+          "Secure Code Warrior"
+        ],
+        "quote": "Secure Code Warrior is a developer-first secure coding platform built around language-specific missions and adaptive learning paths, implying robust performance tracking through skill scoring and progress measurement.",
+        "sources": [
+          "securityjourney.com",
+          "guideflow.com",
+          "veracode.com",
+          "opsmx.com",
+          "peerspot.com"
+        ],
+        "reason": "You provide manager dashboards with realistic team data, matching this application security buyer search."
+      },
+      {
+        "text": "What training platforms provide interactive AI hints instead of giving developers direct solutions during coding labs?",
+        "intent": "discovery",
+        "outcome": "absent",
+        "competitors": [],
+        "quote": "Platforms that offer interactive AI hints instead of direct solutions include: Codio (Codio Coach)",
+        "sources": [
+          "codio.com",
+          "algocademy.com",
+          "datamintelligence.com"
+        ],
+        "reason": "You feature an AI tutor that gives hints, which buyers specifically look for when evaluating platforms."
+      },
+      {
+        "text": "Which vendors provide customized security engineering labs alongside pre-built training content?",
+        "intent": "vendor_selection",
+        "outcome": "absent",
+        "competitors": [
+          "SecureFlag"
+        ],
+        "quote": "SecureFlag specializes in \"Custom Labs\" that enable teams to build private, fully customizable code review labs.",
+        "sources": [
+          "immersivelabs.com",
+          "secureflag.com",
+          "simulationslabs.com",
+          "pwnedlabs.io",
+          "labshocksecurity.com"
+        ],
+        "reason": "You offer custom labs alongside pre-built training content, matching buyers looking for specialized security vendors."
+      },
+      {
+        "text": "What interactive platforms exist for developer secure coding training that run in browser environments?",
+        "intent": "discovery",
+        "outcome": "absent",
+        "competitors": [
+          "Secure Code Warrior"
+        ],
+        "quote": "Secure Code Warrior is an enterprise-focused product that aims to make developers more security-driven.",
+        "sources": [
+          "ransomleak.com",
+          "gartner.com",
+          "dev.to",
+          "owasp.org",
+          "secdim.com"
+        ],
+        "reason": "You offer browser-based secure coding training for developers, matching buyers seeking interactive platforms."
+      },
+      {
+        "text": "Which global vendors offer interactive security engineering training for software developers?",
+        "intent": "vendor_selection",
+        "outcome": "absent",
+        "competitors": [
+          "Secure Code Warrior",
+          "SecureFlag"
+        ],
+        "quote": "Key global vendors in this space include: Secure Code Warrior provides an enterprise secure coding training platform",
+        "sources": [
+          "blackduck.com",
+          "securecodewarrior.com",
+          "guardey.com",
+          "gartner.com",
+          "knowbe4.com",
+          "sans.org"
+        ],
+        "reason": "You offer interactive security engineering training globally, matching what software engineering buyers ask."
+      },
+      {
+        "text": "What hands-on security training tools operate directly within a developer's browser without requiring local setup?",
+        "intent": "discovery",
+        "outcome": "absent",
+        "competitors": [],
+        "quote": "Developers seeking hands-on security training tools that operate directly within a browser, eliminating the need for local setup, have several excellent options.",
+        "sources": [
+          "playciso.com",
+          "secbyte.org",
+          "tryhackme.com",
+          "hackerdna.com",
+          "medium.com",
+          "portswigger.net"
+        ],
+        "reason": "You provide zero-setup browser-based coding labs, matching buyers searching for accessible developer training tools."
+      },
+      {
+        "text": "Which secure coding training platforms help meet DORA developer training requirements?",
+        "intent": "compliance",
+        "outcome": "absent",
+        "competitors": [
+          "SecureFlag"
+        ],
+        "quote": "SecureFlag: This platform directly aligns with DORA by offering hands-on secure coding labs and threat modeling solutions (ThreatCanvas).",
+        "sources": [
+          "nimblrsecurity.com",
+          "croz.net",
+          "secureflag.com",
+          "outthink.io",
+          "sonarsource.com",
+          "appsecengineer.com"
+        ],
+        "reason": "Appfend supports DORA/NIS2 training obligations; EU financial buyers ask this."
+      }
+    ]
+  },
+  "site": {
+    "checkedAt": "2026-10-27T00:28:36.154Z",
+    "reachable": true,
+    "finalUrl": "https://appfend.com/",
+    "https": true,
+    "homepage": {
+      "title": "Appfend – Hands-on Security Engineering Training",
+      "metaDescription": "",
+      "visibleWords": 682,
+      "appShell": false,
+      "jsonLdTypes": [],
+      "hasFaqSchema": false,
+      "questionHeadings": 0,
+      "profiles": [
+        "linkedin"
+      ],
+      "sections": {
+        "pricing": true,
+        "faq": false,
+        "comparison": false,
+        "content": false,
+        "docs": false,
+        "caseStudies": false
+      }
+    },
+    "robots": {
+      "found": true,
+      "crawlers": {
+        "GPTBot": "unspecified",
+        "OAI-SearchBot": "unspecified",
+        "ChatGPT-User": "unspecified",
+        "ClaudeBot": "unspecified",
+        "PerplexityBot": "unspecified",
+        "Google-Extended": "unspecified",
+        "Bingbot": "unspecified",
+        "Applebot-Extended": "unspecified"
+      },
+      "explicitlyNamed": [],
+      "blocked": []
+    },
+    "llmsTxt": false,
+    "sitemap": true,
+    "pages": [
+      {
+        "url": "https://appfend.com/",
+        "status": 200,
+        "loadMs": 1850,
+        "title": "Appfend – Hands-on Security Engineering Training",
+        "metaDescription": "",
+        "h1": [
+          "Security training in the tools your engineers actually use."
+        ],
+        "words": 682,
+        "questionHeadings": 0,
+        "answerBlocks": [],
+        "jsonLdTypes": [],
+        "hasAuthor": false
+      },
+      {
+        "url": "https://appfend.com/about/",
+        "status": 200,
+        "loadMs": 1641,
+        "title": "About – Appfend",
+        "metaDescription": "",
+        "h1": [
+          "Security engineering training built by folks who shipped the code themselves."
+        ],
+        "words": 546,
+        "questionHeadings": 0,
+        "answerBlocks": [],
+        "jsonLdTypes": [],
+        "hasAuthor": false
+      },
+      {
+        "url": "https://appfend.com/pricing/",
+        "status": 200,
+        "loadMs": 1620,
+        "title": "Pricing – Appfend",
+        "metaDescription": "",
+        "h1": [
+          "$400 per seat, per year. Free trial included."
+        ],
+        "words": 687,
+        "questionHeadings": 0,
+        "answerBlocks": [],
+        "jsonLdTypes": [],
+        "hasAuthor": false
+      },
+      {
+        "url": "https://appfend.com/contact/",
+        "status": 200,
+        "loadMs": 1602,
+        "title": "Contact – Appfend",
+        "metaDescription": "",
+        "h1": [
+          "Questions? Talk to a human."
+        ],
+        "words": 123,
+        "questionHeadings": 0,
+        "answerBlocks": [],
+        "jsonLdTypes": [],
+        "hasAuthor": false
+      },
+      {
+        "url": "https://appfend.com/book-demo/",
+        "status": 200,
+        "loadMs": 1718,
+        "title": "Book a Demo – Appfend",
+        "metaDescription": "",
+        "h1": [
+          "See a lab in your team's stack. Fifteen minutes."
+        ],
+        "words": 145,
+        "questionHeadings": 0,
+        "answerBlocks": [],
+        "jsonLdTypes": [],
+        "hasAuthor": false
+      },
+      {
+        "url": "https://appfend.com/platform/",
+        "status": 200,
+        "loadMs": 2225,
+        "title": "Platform – Appfend",
+        "metaDescription": "",
+        "h1": [
+          "The complete secure engineering training platform."
+        ],
+        "words": 545,
+        "questionHeadings": 0,
+        "answerBlocks": [],
+        "jsonLdTypes": [],
+        "hasAuthor": false
+      },
+      {
+        "url": "https://appfend.com/privacy-policy/",
+        "status": 200,
+        "loadMs": 1555,
+        "title": "Privacy Policy – Appfend",
+        "metaDescription": "",
+        "h1": [
+          "Privacy Policy"
+        ],
+        "words": 482,
+        "questionHeadings": 0,
+        "answerBlocks": [],
+        "jsonLdTypes": [],
+        "hasAuthor": false
+      },
+      {
+        "url": "https://appfend.com/terms/",
+        "status": 200,
+        "loadMs": 1603,
+        "title": "Terms of Service – Appfend",
+        "metaDescription": "",
+        "h1": [
+          "Terms of Service"
+        ],
+        "words": 553,
+        "questionHeadings": 0,
+        "answerBlocks": [],
+        "jsonLdTypes": [],
+        "hasAuthor": false
+      },
+      {
+        "url": "https://appfend.com/cookie-policy/",
+        "status": 200,
+        "loadMs": 1744,
+        "title": "Cookie Policy – Appfend",
+        "metaDescription": "",
+        "h1": [
+          "Cookie Policy"
+        ],
+        "words": 282,
+        "questionHeadings": 0,
+        "answerBlocks": [],
+        "jsonLdTypes": [],
+        "hasAuthor": false
+      }
+    ],
+    "hypeClaims": [],
+    "errors": []
+  },
+  "footprint": {
+    "checkedAt": "2026-10-27T00:33:17.288Z",
+    "probe": {
+      "question": "What is Appfend (appfend.com)? What do they do, where are they based, and who are their customers?",
+      "verdict": "accurate",
+      "summary": "The AI accurately describes Appfend's hands-on security training platform, browser environments, AI tutor, compliance mapping, and target customers.",
+      "quote": "Appfend (appfend.com) is a secure engineering training platform designed for software developers and engineering teams.",
+      "issues": [],
+      "sources": [
+        "tracxn.com",
+        "appfend.com",
+        "owasp.org"
+      ]
+    },
+    "citedPages": [
+      {
+        "url": "https://www.gartner.com/reviews/market/secure-code-training-tools",
+        "domain": "gartner.com",
+        "citedIn": 6,
+        "status": "blocked",
+        "brandNamed": false,
+        "competitorsNamed": []
+      },
+      {
+        "url": "https://ransomleak.com/blog/best-secure-coding-training-2026/",
+        "domain": "ransomleak.com",
+        "citedIn": 3,
+        "status": "read",
+        "brandNamed": false,
+        "competitorsNamed": [
+          "Secure Code Warrior",
+          "SecureFlag"
+        ]
+      },
+      {
+        "url": "https://www.guideflow.com/blog/application-security-training",
+        "domain": "guideflow.com",
+        "citedIn": 3,
+        "status": "read",
+        "brandNamed": false,
+        "competitorsNamed": [
+          "Secure Code Warrior",
+          "SecureFlag"
+        ]
+      },
+      {
+        "url": "https://www.reddit.com/r/cybersecurity/comments/1ip5cke/what_platform_do_you_use_to_train_developers_on/",
+        "domain": "reddit.com",
+        "citedIn": 2,
+        "status": "read",
+        "brandNamed": false,
+        "competitorsNamed": []
+      },
+      {
+        "url": "https://www.secureflag.com/training/",
+        "domain": "secureflag.com",
+        "citedIn": 2,
+        "status": "read",
+        "brandNamed": false,
+        "competitorsNamed": [
+          "Secure Code Warrior",
+          "SecureFlag"
+        ]
+      },
+      {
+        "url": "https://www.appsecengineer.com/blog/5-hands-on-security-training-platforms-that-wont-make-you-wait-for-blackhat",
+        "domain": "appsecengineer.com",
+        "citedIn": 2,
+        "status": "read",
+        "brandNamed": false,
+        "competitorsNamed": [
+          "Secure Code Warrior",
+          "SecureFlag"
+        ]
+      },
+      {
+        "url": "https://owasp.org/projects/secure-coding-dojo",
+        "domain": "owasp.org",
+        "citedIn": 2,
+        "status": "read",
+        "brandNamed": false,
+        "competitorsNamed": []
+      },
+      {
+        "url": "https://www.cybercoach.com/secure-development-training-for-developers",
+        "domain": "cybercoach.com",
+        "citedIn": 2,
+        "status": "read",
+        "brandNamed": false,
+        "competitorsNamed": []
+      },
+      {
+        "url": "https://hub.approach-cyber.com/secure-development-trainings",
+        "domain": "approach-cyber.com",
+        "citedIn": 2,
+        "status": "read",
+        "brandNamed": false,
+        "competitorsNamed": []
+      },
+      {
+        "url": "https://www.securecodewarrior.com/product/learning",
+        "domain": "securecodewarrior.com",
+        "citedIn": 2,
+        "status": "read",
+        "brandNamed": false,
+        "competitorsNamed": [
+          "Secure Code Warrior"
+        ]
+      },
+      {
+        "url": "https://blog.secureflag.com/2025/12/16/security-training-with-custom-labs/",
+        "domain": "secureflag.com",
+        "citedIn": 2,
+        "status": "read",
+        "brandNamed": false,
+        "competitorsNamed": [
+          "SecureFlag"
+        ]
+      },
+      {
+        "url": "https://www.immersivelabs.com/solutions/labs",
+        "domain": "immersivelabs.com",
+        "citedIn": 2,
+        "status": "read",
+        "brandNamed": false,
+        "competitorsNamed": []
+      },
+      {
+        "url": "https://pwnedlabs.io/",
+        "domain": "pwnedlabs.io",
+        "citedIn": 2,
+        "status": "read",
+        "brandNamed": false,
+        "competitorsNamed": []
+      },
+      {
+        "url": "https://www.google.com/search?q=time+in+Helsinki,+FI",
+        "domain": "google.com",
+        "citedIn": 1,
+        "status": "read",
+        "brandNamed": false,
+        "competitorsNamed": []
+      },
+      {
+        "url": "https://help.securecodewarrior.com/hc/en-us/articles/360028343131-How-Secure-Code-Warrior-can-assist-you-in-achieving-Compliance",
+        "domain": "securecodewarrior.com",
+        "citedIn": 1,
+        "status": "blocked",
+        "brandNamed": false,
+        "competitorsNamed": []
+      },
+      {
+        "url": "https://help.securecodewarrior.com/hc/en-us/articles/13175034812175-Building-a-HIPAA-Compliance-Program",
+        "domain": "securecodewarrior.com",
+        "citedIn": 1,
+        "status": "blocked",
+        "brandNamed": false,
+        "competitorsNamed": []
+      },
+      {
+        "url": "https://www.securecodewarrior.com/downloads/preparing-for-pci-dss-4-0-compliance",
+        "domain": "securecodewarrior.com",
+        "citedIn": 1,
+        "status": "read",
+        "brandNamed": false,
+        "competitorsNamed": [
+          "Secure Code Warrior"
+        ]
+      },
+      {
+        "url": "https://snyk.io/blog/how-snyk-learn-helps-you-meet-pci-dss-v4-0-developer-training-requirements/",
+        "domain": "snyk.io",
+        "citedIn": 1,
+        "status": "read",
+        "brandNamed": false,
+        "competitorsNamed": []
+      },
+      {
+        "url": "https://snyk.io/platform/compliance/",
+        "domain": "snyk.io",
+        "citedIn": 1,
+        "status": "read",
+        "brandNamed": false,
+        "competitorsNamed": []
+      },
+      {
+        "url": "https://blog.cybercoach.com/nis2-compliance-a-complete-guide-for-your-business",
+        "domain": "cybercoach.com",
+        "citedIn": 1,
+        "status": "read",
+        "brandNamed": false,
+        "competitorsNamed": []
+      }
+    ],
+    "directories": [],
+    "errors": []
+  }
+}

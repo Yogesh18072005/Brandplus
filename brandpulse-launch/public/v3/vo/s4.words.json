@@ -1,0 +1,47 @@
+[
+  {
+    "word": "Then",
+    "start": 0.092583,
+    "duration": 0.11575
+  },
+  {
+    "word": "we",
+    "start": 0.219916,
+    "duration": 0.104166
+  },
+  {
+    "word": "write",
+    "start": 0.324083,
+    "duration": 0.208333
+  },
+  {
+    "word": "the",
+    "start": 0.544,
+    "duration": 0.069458
+  },
+  {
+    "word": "pages",
+    "start": 0.625,
+    "duration": 0.613416
+  },
+  {
+    "word": "publish",
+    "start": 1.412041,
+    "duration": 0.405083
+  },
+  {
+    "word": "them",
+    "start": 1.828708,
+    "duration": 0.2315
+  },
+  {
+    "word": "and",
+    "start": 2.442125,
+    "duration": 0.127333
+  },
+  {
+    "word": "re-check",
+    "start": 2.569458,
+    "duration": 0.601833
+  }
+]

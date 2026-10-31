@@ -1,0 +1,47 @@
+[
+  {
+    "word": "We",
+    "start": 0.092583,
+    "duration": 0.150458
+  },
+  {
+    "word": "ask",
+    "start": 0.243041,
+    "duration": 0.300916
+  },
+  {
+    "word": "AI",
+    "start": 0.636583,
+    "duration": 0.3125
+  },
+  {
+    "word": "the",
+    "start": 0.949083,
+    "duration": 0.092583
+  },
+  {
+    "word": "real",
+    "start": 1.041666,
+    "duration": 0.416666
+  },
+  {
+    "word": "questions",
+    "start": 1.469916,
+    "duration": 0.439791
+  },
+  {
+    "word": "your",
+    "start": 1.909708,
+    "duration": 0.081
+  },
+  {
+    "word": "buyers",
+    "start": 1.99075,
+    "duration": 0.324083
+  },
+  {
+    "word": "ask",
+    "start": 2.326375,
+    "duration": 0.451375
+  }
+]

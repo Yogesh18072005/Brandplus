@@ -1,0 +1,348 @@
+@font-face {
+  font-family: Manrope;
+  src: url("../public/fonts/manrope-latin.woff2") format("woff2");
+  font-weight: 200 800;
+  font-display: block;
+}
+@font-face {
+  font-family: Plex;
+  src: url("../public/fonts/plex-mono-latin.woff2") format("woff2");
+  font-weight: 400 500;
+  font-display: block;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+.film-stage {
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  position: relative;
+  font-family: Manrope, sans-serif;
+  color: #101826;
+  background: #f6f7f4;
+  font-weight: 450;
+  -webkit-font-smoothing: antialiased;
+}
+.scene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.mono {
+  font-family: Plex, monospace;
+  letter-spacing: 0.035em;
+}
+.zc-logo {
+  display: flex;
+  align-items: center;
+  font-weight: 650;
+  letter-spacing: -0.055em;
+  line-height: 1;
+}
+.top-brand {
+  position: absolute;
+  top: 86px;
+  left: 150px;
+  right: 150px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.top-brand > .mono {
+  font-size: 16px;
+  color: #64707d;
+}
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font:
+    17px Plex,
+    monospace;
+  letter-spacing: 0.09em;
+}
+.signal-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.film-footer {
+  position: absolute;
+  bottom: 49px;
+  left: 150px;
+  right: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font:
+    13px Plex,
+    monospace;
+  letter-spacing: 0.07em;
+}
+.film-footer > span:first-child {
+  min-width: 280px;
+}
+.send {
+  display: grid;
+  place-items: center;
+  background: #1e5ae8;
+  color: white;
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+}
+.caret {
+  display: inline-block;
+  width: 2px;
+  height: 32px;
+  background: #1e5ae8;
+  vertical-align: -5px;
+  margin-left: 4px;
+}
+.shortlist-row {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 24px 0;
+  border-bottom: 1px solid #dde3e9;
+  font-size: 33px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+.row-index {
+  font:
+    18px Plex,
+    monospace;
+  color: #64707d;
+  width: 30px;
+}
+.company-symbol {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  font-size: 24px;
+  font-weight: 600;
+}
+.mentioned {
+  margin-left: auto;
+  color: #1f8a5b;
+  font-size: 19px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 450;
+  letter-spacing: 0;
+}
+.missing-stamp {
+  border: 1px solid #d6454560;
+  border-radius: 12px;
+  background: #faece7;
+  color: #a93535;
+  font-size: 34px;
+  font-weight: 550;
+  padding: 18px 30px;
+  box-shadow: 0 14px 40px #a3292910;
+}
+.business-card {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  padding: 29px 0;
+}
+.business-glyph {
+  width: 76px;
+  height: 86px;
+  color: #1e5ae8;
+  border: 1px solid #c8d5ed;
+  border-radius: 22px;
+  display: grid;
+  place-items: center;
+  background: #eef3fd;
+  flex-shrink: 0;
+}
+.context-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+.context-tags span {
+  font-size: 18px;
+  border: 1px solid #d8dee8;
+  border-radius: 11px;
+  padding: 12px 17px;
+  color: #64707d;
+}
+.query-ticket {
+  border: 1px solid #dde3e9;
+  border-radius: 21px;
+  background: white;
+  padding: 24px 28px;
+  box-shadow: 0 14px 45px #182e5110;
+  height: 139px;
+  margin-bottom: 15px;
+  position: relative;
+}
+.answer-paper {
+  background: white;
+  border: 1px solid #dde3e9;
+  border-radius: 26px;
+  padding: 34px;
+  box-shadow: 0 24px 65px #1423450d;
+}
+.engine-chip {
+  font:
+    14px Plex,
+    monospace;
+  color: #1e5ae8;
+  background: #eaf0fc;
+  padding: 10px 14px;
+  border-radius: 7px;
+}
+.text-highlight {
+  padding: 1px 4px;
+  color: #1f5d42;
+  border-radius: 4px;
+}
+.citation {
+  background: #f2f4f7;
+  color: #536078;
+  border: 1px solid #dfe4eb;
+  padding: 10px 15px;
+  font:
+    14px Plex,
+    monospace;
+  border-radius: 8px;
+}
+.absence {
+  margin-top: 28px;
+  padding: 21px 23px;
+  background: #fbeeea;
+  color: #ae4141;
+  border-radius: 12px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  font-size: 23px;
+}
+.source-evidence {
+  background: #edf2fb;
+  border: 1px solid #d9e2f1;
+  border-radius: 22px;
+  padding: 34px;
+  position: relative;
+  overflow: hidden;
+}
+.source-evidence h3 {
+  font-size: 39px;
+  font-weight: 550;
+  line-height: 1.2;
+  letter-spacing: -0.04em;
+  margin: 28px 0;
+}
+.document-corner {
+  width: 65px;
+  height: 65px;
+  background: #dce7fc;
+  position: absolute;
+  right: 0;
+  top: 0;
+  clip-path: polygon(0 0, 100% 100%, 0 100%);
+}
+.proof-line {
+  height: 7px;
+  width: 100%;
+  background: #bccce5;
+  border-radius: 6px;
+  margin: 12px 0;
+}
+.action-ghost {
+  position: absolute;
+  width: 90%;
+  height: 630px;
+  border-radius: 30px;
+  background: #25344e;
+  border: 1px solid #ffffff15;
+}
+.action-main {
+  background: #18253c;
+  border: 1px solid #ffffff22;
+  border-radius: 30px;
+  position: relative;
+  padding: 39px;
+  box-shadow: 0 30px 70px #0003;
+  min-height: 670px;
+}
+.priority-chip {
+  font:
+    16px Plex,
+    monospace;
+  color: #a9ffdf;
+  background: #a9ffdf16;
+  border: 1px solid #a9ffdf30;
+  border-radius: 7px;
+  padding: 12px 15px;
+}
+.benchmark-card {
+  width: 685px;
+  border: 1px solid #d9e0e5;
+  border-radius: 26px;
+  padding: 35px;
+  background: white;
+}
+.stat-value {
+  font-size: 126px;
+  letter-spacing: -0.07em;
+  font-weight: 550;
+  line-height: 1.2;
+  margin: 18px 0 24px;
+  font-variant-numeric: tabular-nums;
+}
+.stat-value > span {
+  font-size: 56px;
+  font-weight: 450;
+  color: #93a09f;
+  letter-spacing: -0.05em;
+  margin-left: 10px;
+}
+.dot-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 25px);
+  gap: 12px;
+}
+.benchmark-caption {
+  font-size: 22px;
+  color: #64707d;
+  margin-top: 25px;
+  letter-spacing: -0.02em;
+}
+.loop-core {
+  display: grid;
+  place-items: center;
+  height: 210px;
+  width: 210px;
+  border-radius: 47px;
+  border: 1px solid #ffffff35;
+  background: #ffffff0b;
+  box-shadow: 0 30px 80px #0e37a125;
+}
+.final-cta {
+  display: flex;
+  align-items: center;
+  gap: 35px;
+  background: #1e5ae8;
+  color: white;
+  padding: 28px 33px;
+  font-size: 27px;
+  font-weight: 550;
+  border-radius: 17px;
+  box-shadow: 0 14px 25px #1e5ae81a;
+}

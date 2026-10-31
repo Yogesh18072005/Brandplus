@@ -1,0 +1,52 @@
+# deps
+node_modules/
+
+# secrets — never commit keys
+.env
+.env.local
+.env.*.local
+
+# dev cache of engine responses & audit output data
+.cache/
+data/
+
+# persistent cumulative spend ledger (global cost kill-switch)
+.spend/
+
+# build
+dist/
+.next/
+tsconfig.tsbuildinfo
+
+.clerk/
+
+# generated local tooling, caches, and review scratch files
+.tmp/
+tmp/
+.video-review-tools/
+.pnpm-store/
+**/__pycache__/
+*.pyc
+supabase/.temp/
+
+# outreach prospect lists contain contact details: never commit them
+outreach/*.csv
+!outreach/prospects.template.csv
+# real prices stay off git
+outreach/rate-card.json
+# production env upload file
+.env.vercel
+.env.vercel.*
+
+# Local audit runs started from the admin console
+.runs/
+
+# personal tool settings, review screenshots and rendered media
+.claude/settings.local.json
+.codex-analysis/
+outputs/
+output/
+brandpulse-launch/outputs/
+brandpulse-launch/v8/output/
+**/.hyperframes/
+debug.log

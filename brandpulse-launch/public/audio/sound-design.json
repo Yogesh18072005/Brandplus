@@ -1,0 +1,287 @@
+{
+  "duration": 60,
+  "sampleRate": 48000,
+  "music": false,
+  "voiceRms": 0.14617095548546538,
+  "sfxRms": 0.01273190262655667,
+  "peak": 0.7226745613032375,
+  "duckDb": 7,
+  "cues": [
+    {
+      "time": 1.5,
+      "tier": "B",
+      "name": "camera move",
+      "crest": 1.5
+    },
+    {
+      "time": 3,
+      "tier": "B",
+      "name": "camera move",
+      "crest": 3
+    },
+    {
+      "time": 4.5,
+      "tier": "B",
+      "name": "camera move",
+      "crest": 4.5
+    },
+    {
+      "time": 6,
+      "tier": "A+B",
+      "name": "signature impact + cut",
+      "crest": 6
+    },
+    {
+      "time": 7.5,
+      "tier": "B",
+      "name": "camera move",
+      "crest": 7.5
+    },
+    {
+      "time": 9,
+      "tier": "B",
+      "name": "camera move",
+      "crest": 9
+    },
+    {
+      "time": 10.5,
+      "tier": "B",
+      "name": "camera move",
+      "crest": 10.5
+    },
+    {
+      "time": 12,
+      "tier": "A+B",
+      "name": "signature impact + cut",
+      "crest": 12
+    },
+    {
+      "time": 13.5,
+      "tier": "B",
+      "name": "camera move",
+      "crest": 13.5
+    },
+    {
+      "time": 15,
+      "tier": "B",
+      "name": "camera move",
+      "crest": 15
+    },
+    {
+      "time": 16,
+      "tier": "A+B",
+      "name": "signature impact + cut",
+      "crest": 16
+    },
+    {
+      "time": 17.5,
+      "tier": "B",
+      "name": "camera move",
+      "crest": 17.5
+    },
+    {
+      "time": 19,
+      "tier": "B",
+      "name": "camera move",
+      "crest": 19
+    },
+    {
+      "time": 20.5,
+      "tier": "B",
+      "name": "camera move",
+      "crest": 20.5
+    },
+    {
+      "time": 21.5,
+      "tier": "B",
+      "name": "camera move",
+      "crest": 21.5
+    },
+    {
+      "time": 23,
+      "tier": "B",
+      "name": "camera move",
+      "crest": 23
+    },
+    {
+      "time": 24.5,
+      "tier": "B",
+      "name": "camera move",
+      "crest": 24.5
+    },
+    {
+      "time": 26,
+      "tier": "B",
+      "name": "camera move",
+      "crest": 26
+    },
+    {
+      "time": 27,
+      "tier": "A+B",
+      "name": "signature impact + cut",
+      "crest": 27
+    },
+    {
+      "time": 28.5,
+      "tier": "B",
+      "name": "camera move",
+      "crest": 28.5
+    },
+    {
+      "time": 30,
+      "tier": "B",
+      "name": "camera move",
+      "crest": 30
+    },
+    {
+      "time": 30.7,
+      "tier": "C",
+      "name": "focused UI confirmation"
+    },
+    {
+      "time": 31.5,
+      "tier": "B",
+      "name": "camera move",
+      "crest": 31.5
+    },
+    {
+      "time": 32.5,
+      "tier": "A+B",
+      "name": "signature impact + cut",
+      "crest": 32.5
+    },
+    {
+      "time": 34,
+      "tier": "B",
+      "name": "camera move",
+      "crest": 34
+    },
+    {
+      "time": 34.7,
+      "tier": "C",
+      "name": "focused UI confirmation"
+    },
+    {
+      "time": 35.5,
+      "tier": "B",
+      "name": "camera move",
+      "crest": 35.5
+    },
+    {
+      "time": 37,
+      "tier": "B",
+      "name": "camera move",
+      "crest": 37
+    },
+    {
+      "time": 38,
+      "tier": "A+B",
+      "name": "signature impact + cut",
+      "crest": 38
+    },
+    {
+      "time": 39.5,
+      "tier": "B",
+      "name": "camera move",
+      "crest": 39.5
+    },
+    {
+      "time": 40.2,
+      "tier": "C",
+      "name": "focused UI confirmation"
+    },
+    {
+      "time": 41,
+      "tier": "B",
+      "name": "camera move",
+      "crest": 41
+    },
+    {
+      "time": 42.5,
+      "tier": "B",
+      "name": "camera move",
+      "crest": 42.5
+    },
+    {
+      "time": 44,
+      "tier": "A+B",
+      "name": "signature impact + cut",
+      "crest": 44
+    },
+    {
+      "time": 45.5,
+      "tier": "B",
+      "name": "camera move",
+      "crest": 45.5
+    },
+    {
+      "time": 46.2,
+      "tier": "C",
+      "name": "focused UI confirmation"
+    },
+    {
+      "time": 47,
+      "tier": "B",
+      "name": "camera move",
+      "crest": 47
+    },
+    {
+      "time": 48.5,
+      "tier": "B",
+      "name": "camera move",
+      "crest": 48.5
+    },
+    {
+      "time": 50,
+      "tier": "A+B",
+      "name": "signature impact + cut",
+      "crest": 50
+    },
+    {
+      "time": 51.5,
+      "tier": "B",
+      "name": "camera move",
+      "crest": 51.5
+    },
+    {
+      "time": 52.2,
+      "tier": "C",
+      "name": "focused UI confirmation"
+    },
+    {
+      "time": 53,
+      "tier": "B",
+      "name": "camera move",
+      "crest": 53
+    },
+    {
+      "time": 54.5,
+      "tier": "B",
+      "name": "camera move",
+      "crest": 54.5
+    },
+    {
+      "time": 55.2,
+      "tier": "C",
+      "name": "focused UI confirmation"
+    },
+    {
+      "time": 56,
+      "tier": "A+B",
+      "name": "signature impact + cut",
+      "crest": 56
+    },
+    {
+      "time": 57.5,
+      "tier": "B",
+      "name": "camera move",
+      "crest": 57.5
+    },
+    {
+      "time": 59,
+      "tier": "B",
+      "name": "camera move",
+      "crest": 59
+    }
+  ]
+}

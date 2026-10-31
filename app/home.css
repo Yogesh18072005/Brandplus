@@ -1,0 +1,18 @@
+/* Homepage motion (components/landing/SignalLanding.tsx). Calm, looping, off under reduced motion. */
+@keyframes zc-travel { from { left: 0%; opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } to { left: 100%; opacity: 0; } }
+@keyframes zc-bob { 0%, 100% { translate: 0 0; } 50% { translate: 0 -8px; } }
+@keyframes zc-ping { from { transform: scale(0.85); opacity: 0.55; } to { transform: scale(1.7); opacity: 0; } }
+@keyframes zc-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.zc-travel { animation: zc-travel 1.8s linear infinite; }
+.zc-bob { animation: zc-bob 5s ease-in-out infinite; }
+.zc-ping { animation: zc-ping 2.4s ease-out infinite; }
+.zc-marquee { animation: zc-marquee 40s linear infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .zc-travel, .zc-bob, .zc-ping, .zc-marquee { animation: none; }
+}
+
+/* Light flowing along a connector path (paths use pathLength="600"). */
+@keyframes zc-flow { from { stroke-dashoffset: 640; } to { stroke-dashoffset: 0; } }
+.zc-flow { stroke-dasharray: 40 600; animation: zc-flow 2.4s cubic-bezier(.45,0,.55,1) infinite; }
+@media (prefers-reduced-motion: reduce) { .zc-flow { animation: none; stroke-dasharray: none; opacity: .5; } }
+@keyframes zc-shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }

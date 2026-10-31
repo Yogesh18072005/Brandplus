@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=1920,height=1080">
+<title>BrandPulse — The signal ring — 15 second launch</title>
+<style>
+@font-face{font-family:Inter;src:url(data:font/woff2;base64,__INTER_FONT__) format('woff2');font-style:normal;font-weight:100 900;font-display:block}
+:root{--paper:#f5f7fb;--ink:#141925;--muted:#667184;--rule:#e2e7f0;--blue:#2874e1}
+*{box-sizing:border-box}html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:var(--paper);font-family:Inter,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
+#brandpulse-launch-15,#camera{position:absolute;inset:0;width:1920px;height:1080px;overflow:hidden}
+#camera{transform-origin:960px 540px;overflow:visible}
+.scene{position:absolute;inset:0;visibility:hidden}
+.eyebrow{font-size:26px;font-weight:550;letter-spacing:.01em;color:var(--muted);line-height:1.3}
+.scene-title{position:absolute;left:230px;top:178px;margin:0;font-size:94px;font-weight:590;letter-spacing:-5px;line-height:1.04;white-space:nowrap}
+.accent{color:var(--blue)}.mask{overflow:hidden}.layer{position:absolute}.surface{background:#fff;border:1.5px solid var(--rule);border-radius:30px;box-shadow:0 24px 70px -55px #263b6040}
+.meta{font-size:27px;font-weight:480;color:var(--muted);line-height:1.4}
+.anchor{display:inline-block;flex-shrink:0}.small-label{font-size:23px;letter-spacing:.02em;color:var(--muted)}
+.tag{display:inline-flex;align-items:center;padding:11px 22px;border:1.5px solid var(--rule);border-radius:40px;font-size:26px;line-height:1;background:#fff;color:#4f5a6d}
+.ink-button{display:flex;align-items:center;justify-content:center;gap:22px;background:#101521;border:1px solid #101521;color:white;border-radius:20px;font-size:34px;font-weight:580;letter-spacing:-.8px}
+.source-note{position:absolute;left:235px;top:908px;font-size:23px;font-weight:450;color:#778193}
+/* A reduced, vector reconstruction of the current landing-page hero. */
+#hook .eyebrow{position:absolute;left:235px;top:164px}
+#hook-title{position:absolute;left:223px;top:255px;font-weight:590;font-size:178px;letter-spacing:-10.5px;line-height:1.03}
+#hook-line-one,#hook-line-two{display:block;overflow:hidden;white-space:nowrap}
+#hook-word{display:inline-block}
+#hook-sub{position:absolute;left:237px;top:655px;font-size:33px;letter-spacing:-.5px;color:#657084}
+#hook-input{position:absolute;left:237px;top:754px;width:1450px;height:107px;padding:12px;display:flex;align-items:center;border-radius:25px}
+#hook-input-label{font-size:35px;letter-spacing:-.7px;color:#98a1af;margin-left:25px}
+#start-button{margin-left:auto;width:468px;height:83px;border-radius:16px;font-size:32px}
+#start-ring{width:42px;height:42px}
+/* Real question, enlarged into a camera-friendly reading view. */
+#question-card{left:280px;top:363px;width:1360px;height:440px;padding:42px 55px}
+#question-badge{position:absolute;left:42px;top:39px;width:78px;height:78px;display:grid;place-items:center;font-size:35px;font-weight:620}
+#question-stage{position:absolute;left:158px;top:51px}
+#question-copy{position:absolute;left:63px;top:160px;width:1218px;font-size:49px;letter-spacing:-1.45px;line-height:1.26;font-weight:510;margin:0}
+#question-footer{position:absolute;left:65px;bottom:32px;font-size:25px;color:#768193}
+/* Exact answer excerpt and named businesses from the recorded audit. */
+#answer-title{font-size:94px}
+#answer-quote{left:234px;top:377px;width:790px;min-height:418px;padding:39px 40px;background:white;border:1.5px solid var(--rule);border-radius:29px}
+#answer-engine{font-size:25px;color:#667184;margin-bottom:27px}
+.quote-line{font-size:43px;font-weight:480;line-height:1.28;letter-spacing:-1.5px;white-space:nowrap}
+#quote-name{font-weight:640;display:inline-block}
+#answer-list{left:1115px;top:388px;width:540px}
+.answer-row{height:101px;display:flex;align-items:center;gap:25px;border-bottom:1.5px solid var(--rule);font-size:37px;font-weight:570;letter-spacing:-1.4px}
+.answer-num{font-size:24px;color:#8b94a2;font-weight:450;width:25px}
+#missing-row{font-size:29px;font-weight:510;line-height:1.45;letter-spacing:-.5px;padding-top:25px;color:#5b6677}
+#missing-row b{font-size:34px;font-weight:610;color:var(--ink)}
+#drag-selection{position:absolute;height:49px;top:0;left:0;background:#e8ecf2;border-radius:4px;z-index:0}
+#answer-lines{position:relative;z-index:1}
+/* The source orbit from the landing page, reconstructed as separate layers. */
+#source-orbit{position:absolute;left:275px;top:327px;width:1370px;height:492px}
+#source-connectors{position:absolute;inset:0;width:1370px;height:492px;overflow:visible}
+.source-node{position:absolute;display:flex;align-items:center;gap:18px;background:#fff;border:1.5px solid var(--rule);border-radius:22px;height:86px;padding:0 25px;font-size:32px;font-weight:520;letter-spacing:-.8px;white-space:nowrap}
+#source-main{left:130px;top:30px;width:361px}
+#source-pin{width:43px;height:43px}
+#source-two{left:875px;top:50px;width:335px}
+#source-three{left:1000px;top:310px;width:305px}
+#source-four{left:140px;top:340px;width:292px}
+#source-core{position:absolute;left:548px;top:181px;width:247px;height:100px;display:grid;place-items:center;font-size:43px;font-weight:570;letter-spacing:-1px;background:#fff;border:1.5px solid var(--rule);border-radius:25px}
+#source-detail{position:absolute;left:400px;top:359px;width:1120px;height:441px;border-radius:30px;padding:42px 55px}
+#detail-domain{display:flex;align-items:center;gap:22px;font-size:46px;font-weight:590;letter-spacing:-1.5px}
+#detail-pin{width:48px;height:48px}
+#source-count{margin:34px 0 6px;font-size:123px;font-weight:590;letter-spacing:-7px;line-height:1}
+#source-count span{font-size:50px;letter-spacing:-2px;color:#778193;font-weight:430}
+#detail-explainer{font-size:29px;letter-spacing:-.5px;color:#667184}
+/* Ranked tasks: the same three titles shown on the actual landing page. */
+#fix-card{position:absolute;left:292px;top:362px;width:1336px;height:459px;border-radius:29px}
+.fix-row{position:absolute;left:39px;right:39px;height:130px;display:flex;align-items:center;gap:31px;border-bottom:1.5px solid var(--rule)}
+#fix-row-0{top:29px}#fix-row-1{top:159px}#fix-row-2{top:289px;border-bottom:0}
+.fix-badge{width:75px;height:75px;border-radius:18px;display:grid;place-items:center;font-size:34px;font-weight:630;color:#687385;background:#f3f5f8}
+#fix-one{background:none;color:var(--blue)}
+.fix-copy{font-size:36px;font-weight:540;letter-spacing:-1.1px;white-space:nowrap}
+.fix-copy small{display:block;margin-top:13px;font-size:25px;font-weight:440;color:#778193;letter-spacing:-.3px}
+#fix-selected{position:absolute;left:21px;top:18px;width:1293px;height:144px;border:2px solid #bcc5d4;border-radius:24px}
+#fix-note{position:absolute;left:332px;top:850px;font-size:29px;letter-spacing:-.6px;color:#697588}
+/* The real draft approval card, enlarged and separated into vector parts. */
+#draft-card{left:428px;top:356px;width:1064px;height:470px;padding:42px 49px;border-radius:30px}
+#draft-title{position:absolute;left:49px;top:98px;width:940px;margin:0;font-size:49px;line-height:1.12;letter-spacing:-1.8px;font-weight:580}
+#draft-lines{position:absolute;left:51px;top:247px;width:922px}
+.draft-line{height:9px;border-radius:6px;background:#e8edf4;margin-bottom:16px;transform-origin:left center}
+.draft-line:nth-child(2){width:91%}.draft-line:nth-child(3){width:76%}
+#approve-button{position:absolute;right:42px;bottom:30px;width:281px;height:82px;font-size:32px;border-radius:18px;gap:18px}
+#approve-anchor{width:35px;height:35px}
+#waiting,#approved{position:absolute;left:50px;bottom:56px;font-size:29px;font-weight:470;color:#778193}
+#approved{color:#141925;font-weight:580}
+/* Final typography grows from, and returns to, the brand mark. */
+#payoff-type{position:absolute;left:340px;top:316px;font-size:183px;font-weight:590;letter-spacing:-11px;line-height:1.04;white-space:nowrap}
+#payoff-you{display:flex;align-items:baseline;position:absolute;left:981px;top:504px;font-size:202px;letter-spacing:-11px;font-weight:590;line-height:1;color:var(--blue)}
+#you-ring{width:123px;height:148px;align-self:center;display:inline-block;margin-left:1px;margin-right:3px}
+#end-lockup{position:absolute;left:960px;top:412px;translate:-50% 0;display:flex;align-items:center;gap:0;font-size:157px;font-weight:600;line-height:1;letter-spacing:-7px;white-space:nowrap}
+#end-left,#end-right{display:block;overflow:hidden}
+#end-ring{width:96px;height:112px;margin:0 4px 0 5px}
+#end-cta{position:absolute;left:713px;top:664px;width:494px;height:91px;font-size:35px;border-radius:22px;letter-spacing:-.9px}
+#end-domain{position:absolute;left:720px;top:797px;width:480px;text-align:center;font-size:29px;letter-spacing:-.7px;color:#6d7787}
+#signal-svg{position:absolute;inset:0;width:1920px;height:1080px;overflow:visible;pointer-events:none}
+#cursor{position:absolute;left:0;top:0;width:43px;height:56px;transform-origin:4px 3px;pointer-events:none;filter:drop-shadow(0 3px 2px #14192519)}
+#cursor svg{width:43px;height:56px;overflow:visible}
+#cursor-press{fill:none;stroke:#141925;stroke-width:1.7}
+</style>
+</head>
+<body>
+<div id="brandpulse-launch-15" data-composition-id="brandpulse-launch-15" data-width="1920" data-height="1080" data-start="0" data-duration="15">
+<div id="camera" class="clip" data-start="0" data-duration="15" data-track-index="0">
+  <section id="hook" class="scene">
+    <div class="eyebrow" id="hook-eyebrow">brandpulse / AI visibility</div>
+    <div id="hook-title"><span id="hook-line-one">AI picks</span><span id="hook-line-two"><span id="hook-word">someone.</span></span></div>
+    <div id="hook-sub">See who AI names instead of you.</div>
+    <div id="hook-input" class="surface"><span id="hook-input-label">yourwebsite.com</span><div id="start-button" class="ink-button"><span id="start-ring" class="anchor"></span><span>Get my free audit</span></div></div>
+  </section>
+  <section id="questions" class="scene">
+    <h1 id="question-title" class="scene-title">Real buyer <span class="accent">questions.</span></h1>
+    <div id="question-card" class="layer surface">
+      <div id="question-badge" class="anchor">1</div><span id="question-stage" class="tag">Exploring</span>
+      <p id="question-copy">What are some good privacy-friendly website analytics tools for a small creative agency that don’t track personal data?</p>
+      <div id="question-footer">Question 1 of 8 · Recorded audit · 9 Oct 2026</div>
+    </div>
+  </section>
+  <section id="answers" class="scene">
+    <h1 id="answer-title" class="scene-title">Who gets <span class="accent">named?</span></h1>
+    <div id="answer-quote" class="layer">
+      <div id="answer-engine">Gemini answers</div><div id="drag-selection"></div>
+      <div id="answer-lines">
+        <div id="ql0" class="quote-line">“Here are some highly-regarded</div>
+        <div id="ql1" class="quote-line">privacy-friendly website</div>
+        <div id="ql2" class="quote-line">analytics tools:</div>
+        <div id="ql3" class="quote-line"><span id="quote-name">Plausible Analytics</span> is a</div>
+        <div id="ql4" class="quote-line">lightweight, open-source…”</div>
+      </div>
+    </div>
+    <div id="answer-list" class="layer">
+      <div id="named-0" class="answer-row"><span class="answer-num">01</span>Plausible Analytics</div>
+      <div id="named-1" class="answer-row"><span class="answer-num">02</span>Fathom Analytics</div>
+      <div id="named-2" class="answer-row"><span class="answer-num">03</span>Matomo</div>
+      <div id="missing-row">The startup we audited<br><b>Not named.</b></div>
+    </div>
+    <div class="source-note" id="answer-note">Recorded example · Google Gemini with Google Search · 9 Oct 2026</div>
+  </section>
+  <section id="sources" class="scene">
+    <h1 id="sources-title" class="scene-title">Follow the <span class="accent">sources.</span></h1>
+    <div id="source-orbit">
+      <svg id="source-connectors" viewBox="0 0 1370 492" fill="none" stroke="#d4dce8" stroke-width="2"><path id="wire0" d="M310 74Q495 65 670 230"/><path id="wire1" d="M1042 93Q855 71 670 230"/><path id="wire2" d="M1150 352Q887 434 670 230"/><path id="wire3" d="M285 383Q457 418 670 230"/></svg>
+      <div id="source-main" class="source-node"><span id="source-pin" class="anchor"></span>plausible.io</div>
+      <div id="source-two" class="source-node">usefathom.com</div>
+      <div id="source-three" class="source-node">posthog.com</div>
+      <div id="source-four" class="source-node">matomo.org</div>
+      <div id="source-core">Gemini</div>
+    </div>
+    <div id="source-detail" class="surface">
+      <div id="detail-domain"><span id="detail-pin" class="anchor"></span>plausible.io</div>
+      <div id="source-count">4 <span>of 8 answers</span></div>
+      <div id="detail-explainer">A source Gemini read before answering.</div>
+    </div>
+    <div id="sources-note" class="source-note">Source counts across the eight recorded answers · 9 Oct 2026</div>
+  </section>
+  <section id="fixes" class="scene">
+    <h1 id="fix-title" class="scene-title">Your first fix, <span class="accent">ranked.</span></h1>
+    <div id="fix-card" class="surface">
+      <div id="fix-selected"></div>
+      <div id="fix-row-0" class="fix-row"><span id="fix-one" class="fix-badge anchor">1</span><div class="fix-copy">Answer page: analytics without a cookie banner<small>A buyer asked exactly this.</small></div></div>
+      <div id="fix-row-1" class="fix-row"><span class="fix-badge">2</span><div class="fix-copy">Comparison page vs Plausible<small>Named in 8 of 8 answers.</small></div></div>
+      <div id="fix-row-2" class="fix-row"><span class="fix-badge">3</span><div class="fix-copy">Get listed on G2<small>Listings on the sites AI reads.</small></div></div>
+    </div>
+    <div id="fix-note">Ranked by impact. Fix 1 first.</div>
+  </section>
+  <section id="approval" class="scene">
+    <h1 id="approval-title" class="scene-title">You <span class="accent">approve.</span> We publish.</h1>
+    <div id="draft-card" class="layer surface">
+      <div id="draft-meta" class="meta">Draft · answer page</div>
+      <h2 id="draft-title">How to track visitors<br>without a cookie banner</h2>
+      <div id="draft-lines"><div class="draft-line"></div><div class="draft-line"></div><div class="draft-line"></div></div>
+      <span id="waiting">Waiting for you</span><span id="approved">You approved</span>
+      <div id="approve-button" class="ink-button"><span id="approve-anchor" class="anchor"></span><span id="approve-label">Approve</span></div>
+    </div>
+    <div class="source-note" id="approval-note">Illustrative approval workflow · as shown on zerociate.com</div>
+  </section>
+  <section id="payoff" class="scene">
+    <div id="payoff-type">Make it</div><div id="payoff-you"><span>y</span><span id="you-ring" class="anchor"></span><span>u.</span></div>
+  </section>
+  <section id="end" class="scene">
+    <div id="end-lockup"><span id="end-left">zer</span><span id="end-ring" class="anchor"></span><span id="end-right">ciate</span></div>
+    <div id="end-cta" class="ink-button">Get my free audit.</div><div id="end-domain">zerociate.com</div>
+  </section>
+  <svg id="signal-svg" viewBox="0 0 1920 1080" aria-hidden="true">
+    <defs><filter id="velocity-blur" filterUnits="userSpaceOnUse" x="-2400" y="-2400" width="6800" height="6000"><feGaussianBlur id="velocity-gauss" stdDeviation="0 0"/></filter></defs>
+    <g id="signal-velocity" filter="url(#velocity-blur)"><g id="signal-inner"><path id="signal-path" fill="none" stroke="#2874e1" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><circle id="signal-dot" fill="#2874e1"/></g></g>
+  </svg>
+  <div id="cursor"><svg viewBox="0 0 43 56"><circle id="cursor-press" cx="4" cy="3" r="0"/><path d="M4 3v41l11-10 8 17 8-4-8-17 15-2Z" fill="#141925" stroke="#fff" stroke-width="3" stroke-linejoin="round"/></svg></div>
+</div>
+<audio id="original-score" src="__AUDIO_SOURCE__" data-start="0" data-duration="15" data-track-index="1" data-volume="1"></audio>
+</div>
+<script>__GSAP_SOURCE__</script>
+<script>__SCORE_SOURCE__</script>
+<script>
+(() => {
+  'use strict';
+  const W=1920,H=1080,N=100;
+  const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+  const mix=(a,b,p)=>a+(b-a)*p;
+  const expo=x=>x<=0?0:x>=1?1:(1-Math.pow(2,-10*x))/(1-Math.pow(2,-10));
+  const smooth=x=>{x=clamp(x);return x*x*(3-2*x)};
+  const progress=(t,a,d=.45)=>clamp((t-a)/d);
+  // Analytic damped spring; no accumulated positions or simulation state.
+  const spring=x=>{x=clamp(x);if(x===0||x===1)return x;const z=.88,w=11,wd=w*Math.sqrt(1-z*z);return Math.min(1.005,1-Math.exp(-z*w*x)*(Math.cos(wd*x)+z/Math.sqrt(1-z*z)*Math.sin(wd*x)))};
+  const E=(t,a,d=.45)=>expo(progress(t,a,d));
+  const S=(t,a,d=.5)=>spring(progress(t,a,d));
+  const ids={}; const el=id=>ids[id]||(ids[id]=document.getElementById(id));
+  let bounds={};
+  function measure(){
+    const list=['start-ring','start-button','hook-word','question-badge','question-card','quote-name','answer-quote','source-pin','source-main','detail-pin','fix-one','fix-row-0','approve-anchor','approve-button','you-ring','end-ring','end-cta'];
+    bounds=Object.fromEntries(list.map(id=>{const r=el(id).getBoundingClientRect();return[id,{x:r.x,y:r.y,w:r.width,h:r.height,cx:r.x+r.width/2,cy:r.y+r.height/2}]}));
+  }
+  const rect=id=>bounds[id];
+  function reveal(id,p,dir='right'){
+    p=clamp(p);const q=(100*(1-p)).toFixed(4);
+    el(id).style.clipPath=dir==='up'?`inset(${q}% 0 0 0)`:dir==='down'?`inset(0 0 ${q}% 0)`:dir==='left'?`inset(0 0 0 ${q}%)`:`inset(0 ${q}% 0 0)`;
+  }
+  function move(id,x=0,y=0,s=1,rot=0,blur=0){const st=el(id).style;st.transform=`translate(${x}px,${y}px) scale(${s}) rotate(${rot}deg)`;st.filter=blur>.02?`blur(${blur}px)`:'none'}
+  function scene(id,t,a,b){
+    const on=t>=a&&t<b;el(id).style.visibility=on?'visible':'hidden';
+    // Each outgoing layer closes before the incoming typography opens.
+    if(id!=='hook'&&id!=='payoff'&&id!=='end'){
+      const out=E(t,b-.18,.18);el(id).style.clipPath=`inset(0 0 ${(out*100).toFixed(4)}% 0)`;
+      move(id,0,-20*out,1,0,Math.sin(out*Math.PI)*1.5);
+    }
+    return on;
+  }
+  function baseShape(type,x,y,w,h){
+    const pts=[];
+    for(let i=0;i<=N;i++){
+      const u=i/N;
+      if(type==='ring'||type==='circle'){
+        const a=type==='ring'?-.167+(4.706+.167)*u:Math.PI*2*u;
+        pts.push([x+Math.cos(a)*w/2,y+Math.sin(a)*h/2]);
+      }else if(type==='line')pts.push([x-w/2+w*u,y]);
+      else if(type==='check'){
+        const points=[[x-w*.44,y],[x-w*.08,y+h*.32],[x+w*.48,y-h*.37]];
+        const q=u<.4?u/.4:(u-.4)/.6;const j=u<.4?0:1;
+        pts.push([mix(points[j][0],points[j+1][0],q),mix(points[j][1],points[j+1][1],q)]);
+      }else{
+        // Rounded rectangle parametrized with a superellipse, continuous with the ring.
+        const a=-Math.PI/2+u*Math.PI*2,n=.36;
+        pts.push([x+Math.sign(Math.cos(a))*Math.pow(Math.abs(Math.cos(a)),n)*w/2,y+Math.sign(Math.sin(a))*Math.pow(Math.abs(Math.sin(a)),n)*h/2]);
+      }
+    }return pts;
+  }
+  const shape=(type,x,y,w,h,stroke=5,dot=0)=>({type,x,y,w,h,stroke,dot});
+  function ringAt(id,r){const b=rect(id);return shape('ring',b.cx,b.cy,r*2,r*2,r*.476,r*.295)}
+  function objectKeys(){
+    const start=ringAt('start-ring',17.5),word=rect('hook-word'),q=rect('question-badge'),quote=rect('quote-name'),pin=rect('source-pin'),detail=rect('detail-pin'),fix=rect('fix-one'),app=rect('approve-anchor');
+    const cx=word.cx+18,cy=word.cy+8;const radius=Math.max(Math.hypot(cx,cy),Math.hypot(W-cx,cy),Math.hypot(cx,H-cy),Math.hypot(W-cx,H-cy))+120;
+    const full=shape('circle',cx,cy,radius*2,radius*2,radius*2+.5,0);
+    const underline=shape('line',quote.cx,quote.y+quote.h+6,quote.w,2,4,0);
+    const badge=shape('box',fix.cx,fix.cy,77,77,4,0);
+    const check=shape('check',app.cx,app.cy,36,36,5,0);
+    return [
+      [0,start],[.5,start],[.91,shape('ring',cx-170,cy,191,191,18,14)],[1.33,shape('ring',cx+20,cy,213,213,19,15)],
+      [1.5,shape('ring',cx+20,cy,213,213,19,15)],[1.93,full],[2.0,full],
+      [2.31,shape('box',q.cx,q.cy,80,80,4,0)],[3.5,shape('box',q.cx,q.cy,80,80,4,0)],
+      [4.19,underline],[5.4,underline],[5.7,underline],
+      [6.27,ringAt('source-pin',21)],[7.04,ringAt('source-pin',21)],[7.49,ringAt('detail-pin',22)],[7.8,ringAt('detail-pin',22)],
+      [8.28,{...badge,y:badge.y+130}],[8.88,badge],[9.66,badge],
+      [10.30,ringAt('approve-anchor',16)],[11.02,ringAt('approve-anchor',16)],[11.22,check],[11.70,check],
+      [12.20,ringAt('you-ring',52)],[12.75,ringAt('you-ring',52)],
+      [13.20,ringAt('end-ring',39.5)],[15,ringAt('end-ring',39.5)]
+    ];
+  }
+  let keys=[];
+  function signalAt(t){
+    let k=0;while(k<keys.length-2&&t>keys[k+1][0])k++;
+    const a=keys[k],b=keys[k+1],p=spring(progress(t,a[0],Math.max(.0001,b[0]-a[0])));
+    const aa=baseShape(a[1].type,a[1].x,a[1].y,a[1].w,a[1].h),bb=baseShape(b[1].type,b[1].x,b[1].y,b[1].w,b[1].h);
+    const result={x:mix(a[1].x,b[1].x,p),y:mix(a[1].y,b[1].y,p),w:mix(a[1].w,b[1].w,p),h:mix(a[1].h,b[1].h,p),stroke:mix(a[1].stroke,b[1].stroke,p),dot:mix(a[1].dot,b[1].dot,p),pts:aa.map((v,i)=>[mix(v[0],bb[i][0],p),mix(v[1],bb[i][1],p)])};
+    if(t>=8.28&&t<=9.66){const targetY=rect('fix-one').cy+130*(1-E(t-8,.45,.43)),delta=targetY-result.y;result.y=targetY;result.pts=result.pts.map(point=>[point[0],point[1]+delta]);}
+    return result;
+  }
+  function cursorAt(t){
+    const start=rect('start-button'),q=rect('question-card'),quote=rect('quote-name'),source=rect('source-main'),fix=rect('fix-row-0'),app=rect('approve-button'),end=rect('end-cta');
+    const points=[[0,1550,925],[.47,start.cx,start.cy],[.65,start.cx,start.cy],[1.3,1500,910],[1.52,2080,1200],
+      [2.2,2080,1200],[2.4,1460,850],[3.48,q.x+q.w-65,q.y+q.h-73],[3.65,q.x+q.w-65,q.y+q.h-73],
+      [4.35,quote.x-25,quote.cy+12],[4.99,quote.x,quote.cy],[5.43,quote.x+quote.w,quote.cy],[5.7,quote.x+quote.w,quote.cy],
+      [6.4,source.cx+120,source.cy+110],[6.99,source.cx,source.cy],[7.2,source.cx,source.cy],[7.7,1290,790],
+      [8.2,1430,870],[8.99,fix.cx+250,fix.cy],[9.23,fix.cx+250,fix.cy],[9.6,1430,850],
+      [10.2,1420,900],[10.99,app.cx+23,app.cy+8],[11.2,app.cx+23,app.cy+8],[11.7,1450,880],[11.9,2080,1200],
+      [13.55,2080,1200],[13.9,end.cx+240,end.cy+120],[14.49,end.cx+80,end.cy+8],[15,end.cx+80,end.cy+8]];
+    let k=0;while(k<points.length-2&&t>points[k+1][0])k++;
+    const a=points[k],b=points[k+1],p=expo(progress(t,a[0],b[0]-a[0]));
+    return {x:mix(a[1],b[1],p),y:mix(a[2],b[2],p)};
+  }
+  window.seek=function(input){
+    const t=clamp(Number(input)||0,0,15);
+    if(!keys.length)return;
+    // Continuous zoom has no scene reset. Its pan is analytic and never static.
+    const zoom=1+.02*t,panX=Math.sin(t*.43)*8,panY=Math.sin(t*.37)*6;
+    el('camera').style.transform=`translate(${panX}px,${panY}px) scale(${zoom})`;
+    scene('hook',t,0,2);scene('questions',t,2,4);scene('answers',t,4,6);scene('sources',t,6,8);scene('fixes',t,8,10);scene('approval',t,10,12);scene('payoff',t,12,13.18);scene('end',t,13.0,15.01);
+    const hookClose=1-E(t,1.33,.24);
+    reveal('hook-line-one',E(t,0,.34)*hookClose);reveal('hook-line-two',E(t,.15,.43)*hookClose);
+    reveal('hook-eyebrow',1-E(t,1.33,.22));reveal('hook-sub',E(t,.48,.33)*(1-E(t,1.3,.23)));
+    move('hook-input',0,-9*E(t,.5,.2));reveal('hook-input',1-E(t,1.39,.2));
+    move('hook-line-one',0,23*(1-S(t,0,.5)));move('hook-line-two',0,24*(1-S(t,.15,.55)));
+    const qt=t-2;
+    reveal('question-title',E(qt,.18,.35));move('question-title',0,20*(1-S(qt,.18,.5)));
+    reveal('question-card',S(qt,.15,.48),'down');move('question-card',0,32*(1-S(qt,.15,.48)),.98+.02*S(qt,.15,.48));
+    reveal('question-copy',E(qt,.5,.72));reveal('question-footer',E(qt,1,.3));reveal('question-stage',E(qt,.45,.3));
+    const at=t-4;
+    reveal('answer-title',E(at,.05,.36));move('answer-title',0,18*(1-S(at,.05,.5)));
+    reveal('answer-quote',S(at,.16,.45),'down');move('answer-quote',-30*(1-S(at,.16,.45)),0);
+    for(let i=0;i<5;i++)reveal('ql'+i,E(at,.34+i*.078,.27));
+    for(let i=0;i<3;i++){reveal('named-'+i,E(at,.45+i*.20,.32));move('named-'+i,25*(1-S(at,.45+i*.2,.45)),0)}
+    reveal('missing-row',E(at,1.19,.19),'down');reveal('answer-note',E(at,.85,.3));
+    const qr=rect('quote-name'),aq=rect('answer-quote'),sel=el('drag-selection').style;
+    sel.left=(qr.x-aq.x)+'px';sel.top=(qr.y-aq.y+3)+'px';sel.width=(qr.w*E(t,5,.43))+'px';sel.height=qr.h+'px';
+    const st=t-6;
+    reveal('sources-title',E(st,.07,.35));move('sources-title',0,19*(1-S(st,.07,.5)));
+    const expand=E(st,1.1,.43);
+    for(const [i,id]of['source-main','source-two','source-three','source-four','source-core'].entries()){
+      reveal(id,E(st,.17+i*.075,.35)*(1-expand),'down');move(id,0,20*(1-S(st,.17+i*.075,.45)));
+    }
+    const wires=el('source-connectors');wires.style.clipPath=`inset(0 ${(1-E(st,.35,.5))*100}% 0 0)`;wires.style.visibility=st<1.33?'visible':'hidden';
+    reveal('source-detail',expand,'down');move('source-detail',0,26*(1-S(st,1.1,.45)));
+    reveal('source-count',E(st,1.45,.31));reveal('detail-explainer',E(st,1.53,.3));reveal('sources-note',E(st,.55,.3));
+    const ft=t-8,sort=E(ft,.45,.43);
+    reveal('fix-title',E(ft,.1,.34));move('fix-title',0,20*(1-S(ft,.1,.46)));
+    reveal('fix-card',S(ft,.15,.43),'down');
+    const offsets=[130,130,-260];
+    for(let i=0;i<3;i++){
+      move('fix-row-'+i,0,offsets[i]*(1-sort));
+      reveal('fix-row-'+i,E(ft,.28+i*.055,.24),'down');
+      const content=el('fix-row-'+i).querySelector('.fix-copy');
+      content.style.clipPath=`inset(0 ${(1-E(ft,.77+i*.065,.2))*100}% 0 0)`;
+      const number=el('fix-row-'+i).querySelector('.fix-badge');
+      number.style.clipPath=`inset(0 0 ${(1-E(ft,.82+i*.04,.14))*100}% 0)`;
+    }
+    reveal('fix-selected',E(ft,1,.18),'right');reveal('fix-note',E(ft,1.24,.35));move('fix-note',0,12*(1-S(ft,1.24,.4)));
+    const dt=t-10;
+    reveal('approval-title',E(dt,.1,.34));move('approval-title',0,18*(1-S(dt,.1,.5)));
+    reveal('draft-card',S(dt,.13,.43),'down');move('draft-card',0,35*(1-S(dt,.13,.43)),1);
+    reveal('draft-meta',E(dt,.35,.25));reveal('draft-title',E(dt,.45,.4));
+    [...document.querySelectorAll('.draft-line')].forEach((node,i)=>{node.style.transform=`scaleX(${E(dt,.6+i*.08,.4)})`});
+    const click=E(dt,1,.2);
+    reveal('waiting',1-click,'right');reveal('approved',E(dt,1.22,.28),'right');
+    reveal('approve-label',1-E(dt,1.15,.18),'right');
+    el('approve-button').style.backgroundColor=dt>=1.2?'#ffffff':'#101521';el('approve-button').style.borderColor=dt>=1.2?'#dce3ed':'#101521';
+    move('approve-button',0,0,1-.045*Math.sin(progress(dt,1,.18)*Math.PI));
+    reveal('approval-note',E(dt,.65,.3));
+    const pt=t-12,pOut=1-E(t,12.72,.22);
+    reveal('payoff-type',E(pt,0,.15)*pOut);move('payoff-type',0,48*(1-S(pt,0,.32)));
+    reveal('payoff-you',E(pt,.08,.17)*pOut,'left');move('payoff-you',0,35*(1-S(pt,.08,.32)));
+    reveal('end-left',E(t,13.28,.37),'left');reveal('end-right',E(t,13.35,.37),'right');
+    reveal('end-cta',S(t,13.98,.35),'down');move('end-cta',0,15*(1-S(t,13.98,.38)),1-.025*Math.sin(progress(t,14.5,.2)*Math.PI));
+    reveal('end-domain',E(t,14.5,.33));move('end-domain',0,8*(1-S(t,14.5,.4)));
+    // The same single path is morphed through every UI anchor.
+    const ob=signalAt(t),before=signalAt(Math.max(0,t-1/600)),after=signalAt(Math.min(15,t+1/600));
+    const vx=(after.x-before.x)*300,vy=(after.y-before.y)*300,speed=Math.hypot(vx,vy),angle=Math.atan2(vy,vx)*180/Math.PI;
+    el('signal-path').setAttribute('d',ob.pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(3)+' '+p[1].toFixed(3)).join(' '));
+    el('signal-path').setAttribute('stroke-width',ob.stroke.toFixed(3));
+    el('signal-dot').setAttribute('cx',(ob.x+ob.w*.32143).toFixed(3));el('signal-dot').setAttribute('cy',(ob.y-ob.h*.3831).toFixed(3));el('signal-dot').setAttribute('r',Math.max(0,ob.dot).toFixed(3));
+    el('velocity-gauss').setAttribute('stdDeviation',Math.min(5,speed*.0012).toFixed(3)+' 0');
+    const radius=Math.max(ob.w,ob.h)*.75+45,filter=el('velocity-blur');
+    filter.setAttribute('x',(ob.x-radius).toFixed(2));filter.setAttribute('y',(ob.y-radius).toFixed(2));filter.setAttribute('width',(radius*2).toFixed(2));filter.setAttribute('height',(radius*2).toFixed(2));
+    el('signal-velocity').setAttribute('filter',Math.max(ob.w,ob.h)>1100?'none':'url(#velocity-blur)');
+    el('signal-velocity').setAttribute('transform',`rotate(${angle} ${ob.x} ${ob.y})`);el('signal-inner').setAttribute('transform',`rotate(${-angle} ${ob.x} ${ob.y})`);
+    const cursor=cursorAt(t);let press=0;for(const beat of[.5,3.5,7,9,11,14.5])press=Math.max(press,Math.sin(progress(t,beat,.16)*Math.PI));
+    move('cursor',cursor.x,cursor.y,1-.14*press);
+    el('cursor-press').setAttribute('r',(press*13).toFixed(3));
+    // The cursor exits along its actual trajectory instead of popping invisible.
+    el('cursor').style.clipPath='inset(0 0 0 0)';
+    document.documentElement.dataset.time=t.toFixed(6);
+  };
+  window.qaBrandPulse=function(){
+    const t=Number(document.documentElement.dataset.time);
+    const active=[...document.querySelectorAll('.scene')].filter(n=>getComputedStyle(n).visibility==='visible').map(n=>n.id);
+    const overflow=[...document.querySelectorAll('.scene-title,.fix-copy,.quote-line')].filter(n=>n.scrollWidth>n.clientWidth+2).map(n=>({id:n.id,text:n.textContent}));
+    return {time:t,active,overflow,anchors:bounds,font:document.fonts.check('500 40px Inter'),cameraScale:1+.02*t};
+  };
+  window.__ready=document.fonts.ready.then(()=>{
+    measure();keys=objectKeys();window.seek(0);
+    if(window.gsap){
+      const clock={_t:0,get t(){return this._t},set t(value){this._t=value;window.seek(value)}};
+      const tl=gsap.timeline({paused:true});tl.fromTo(clock,{t:0},{t:15,duration:15,ease:'none',immediateRender:false},0);
+      for(const[name,time]of[['Hook',0],['Buyer questions',2],['Recorded answers',4],['Cited sources',6],['Ranked fix',8],['Approval',10],['Make it you',12],['BrandPulse',13],['Free audit',14]])tl.addLabel(name,time);
+      window.__timelines=window.__timelines||{};window.__timelines['brandpulse-launch-15']=tl;gsap.ticker.sleep();
+    }
+    return true;
+  });
+})();
+</script>
+</body>
+</html>

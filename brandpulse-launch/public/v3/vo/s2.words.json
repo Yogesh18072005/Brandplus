@@ -1,0 +1,47 @@
+[
+  {
+    "word": "We",
+    "start": 0.092583,
+    "duration": 0.081
+  },
+  {
+    "word": "capture",
+    "start": 0.185166,
+    "duration": 0.474541
+  },
+  {
+    "word": "every",
+    "start": 0.844916,
+    "duration": 0.27775
+  },
+  {
+    "word": "answer",
+    "start": 1.122666,
+    "duration": 0.462958
+  },
+  {
+    "word": "and",
+    "start": 1.956,
+    "duration": 0.173625
+  },
+  {
+    "word": "every",
+    "start": 2.291666,
+    "duration": 0.2315
+  },
+  {
+    "word": "source",
+    "start": 2.523166,
+    "duration": 0.324041
+  },
+  {
+    "word": "it",
+    "start": 2.847208,
+    "duration": 0.057875
+  },
+  {
+    "word": "trusts",
+    "start": 2.905083,
+    "duration": 0.613416
+  }
+]

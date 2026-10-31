@@ -1,0 +1,21 @@
+/* The site nav bar. Selectors carry [data-tone] because clarity.css styles
+   every `.clarity-nav nav` outside Tailwind's layers; these win over it. */
+.clarity-nav nav[data-tone] { max-width: 1240px; height: 64px; border-radius: 18px; border: 1px solid; transition: background-color .3s, border-color .3s, box-shadow .3s; }
+.clarity-nav nav[data-tone='light'] { background: rgb(255 255 255 / .86); border-color: rgb(228 227 235 / .9); box-shadow: 0 14px 40px -22px rgb(23 20 37 / .35); backdrop-filter: blur(18px) saturate(1.5); -webkit-backdrop-filter: blur(18px) saturate(1.5); }
+.clarity-nav nav[data-tone='dark'] { background: rgb(6 4 12 / .45); border-color: rgb(255 255 255 / .1); box-shadow: none; backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); --zc-ring: #ffffff; --zc-dot: #a9ffdf; }
+@media (max-width: 640px) { .clarity-nav nav[data-tone] { height: 60px; border-radius: 16px; } }
+@media (prefers-reduced-motion: reduce) { .clarity-nav nav[data-tone] { transition: none; } }
+
+/* Clerk's sign-in / sign-up form, themed to the site (see components/auth/ClerkAuthPage).
+   Overrides the older .auth-clerk-* rules in clarity.css, which load earlier. */
+main .auth-clerk-card { border: 1px solid #e4e3eb !important; border-radius: 22px !important; padding: 32px !important; background: #fff !important; box-shadow: 0 30px 70px -45px rgb(23 20 37 / .45) !important; }
+main .auth-clerk-title { font-size: 28px !important; font-weight: 650 !important; letter-spacing: -.035em !important; color: #171425 !important; }
+main .auth-clerk-subtitle { color: #524f6d !important; }
+main .auth-clerk-label { color: #413d58 !important; font-weight: 500 !important; }
+main .auth-clerk-input { min-height: 46px !important; border-radius: 11px !important; }
+main .auth-clerk-social { min-height: 46px !important; border-radius: 11px !important; border-color: #e4e3eb !important; }
+main .auth-clerk-button { min-height: 48px !important; border-radius: 11px !important; background: #0e0b19 !important; box-shadow: inset 0 1px 0 rgb(255 255 255 / .14), 0 10px 24px -12px rgb(14 11 25 / .7) !important; font-weight: 600 !important; }
+main .auth-clerk-button:hover { background: #201c33 !important; }
+main .auth-clerk-footer { background: #f7f7fa !important; border-radius: 0 0 22px 22px !important; }
+main .auth-clerk-link { color: #2a1bcc !important; font-weight: 600 !important; }
+@media (max-width: 600px) { main .auth-clerk-card { padding: 22px !important; } }
