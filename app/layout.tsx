@@ -92,7 +92,19 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           signInForceRedirectUrl="/dashboard"
           signUpForceRedirectUrl="/dashboard/onboarding"
         >
-          <script nonce={nonce} dangerouslySetInnerHTML={{ __html: `document.documentElement.classList.add('js')` }} />
+          <ClerkProvider
+  dynamic
+  proxyUrl={clerkFrontendProxyEnabled ? '/__clerk' : undefined}
+  signInUrl="/sign-in"
+  signUpUrl="/sign-up"
+  signInForceRedirectUrl="/dashboard"
+  signUpForceRedirectUrl="/dashboard/onboarding"
+>
+  <a href="#main-content" className="skip-link">
+    Skip to content
+  </a>
+  <div id="main-content">{children}</div>
+</ClerkProvider>
           <a href="#main-content" className="skip-link">Skip to content</a>
           <div id="main-content">{children}</div>
         </ClerkProvider>
