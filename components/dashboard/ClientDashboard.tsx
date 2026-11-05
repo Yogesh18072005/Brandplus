@@ -14,6 +14,7 @@ export type { BusinessStage, DashboardBusiness } from '@/lib/dashboard/load-busi
 
 /*
  * The client's overview, after the dashboard references (Fenco, iDraft,
+
  * Salesforce invoices). It answers the customer's questions in order:
  *   How am I doing?          → the dark headline card
  *   Is it getting better?    → the trend across checks
@@ -374,9 +375,57 @@ function AllQuestions({ business, demo }: { business: DashboardBusiness; demo: b
 /* ---------- The page ---------- */
 
 export function ClientDashboard({ greeting, name, planLine, businesses, demo = false }: { greeting: string; name?: string; planLine?: string; businesses: DashboardBusiness[]; demo?: boolean }) {
-  const [id, setId] = useState(businesses[0]?.id ?? '');
-  const business = businesses.find((b) => b.id === id) ?? businesses[0];
-  const report = business?.stage === 'ready' ? business.report : null;
+  const [businessList, setBusinessList] = useState(businesses);
+const [id, setId] = useState(businesses[0]?.id ?? '');
+
+const [editingName, setEditingName] = useState(false);
+const [nameDraft, setNameDraft] = useState('');
+const [savingName, setSavingName] = useState(false);
+const [editError, setEditError] = useState('');
+
+const business = businessList.find((b) => b.id === id) ?? businessList[0];
+const report = business?.stage === 'ready' ? business.report : null;
+
+async function saveBusinessName(e: FormEvent<HTMLFormElement>) { 
+   e.preventDefault();
+
+  if (!business || !nameDraft.trim()) return;
+
+  setSavingName(true);
+  setEditError('');
+
+  try {
+    const response = await fetch('/api/projects', {
+      method: 'PATCH',
+      
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: business.id,
+        businessName: nameDraft.trim(),
+      }),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || 'Could not update business name.');
+    }
+
+    setBusinessList((previous) =>
+      previous.map((b) =>
+        b.id === business.id ? { ...b, name: nameDraft.trim() } : b
+      )
+    );
+
+    setEditingName(false);
+  } catch (error) {
+    setEditError(
+      error instanceof Error ? error.message : 'Something went wrong.'
+    );
+  } finally {
+    setSavingName(false);
+  }
+}
 
   return (
     <div className="mx-auto w-full max-w-[1240px] space-y-3">
@@ -387,13 +436,72 @@ export function ClientDashboard({ greeting, name, planLine, businesses, demo = f
           </h1>
           <p className={`mt-3 text-[14.5px] ${MUTED}`}>{business ? (report ? `Here’s what AI tells buyers about ${business.name}.` : `We’re getting ${business.name}’s audit ready.`) : 'Add your business to start.'}{planLine && <span className={FAINT}> · {planLine}</span>}</p>
         </div>
-        {businesses.length > 1 && (
-          <select value={id} onChange={(e) => setId(e.target.value)} aria-label="Choose business"
-            className="h-11 rounded-full bg-white px-4 text-[14px] font-semibold text-[#171425] ring-1 ring-[#e4e3ec] outline-none focus:ring-2 focus:ring-brand">
-            {businesses.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
-          </select>
-        )}
+       <div className="flex flex-wrap items-center gap-2">
+  {businessList.length > 1 && (
+    <select
+      value={id}
+      onChange={(e) => {
+        setId(e.target.value);
+        setEditingName(false);
+        setEditError('');
+      }}
+      aria-label="Choose business"
+      className="h-11 rounded-full bg-white px-4 text-[14px] font-semibold text-[#171425] ring-1 ring-[#e4e3ec] outline-none focus:ring-2 focus:ring-brand"
+    >
+      {businessList.map((b) => (
+        <option key={b.id} value={b.id}>{b.name}</option>
+      ))}
+    </select>
+  )}
+
+  {business && !demo && (
+    <button
+      type="button"
+      onClick={() => {
+        setNameDraft(business.name);
+        setEditError('');
+        setEditingName(!editingName);
+      }}
+      className={PILL_SOFT}
+    >
+      {editingName ? 'Cancel' : 'Edit Name'}
+    </button>
+  )}
+</div>
       </header>
+      {editingName && business && (
+  <form
+    onSubmit={saveBusinessName}
+    className="mb-4 flex flex-wrap items-start gap-3 rounded-2xl bg-white p-5 ring-1 ring-[#e4e3ec]"
+  >
+    <div className="min-w-[220px] flex-1">
+      <label className="mb-2 block text-sm font-semibold text-[#171425]">
+        New business name
+      </label>
+
+      <input
+        value={nameDraft}
+        onChange={(e) => setNameDraft(e.target.value)}
+        maxLength={120}
+        required
+        className="h-11 w-full rounded-xl border border-[#e4e3ec] px-4 text-sm outline-none focus:ring-2 focus:ring-brand"
+        placeholder="Enter business name"
+      />
+
+      {editError && (
+        <p className="mt-2 text-sm text-red-600">{editError}</p>
+      )}
+    </div>
+
+    <button
+      type="submit"
+      disabled={savingName || !nameDraft.trim()}
+      className={`${PILL_INK} mt-6 disabled:opacity-50`}
+    >
+      {savingName ? 'Saving...' : 'Save Name'}
+    </button>
+  </form>
+)}
 
       {!business ? (
         <div className={`p-10 text-center ${CARD}`}>

@@ -1,3 +1,4 @@
+
 import { ClerkProvider } from '@clerk/nextjs';
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
@@ -19,7 +20,6 @@ import './simple-report.css';
 import './audit-report.css';
 import { getAppUrl } from '@/lib/app-url';
 
-// Inter, self-hosted (rsms/inter v4.1 variable fonts in app/fonts), used for all text.
 const inter = localFont({
   src: [
     { path: './fonts/InterVariable.woff2', style: 'normal', weight: '100 900' },
@@ -28,7 +28,14 @@ const inter = localFont({
   variable: '--font-inter',
   display: 'swap',
 });
-const mono = IBM_Plex_Mono({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-plexmono', display: 'swap' });
+
+const mono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500'],
+  variable: '--font-plexmono',
+  display: 'swap',
+});
+
 const clerkFrontendProxyEnabled =
   process.env.CLERK_FRONTEND_API_PROXY_ENABLED === 'true' &&
   process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY?.startsWith('pk_live_') === true &&
@@ -55,10 +62,19 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-export default async function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const nonce = (await headers()).get('x-nonce') ?? undefined;
+
   return (
-    <html lang="en" className={`${inter.variable} ${mono.variable}`} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${inter.variable} ${mono.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <script
           nonce={nonce}
@@ -72,11 +88,21 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
               logo: `${getAppUrl()}/icon.svg`,
               image: `${getAppUrl()}/sample-report-headline.png`,
               areaServed: 'Worldwide',
-              knowsAbout: ['Answer engine optimization', 'Generative engine optimization', 'AI search visibility', 'Search engine optimization'],
+              knowsAbout: [
+                'Answer engine optimization',
+                'Generative engine optimization',
+                'AI search visibility',
+                'Search engine optimization',
+              ],
               description: 'Done-for-you AI visibility: audits of how AI assistants answer buyer questions, then pages, listings and monthly re-checks that change the answer.',
               url: getAppUrl(),
               offers: [
-                { '@type': 'Offer', name: 'Free AI visibility audit', price: '0', priceCurrency: 'INR' },
+                {
+                  '@type': 'Offer',
+                  name: 'Free AI visibility audit',
+                  price: '0',
+                  priceCurrency: 'INR',
+                },
               ],
               publisher: { '@type': 'Organization', name: 'BrandPulse' },
             }),
@@ -92,20 +118,9 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           signInForceRedirectUrl="/dashboard"
           signUpForceRedirectUrl="/dashboard/onboarding"
         >
-          <ClerkProvider
-  dynamic
-  proxyUrl={clerkFrontendProxyEnabled ? '/__clerk' : undefined}
-  signInUrl="/sign-in"
-  signUpUrl="/sign-up"
-  signInForceRedirectUrl="/dashboard"
-  signUpForceRedirectUrl="/dashboard/onboarding"
->
-  <a href="#main-content" className="skip-link">
-    Skip to content
-  </a>
-  <div id="main-content">{children}</div>
-</ClerkProvider>
-          <a href="#main-content" className="skip-link">Skip to content</a>
+          <a href="#main-content" className="skip-link">
+            Skip to content
+          </a>
           <div id="main-content">{children}</div>
         </ClerkProvider>
       </body>

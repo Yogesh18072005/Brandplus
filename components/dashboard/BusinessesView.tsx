@@ -1,5 +1,7 @@
 'use client';
-
+import { useRouter } from 'next/navigation';
+import { Trash2 } from 'lucide-react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'motion/react';
 import { ArrowUpRight, Globe, MapPin, Plus } from 'lucide-react';
@@ -35,6 +37,38 @@ function Ring({ named, total, dark }: { named: number; total: number; dark: bool
 }
 
 export function BusinessesView({ businesses }: { businesses: DashboardBusiness[] }) {
+  const router = useRouter();
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  async function deleteBusiness(id: string, name: string) {
+    const confirmed = window.confirm(
+      `Are you sure you want to delete "${name}"? This action cannot be undone.`
+    );
+
+    if (!confirmed) return;
+
+    setDeletingId(id);
+
+    try {
+      const response = await fetch(`/api/projects/${id}`, {
+        method: 'DELETE',
+      });
+
+      const result = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        window.alert(result?.error || 'Unable to delete business.');
+        return;
+      }
+
+      router.refresh();
+    } catch {
+      window.alert('Something went wrong. Please try again.');
+    } finally {
+      setDeletingId(null);
+    }
+  }
+
   return (
     <div className="mx-auto w-full max-w-[1240px]">
       <header className="flex flex-wrap items-end justify-between gap-4 px-1 pt-2 pb-6">
@@ -76,6 +110,19 @@ export function BusinessesView({ businesses }: { businesses: DashboardBusiness[]
                     buttonClassName={`inline-flex h-10 items-center rounded-full px-4 text-[13.5px] font-semibold ${dark ? 'bg-white/10 text-white hover:bg-white/15' : 'bg-[#f4f3f7] text-[#171425] hover:bg-[#eae9f0]'}`} />
                 )}
                 {b.recheckOpen && <span className={`text-[12.5px] ${dark ? 'text-white/55' : 'text-[#7d7a94]'}`}>Re-check in progress</span>}
+                <button
+  type="button"
+  onClick={() => deleteBusiness(b.id, b.name)}
+  disabled={deletingId === b.id}
+  className={`inline-flex h-10 items-center gap-1.5 rounded-full px-4 text-[13px] font-semibold transition-colors disabled:opacity-50 ${
+    dark
+      ? 'bg-red-500/15 text-red-300 hover:bg-red-500/25'
+      : 'bg-red-50 text-red-600 hover:bg-red-100'
+  }`}
+>
+  <Trash2 className="size-4" />
+  {deletingId === b.id ? 'Deleting...' : 'Delete'}
+</button>
               </div>
             </motion.article>
           );

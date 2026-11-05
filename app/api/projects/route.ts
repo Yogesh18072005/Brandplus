@@ -40,10 +40,18 @@ export async function POST(request: Request) {
   const { businessName, website, category, city, competitors, aliases, products, services, locations, targetCustomers, markets } = parsed.data;
 
   const { data: profile, error: profileError } = await supabase
-    .from('profiles')
-    .select('plan, plan_expires_at')
-    .eq('id', user.id)
-    .single();
+  .from('profiles')
+  .select('plan, plan_expires_at')
+  .eq('id', user.id)
+  .single();
+
+if (profileError) {
+  console.error('Profile lookup failed:', profileError);
+  return NextResponse.json(
+    { error: profileError.message },
+    { status: 500 }
+  );
+}
   if (profileError) return NextResponse.json({ error: profileError.message }, { status: 500 });
 
   const plan = getEffectivePlan(profile);
@@ -89,4 +97,68 @@ export async function POST(request: Request) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json(data, { status: 201 });
+}
+
+export async function PATCH(request: Request) {
+  const guard = guardMutationRequest(request, { json: true });
+  if (!guard.ok) {
+    return NextResponse.json(
+      { error: guard.error },
+      { status: guard.status }
+    );
+  }
+
+  const supabase = await createServerSupabaseClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const rateLimit = await consumeRateLimit(
+    request,
+    RATE_LIMITS.projectMutation,
+    user.id
+  );
+
+  if (!rateLimit.allowed) return rateLimitError(rateLimit);
+
+  const body = await request.json().catch(() => null);
+
+  const id = typeof body?.id === 'string' ? body.id : '';
+  const businessName =
+    typeof body?.businessName === 'string' ? body.businessName.trim() : '';
+
+  if (!id || !businessName || businessName.length > 120) {
+    return NextResponse.json(
+      { error: 'Enter a valid business name.' },
+      { status: 400 }
+    );
+  }
+
+  const admin = createAdminClient();
+
+  const { data, error } = await admin
+    .from('projects')
+    .update({ business_name: businessName })
+    .eq('id', id)
+    .eq('user_id', user.id)
+    .select('id, business_name')
+    .maybeSingle();
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  if (!data) {
+    return NextResponse.json(
+      { error: 'Business not found.' },
+      { status: 404 }
+    );
+  }
+
+  return NextResponse.json({
+    success: true,
+    project: data,
+  });
 }

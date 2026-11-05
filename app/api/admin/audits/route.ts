@@ -99,7 +99,56 @@ export async function POST(request: Request) {
       { status: queueError?.code === '23505' ? 409 : 500 },
     );
   }
+  // Automatically approve the request and reserve one credit atomically.
+  const { data: approvalRows, error: approvalError } = await admin.rpc(
+    'approve_audit_request',
+    {
+      p_queue_id: queued.id,
+      p_mode: 'charge',
+    }
+  );
 
+  const approval = approvalRows?.[0];
+
+  if (approvalError || !approval?.ok) {
+    console.error('[audits] Automatic approval failed:', approvalError?.message ?? approval?.reason);
+
+    // Close the request only if it is still pending and unapproved.
+    const { data: closedQueue } = await admin
+      .from('audit_queue')
+      .update({
+        status: 'failed',
+        error: approvalError?.message ?? `Automatic approval failed: ${approval?.reason ?? 'unknown'}`,
+        completed_at: new Date().toISOString(),
+      })
+      .eq('id', queued.id)
+      .eq('status', 'pending')
+      .is('approved_at', null)
+      .select('id')
+      .maybeSingle();
+
+    if (closedQueue) {
+      await admin
+        .from('audits')
+        .update({
+          status: 'failed',
+          completed_at: new Date().toISOString(),
+        })
+        .eq('id', audit.id);
+    }
+
+    if (approval?.reason === 'no_credit') {
+      return NextResponse.json({
+        error: upgradeMessage(plan),
+        code: 'NO_CREDITS',
+        plan,
+      }, { status: 402 });
+    }
+
+    return NextResponse.json({
+      error: 'Your audit could not be approved. Please try again.',
+    }, { status: 500 });
+  }
   await recordOperationalEvent({
     eventType: 'admin_audit_queued',
     projectId,

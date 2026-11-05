@@ -169,8 +169,7 @@ export async function POST(request: Request) {
       id: audit.id,
       auditId: audit.id,
       status: 'queued',
-      message: 'Audit requested. We’ll email you the report as soon as it’s ready, usually within one working day.',
-    },
+message: 'Your audit has been approved and added to the processing queue. Your report will appear in your dashboard when it is ready.',    },
     { status: 201 }
   );
 }
