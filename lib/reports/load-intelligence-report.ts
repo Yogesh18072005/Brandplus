@@ -197,9 +197,10 @@ export async function loadIntelligenceReportHistory(projectId: string, limit = 5
     .select('id')
     .eq('project_id', projectId)
     .in('status', [...TERMINAL_INTERVENTION_STATUSES])
-    .order('created_at', { ascending: true })
+    .order('created_at', { ascending: false })
     .limit(Math.min(100, Math.max(1, limit)));
   if (error) throw new Error(`Intelligence report history lookup failed: ${error.message}`);
-  const reports = await Promise.all((data ?? []).map((item) => loadIntelligenceReport(item.id)));
+  const newestFirst = [...(data ?? [])];
+  const reports = await Promise.all(newestFirst.reverse().map((item) => loadIntelligenceReport(item.id)));
   return reports.filter((report): report is CanonicalIntelligenceReport => report?.status === 'COMPLETE');
 }
