@@ -3,14 +3,11 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { NextResponse } from 'next/server';
 import { getPlanLimits } from '@/lib/billing/plans';
 import { getEffectivePlan } from '@/lib/billing/effective-plan';
-import { resolveCredits, upgradeMessage } from '@/lib/billing/credits';
 import { guardMutationRequest } from '@/lib/http/request-security';
 import { firstValidationError, queueAuditSchema } from '@/lib/validation/project';
 import { consumeRateLimit, RATE_LIMITS, rateLimitError } from '@/lib/security/rate-limit';
 import { ACCOUNT_BLOCK_MESSAGES } from '@/lib/security/account-guard';
 import { canonicalAuditJson } from '@/lib/reports/canonical-audit-envelope';
-import { notifyAuditRequested } from '@/lib/notifications/audit-requested';
-import { PLANS } from '@/lib/billing/plans';
 
 export async function GET(request: Request) {
   const supabase = await createServerSupabaseClient();
@@ -66,7 +63,7 @@ export async function POST(request: Request) {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('plan, plan_expires_at, free_credit_status, email, credits_remaining, credits_reset_at')
+    .select('plan, plan_expires_at, free_credit_status, email, credits_reset_at')
     .eq('id', user.id)
     .single();
 
@@ -86,10 +83,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'An audit is already queued or running for this business.' }, { status: 409 });
   }
 
-  // A request needs a credit to exist, but nothing is taken yet: the founder
-  // charges it (or runs it free) when they run the audit. Requests still
-  // waiting for approval count against the balance, so one credit can't back
-  // two requests.
+  // Audits are free to customers: no credit is reserved or deducted.
+  // Keep the plan's included audit allowance as a usage limit so a free
+  // account cannot generate unlimited provider usage.
   if (profile?.free_credit_status !== 'granted' && plan === 'free') {
     const pendingSetup = profile?.free_credit_status === 'pending';
     return NextResponse.json({
@@ -97,16 +93,29 @@ export async function POST(request: Request) {
       code: pendingSetup ? 'ACCOUNT_SETUP_REQUIRED' : 'FREE_CREDIT_LIMIT_REACHED',
     }, { status: 402 });
   }
-  const { count: awaiting } = await admin
-    .from('audit_queue')
-    .select('id', { count: 'exact', head: true })
-    .eq('requested_by', user.id)
-    .eq('requires_approval', true)
-    .is('approved_at', null)
-    .eq('status', 'pending');
-  const credits = resolveCredits(profile);
-  if (credits.creditsRemaining - (awaiting ?? 0) <= 0) {
-    return NextResponse.json({ error: upgradeMessage(plan), code: 'NO_CREDITS', plan }, { status: 402 });
+  if (limits.auditsPerMonth !== -1) {
+    let usageQuery = admin
+      .from('audits')
+      .select('id, projects!inner(user_id)', { count: 'exact', head: true })
+      .eq('projects.user_id', user.id);
+    if (plan !== 'free') {
+      const periodStart = profile?.credits_reset_at ?? new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+      usageQuery = usageQuery.gte('created_at', periodStart);
+    }
+    const { count: usedAudits, error: usageError } = await usageQuery;
+    if (usageError) {
+      console.error('[audits] Usage lookup failed:', usageError.message);
+      return NextResponse.json({ error: 'We couldn’t verify your free audit allowance. Please try again.' }, { status: 503 });
+    }
+    if ((usedAudits ?? 0) >= limits.auditsPerMonth) {
+      return NextResponse.json({
+        error: plan === 'free'
+          ? 'Your included free audit has already been used.'
+          : 'Your included audits for this period have been used.',
+        code: 'AUDIT_ALLOWANCE_REACHED',
+        plan,
+      }, { status: 402 });
+    }
   }
 
   // Trusted writes use the service role. Browser clients have no direct INSERT
@@ -154,22 +163,29 @@ export async function POST(request: Request) {
     );
   }
 
-  // Confirm to the requester and alert the admin queue. Never blocks the response on failure.
-  await notifyAuditRequested({
-    businessName: project.business_name,
-    website: project.website,
-    requesterEmail: profile?.email ?? user.email ?? null,
-    source: `${PLANS[plan].name} account`,
-    questionCount: limits.promptsPerAudit,
-    queueId: queued?.id ?? null,
-  });
+  // Approve in free mode immediately. This does not reserve or deduct a
+  // customer credit; the queue worker still enforces the global provider spend cap.
+  const { data: approval, error: approvalError } = await admin
+    .rpc('approve_audit_request', { p_queue_id: queued.id, p_mode: 'free' })
+    .single();
+
+  if (approvalError || !approval?.ok) {
+    const reason = approvalError?.message ?? approval?.reason ?? 'Approval was not confirmed';
+    await Promise.all([
+      admin.from('audit_queue').update({ status: 'failed', error: reason, completed_at: new Date().toISOString() }).eq('id', queued.id),
+      admin.from('audits').update({ status: 'failed', completed_at: new Date().toISOString() }).eq('id', audit.id),
+    ]);
+    console.error('[audits] Automatic free approval failed:', reason);
+    return NextResponse.json({ error: 'Your business was saved, but the free audit could not be started. Please try again from the business page.' }, { status: 503 });
+  }
 
   return NextResponse.json(
     {
       id: audit.id,
       auditId: audit.id,
       status: 'queued',
-message: 'Your audit has been approved and added to the processing queue. Your report will appear in your dashboard when it is ready.',    },
+      message: 'Your free audit has started. This page will update when your report is ready.',
+    },
     { status: 201 }
   );
 }
