@@ -5,7 +5,8 @@ import { getIntelligenceReport } from '@/lib/reports/cached-intelligence-report'
 import { simpleReportFor } from '@/lib/reports/load-simple-report';
 import { SimpleReport } from '@/components/report/simple/SimpleReport';
 import { FixPlanOffer } from '@/components/report/simple/FixPlanOffer';
-import { AuditAutoRefresh, RequestAuditButton } from '@/components/report/simple/RequestAuditButton';
+import { RequestAuditButton } from '@/components/report/simple/RequestAuditButton';
+import { AuditProgress } from '@/components/dashboard/project/AuditProgress';
 import { BookWalkthrough } from '@/components/report/simple/BookWalkthrough';
 import { ErrorNote } from '@/components/dashboard/project/kit';
 import ProjectOverviewClient from './OverviewClient';
@@ -44,10 +45,6 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
       ? 'Weekly (every Monday)'
       : 'Not included on the Free plan';
 
-  // Canonical reports are addressed by the parent audit ID. Load the latest
-  // completed audit first; loadIntelligenceReport resolves its Engine 01–05
-  // lineage to the final intervention run. This avoids depending on a separate
-  // intervention-run lookup to discover the report.
   const admin = createAdminClient();
   const { data: latestCompletedAudit } = await admin
     .from('audits')
@@ -59,7 +56,6 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
     .maybeSingle();
   let report = latestCompletedAudit ? await getIntelligenceReport(latestCompletedAudit.id) : null;
 
-  // Backward compatibility for reports created before canonical audit lineage.
   if (!report || report.status !== 'COMPLETE') {
     const { data: run } = await admin
       .from('intervention_generation_runs')
@@ -74,22 +70,18 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
   }
 
   if (!report || report.status !== 'COMPLETE') {
-    const admin = createAdminClient();
     const [{ data: audit }, { data: request }] = await Promise.all([
-      admin.from('audits').select('status').eq('project_id', project.id)
+      admin.from('audits').select('id, status').eq('project_id', project.id)
         .order('created_at', { ascending: false }).limit(1).maybeSingle(),
       admin.from('audit_queue').select('status, requires_approval, approved_at').eq('project_id', project.id).eq('job_type', 'AUDIT')
         .order('created_at', { ascending: false }).limit(1).maybeSingle(),
     ]);
-    // The audit row stays queued/running through every engine stage; the
-    // request row says whether we have approved it yet.
     const open = Boolean(audit && ['queued', 'running'].includes(audit.status));
     const awaitingApproval = Boolean(request?.requires_approval && !request.approved_at && request.status === 'pending');
     const stage: 'none' | 'requested' | 'running' = !open ? 'none' : awaitingApproval ? 'requested' : 'running';
     return (
       <div className="zw sr">
         <div className="sr-wrap">
-          <AuditAutoRefresh enabled={stage !== 'none'} />
           <section className="sr-card sr-pending">
             <p className="sr-label">Your report</p>
             {stage === 'none' ? (
@@ -102,14 +94,9 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             ) : (
               <>
                 <h2>We’re preparing {project.business_name}’s report</h2>
-                <p className="sr-sub">This free audit is processing in the background. This page refreshes automatically and your report will appear here when it’s ready.</p>
+                <p className="sr-sub">This free audit is processing in the background. The progress below updates automatically as each audit engine completes.</p>
                 <p className="sr-sub"><strong>Scheduled reports:</strong> {scheduledReportLabel}.</p>
-                <ol className="sr-steps">
-                  <li className="is-done">Audit requested</li>
-                  <li className={stage === 'running' ? 'is-now' : ''}>Ask AI your buyers’ questions</li>
-                  <li>Show your report here and email you</li>
-                  <li>15-minute walkthrough and your fix plan</li>
-                </ol>
+                {audit?.id && <AuditProgress auditId={audit.id} />}
               </>
             )}
           </section>
