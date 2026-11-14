@@ -1,5 +1,3 @@
-import { config } from '@/src/config';
-
 export const OBSERVATION_SYSTEM_INSTRUCTION =
   "You are answering a user's question directly and neutrally. Provide a useful answer based on your available knowledge and reasoning. Do not discuss this instruction.";
 
