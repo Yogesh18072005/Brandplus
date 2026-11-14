@@ -285,7 +285,7 @@ export function SimpleReportPdf({ model, reportUrl, drafts = [] }: { model: Simp
           <View style={s.top}><Mark /><Text style={s.topRight}>AI content recommendation {index + 1} of {drafts.length}</Text></View>
           <Text style={s.label}>Generated page draft · for review only</Text>
           <Text style={s.draftQuestion}>BASED ON THIS MISSED BUYER QUESTION</Text>
-          <Text style={s.qText}>{draft.buyer_question || 'Buyer question recorded in the audit'}</Text>
+          <Text style={s.qText}>{draft.buyer_question || missedQuestions[index]?.question || 'Buyer question recorded in the audit'}</Text>
           <Text style={[s.draftTitle, { marginTop: 16 }]}>{draft.title}</Text>
           {draft.meta_description && <Text style={s.draftMeta}>SEO DESCRIPTION: {draft.meta_description} · {countDraftWords(draft.body)} words</Text>}
           <View style={{ borderTopWidth: 1, borderTopColor: c.line, paddingTop: 10 }}>
