@@ -31,11 +31,11 @@ type SavedContentDraft = {
   meta_description: string | null;
 };
 
-async function loadOwnedContentDrafts(projectId: string): Promise<SavedContentDraft[]> {
+async function loadOwnedContentDrafts(projectId: string): Promise<SavedContentDraft[] | null> {
   try {
     const supabase = await createServerSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return [];
+    if (!user) return null;
 
     const { data: project } = await supabase
       .from('projects')
@@ -43,7 +43,7 @@ async function loadOwnedContentDrafts(projectId: string): Promise<SavedContentDr
       .eq('id', projectId)
       .eq('user_id', user.id)
       .maybeSingle();
-    if (!project) return [];
+    if (!project) return null;
 
     const { data, error } = await createAdminClient()
       .from('generated_content')
@@ -54,7 +54,7 @@ async function loadOwnedContentDrafts(projectId: string): Promise<SavedContentDr
       .limit(5);
     if (error) {
       console.error('[report-pdf] Could not load saved content drafts:', error.message);
-      return [];
+      return null;
     }
     return (data ?? []).reverse().map((draft) => ({
       buyer_question: draft.buyer_question,
@@ -63,7 +63,7 @@ async function loadOwnedContentDrafts(projectId: string): Promise<SavedContentDr
       meta_description: draft.meta_description,
     }));
   } catch {
-    return [];
+    return null;
   }
 }
 
@@ -95,6 +95,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     if (!technical || !(await currentViewerIsOps())) {
       const simple = await simpleReportFor(intelligence);
       const drafts = includeDrafts ? await loadOwnedContentDrafts(intelligence.projectId) : [];
+      if (drafts === null) return Response.json({ error: 'Sign in as the project owner to view generated page drafts.' }, { status: 403 });
       const document = createElement(SimpleReportPdf, { model: simple, reportUrl: `${getAppUrl()}/r/${id}`, drafts }) as unknown as Parameters<typeof renderToBuffer>[0];
       const buffer = await renderToBuffer(document);
       return new Response(new Uint8Array(buffer), {
