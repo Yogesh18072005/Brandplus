@@ -212,6 +212,7 @@ export interface Database {
           id: string;
           project_id: string;
           content_type: string;
+          buyer_question: string | null;
           title: string;
           body: string;
           meta_description: string | null;
@@ -225,6 +226,7 @@ export interface Database {
           id?: string;
           project_id: string;
           content_type: string;
+          buyer_question?: string | null;
           title: string;
           body?: string;
           meta_description?: string | null;
@@ -238,6 +240,7 @@ export interface Database {
           id?: string;
           project_id?: string;
           content_type?: string;
+          buyer_question?: string | null;
           title?: string;
           body?: string;
           meta_description?: string | null;
