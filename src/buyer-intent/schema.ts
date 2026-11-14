@@ -139,13 +139,37 @@ export function inferMissingCandidateGrounding(
   const candidate = rawCandidate as Record<string, unknown>;
   if (typeof candidate.question !== 'string') return rawCandidate;
 
-  const entityIds = Array.isArray(candidate.supporting_business_entity_ids)
+  const suppliedEntityIds = Array.isArray(candidate.supporting_business_entity_ids)
     ? candidate.supporting_business_entity_ids.filter((id): id is string => typeof id === 'string' && id.length > 0)
     : [];
-  const evidenceIds = Array.isArray(candidate.supporting_business_evidence_ids)
+  const suppliedEvidenceIds = Array.isArray(candidate.supporting_business_evidence_ids)
     ? candidate.supporting_business_evidence_ids.filter((id): id is string => typeof id === 'string' && id.length > 0)
     : [];
-  if (entityIds.length && evidenceIds.length) return rawCandidate;
+
+  // Classify every supplied ID against the canonical collections. Small models
+  // occasionally put a real evidence ID in the entity array (or vice versa).
+  // Correct only IDs that exist in the corresponding canonical collection;
+  // unknown IDs remain in their original array and will still fail validation.
+  const validEntityIds = new Set(buyerIntentBusinessEntities(understanding).map((item) => item.id));
+  const validEvidenceIds = new Set(understanding.evidence.map((item) => item.id));
+  const entityIds = [...new Set([
+    ...suppliedEntityIds.filter((id) => validEntityIds.has(id)),
+    ...suppliedEvidenceIds.filter((id) => validEntityIds.has(id)),
+  ])];
+  const evidenceIds = [...new Set([
+    ...suppliedEvidenceIds.filter((id) => validEvidenceIds.has(id)),
+    ...suppliedEntityIds.filter((id) => validEvidenceIds.has(id)),
+  ])];
+  const hasUnknownEntityIds = suppliedEntityIds.some((id) => !validEntityIds.has(id) && !validEvidenceIds.has(id));
+  const hasUnknownEvidenceIds = suppliedEvidenceIds.some((id) => !validEvidenceIds.has(id) && !validEntityIds.has(id));
+
+  if (entityIds.length && evidenceIds.length && !hasUnknownEntityIds && !hasUnknownEvidenceIds) {
+    return {
+      ...candidate,
+      supporting_business_entity_ids: entityIds,
+      supporting_business_evidence_ids: evidenceIds,
+    };
+  }
 
   const questionTokens = groundingTokens(candidate.question);
   if (questionTokens.size < 2) return rawCandidate;
@@ -153,6 +177,7 @@ export function inferMissingCandidateGrounding(
   const evidenceById = new Map(understanding.evidence.map((item) => [item.id, item]));
   const eligibleEntities = buyerIntentBusinessEntities(understanding)
     .filter((entity) => !entityIds.length || entityIds.includes(entity.id))
+    .filter((entity) => !evidenceIds.length || entity.evidence_ids.some((id) => evidenceIds.includes(id)))
     .filter((entity) => {
       const entityTokens = groundingTokens([entity.value, entity.description ?? '', entity.category ?? ''].join(' '));
       return sharedTokenCount(questionTokens, entityTokens) >= 2;
@@ -169,7 +194,7 @@ export function inferMissingCandidateGrounding(
     return supportingEvidence.length ? [{ entity, supportingEvidence }] : [];
   });
 
-  if (!matched.length) return rawCandidate;
+  if (!matched.length || hasUnknownEntityIds || hasUnknownEvidenceIds) return rawCandidate;
   return {
     ...candidate,
     supporting_business_entity_ids: entityIds.length ? entityIds : matched.map(({ entity }) => entity.id),
@@ -185,13 +210,19 @@ export function validateCandidateBatchWithOmissions(
 ): BuyerQuestionCandidate[] {
   const rawCandidates = candidateEnvelopeSchema.parse(raw).candidates;
   const accepted: BuyerQuestionCandidate[] = [];
+  const seenQuestions = new Set<string>();
   const diagnostics: string[] = [];
   let firstError: unknown;
 
   for (const [index, rawCandidate] of rawCandidates.entries()) {
     try {
       const groundedCandidate = inferMissingCandidateGrounding(rawCandidate, understanding);
-      accepted.push(validateCandidateBatch({ candidates: [groundedCandidate] }, understanding)[0]!);
+      const validated = validateCandidateBatch({ candidates: [groundedCandidate] }, understanding)[0]!;
+      const normalizedQuestion = validated.question.toLocaleLowerCase().replace(/\\s+/g, ' ').trim();
+      // Duplicate paraphrase-free repeats from small models add no coverage.
+      if (seenQuestions.has(normalizedQuestion)) continue;
+      seenQuestions.add(normalizedQuestion);
+      accepted.push(validated);
     } catch (error) {
       firstError ??= error;
       const candidate = rawCandidate && typeof rawCandidate === 'object' && !Array.isArray(rawCandidate)
