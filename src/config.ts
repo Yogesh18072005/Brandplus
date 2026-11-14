@@ -24,10 +24,10 @@ export const config = {
   engines: ['gemini'] as EngineName[], // only Gemini is live in v0
   promptCount: Number(env('PROMPT_COUNT', '40')),
 
-  // Google Search grounding on the engine model. 'true' | 'false'.
-  // If a grounded call hits a quota error (grounding is billed separately and
-  // may have no free quota), the adapter falls back to ungrounded and says so.
-  engineGrounding: env('ENGINE_GROUNDING', 'true') !== 'false',
+  // Google Search grounding can require a paid quota. Keep it off by default
+  // so free-tier keys can run audits without repeated 429 grounding errors.
+  // Set ENGINE_GROUNDING=true only when grounding quota is available.
+  engineGrounding: env('ENGINE_GROUNDING', 'false') === 'true',
 
   // Resilience knobs (M4 hardens these further).
   // Free-tier RPM limits are tight → single-file requests + a pause between prompts.
