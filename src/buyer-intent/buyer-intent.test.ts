@@ -187,6 +187,30 @@ test('company identity words do not trigger target-company bias unless the full 
   assert.match(filterCandidates([explicitlyNamed], ltm).rejected[0]?.reason ?? '', /business name appears in question/);
 });
 
+test('buyer intent retries once with rejection feedback when every candidate is company-biased', async () => {
+  let calls = 0;
+  let retryFeedback = '';
+  const extractor: BuyerIntentExtractor = {
+    model: 'retry-test-model',
+    async generateCandidates(_understanding, _count, feedback) {
+      calls++;
+      if (feedback) retryFeedback = feedback;
+      return calls === 1
+        ? [candidate({ id: 'biased', question: 'Why should I choose Acme Pumps for industrial pumps?' })]
+        : [candidate({ id: 'corrected' })];
+    },
+    async evaluateCandidates(_understanding, candidates) {
+      return candidates.map((item) => evaluation(item));
+    },
+  };
+  const result = await new BuyerIntentService({ extractor }).generate(input());
+  assert.equal(calls, 2);
+  assert.match(retryFeedback, /target-company bias/);
+  assert.equal(result.status, 'COMPLETED');
+  assert.equal(result.questions.length, 1);
+  assert.equal(result.questions[0]?.id.length, 64);
+});
+
 test('rejected candidate warnings preserve a bounded question preview and exact company-bias reason', async () => {
   const item = candidate({ question: 'Why should I choose Acme Pumps for industrial pumps?' });
   const result = await new BuyerIntentService({ extractor: new FakeExtractor([item]) }).generate(input());
