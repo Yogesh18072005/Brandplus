@@ -1,6 +1,5 @@
-// AEO Content Writer — generates articles structured for AI citation.
-// Uses Gemini to create content with proper heading hierarchy,
-// direct-answer first paragraphs, FAQ sections, and embedded schema.
+// AEO Content Writer — generates evidence-conscious drafts for human review.
+// Gemini is called only after an authenticated user explicitly requests a draft.
 
 import { geminiCall } from '@/src/gemini-client';
 import { config } from '@/src/config';
@@ -29,44 +28,45 @@ interface ContentResult {
 }
 
 function buildPrompt(input: ContentInput): string {
-  const competitorNames = (input.project.competitors as { name: string }[])
-    .map((c) => c.name).join(', ');
+  return `You are an AEO content editor. Create a useful first draft based on the supplied business profile and buyer question.
 
-  return `You are an expert AEO (Answer Engine Optimization) content writer. Generate a complete, publication-ready article that AI answer engines will cite and recommend.
+BUSINESS PROFILE (the only verified business facts supplied):
+Business: ${input.project.business_name}
+Website: ${input.project.website}
+Category: ${input.project.category}
+City: ${input.project.city}
 
-BUSINESS: ${input.project.business_name}
-WEBSITE: ${input.project.website}
-CATEGORY: ${input.project.category}
-CITY: ${input.project.city}
-COMPETITORS: ${competitorNames || 'none specified'}
-
-TOPIC: ${input.topic}
+FIX / BUYER QUESTION:
+${input.topic}
 CONTENT TYPE: ${input.contentType}
-TARGET KEYWORDS: ${input.keywords.join(', ') || 'derive from topic'}
+TARGET KEYWORDS: ${input.keywords.join(', ') || 'derive naturally from the buyer question'}
 
-Write the article following these AEO best practices:
+STRICT FACT RULES:
+- Do not invent products, services, materials, certifications, customers, clients, years of experience, prices, capacities, locations, statistics, awards, guarantees, contact details, or capabilities.
+- Do not imply the business offers something unless the supplied profile explicitly establishes it.
+- Where a necessary business fact is missing, insert a clear [VERIFY: describe the exact fact needed] placeholder.
+- Distinguish general educational advice from claims about this specific business.
+- Do not invent local market statistics or cite sources that were not supplied.
+- Never fabricate testimonials, reviews, case studies, or competitor comparisons.
+- The output is an editable draft, not a claim that the page exists or is published.
 
-1. TITLE: Clear, question-style or definitive statement (what someone would ask AI)
-2. FIRST PARAGRAPH: Direct answer to the topic question in 2-3 sentences. This is what AI extracts — make it citation-worthy, factual, and authoritative.
-3. HEADING STRUCTURE: Use H2s for major sections (formatted as questions when natural), H3s for sub-points. AI models parse heading hierarchy.
-4. CONTENT BODY: 800-1200 words. Include:
-   - Concrete details, numbers, and examples specific to ${input.project.city}
-   - Natural mentions of ${input.project.business_name} as a knowledgeable authority (not salesy)
-   - Comparisons and "how to choose" guidance if relevant
-   - Practical tips the reader can use
-5. FAQ SECTION: 3-5 frequently asked questions with concise, direct answers at the end
-6. META DESCRIPTION: 150-160 characters, includes the primary keyword and city
+DRAFT REQUIREMENTS:
+1. Write a direct 2–3 sentence answer to the buyer question first.
+2. Use a clear title and logical H2/H3 headings.
+3. Provide useful, specific guidance without making unsupported claims about the business.
+4. Include 3–5 concise FAQs that answer the same buyer intent.
+5. Keep the draft around 500–800 words; prefer accuracy over length.
+6. Write a meta description under 160 characters.
+7. Include a short list of relevant keywords.
 
-Format the output as JSON with these fields:
+Return only valid JSON with:
 {
-  "title": "Article title",
-  "body": "Full article in HTML (use <h2>, <h3>, <p>, <ul>, <li>, <strong>, <em> tags)",
-  "metaDescription": "150-160 char description",
-  "faqs": [{"question": "...", "answer": "..."}],
-  "keywords": ["keyword1", "keyword2"]
-}
-
-Write like a knowledgeable local expert, not a generic AI. Be specific to ${input.project.city} and ${input.project.category}.`;
+  "title": "Draft title",
+  "body": "HTML using only h2, h3, p, ul, li, strong and em tags",
+  "metaDescription": "Description",
+  "faqs": [{"question": "Question", "answer": "Answer"}],
+  "keywords": ["keyword"]
+}`;
 }
 
 function buildArticleSchema(title: string, description: string, businessName: string, website: string): Record<string, unknown> {
@@ -75,15 +75,8 @@ function buildArticleSchema(title: string, description: string, businessName: st
     '@type': 'Article',
     headline: title,
     description,
-    author: {
-      '@type': 'Organization',
-      name: businessName,
-      url: website.startsWith('http') ? website : `https://${website}`,
-    },
-    publisher: {
-      '@type': 'Organization',
-      name: businessName,
-    },
+    author: { '@type': 'Organization', name: businessName, url: website.startsWith('http') ? website : `https://${website}` },
+    publisher: { '@type': 'Organization', name: businessName },
     datePublished: new Date().toISOString().split('T')[0],
     dateModified: new Date().toISOString().split('T')[0],
   };
@@ -96,20 +89,19 @@ function buildFaqSchema(faqs: { question: string; answer: string }[]): Record<st
     mainEntity: faqs.map((faq) => ({
       '@type': 'Question',
       name: faq.question,
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: faq.answer,
-      },
+      acceptedAnswer: { '@type': 'Answer', text: faq.answer },
     })),
   };
 }
 
 export async function generateContent(input: ContentInput): Promise<ContentResult> {
+  if (!config.googleApiKey) throw new Error('Gemini is not configured. Add GOOGLE_API_KEY before generating a draft.');
   const interaction = await geminiCall({
     kind: 'tool:content-writer',
     model: config.engineModel,
     input: buildPrompt(input),
-    generationConfig: { thinking_level: 'minimal', temperature: 0.7, max_output_tokens: 8192 },
+    generationConfig: { thinking_level: 'minimal', temperature: 0.3, max_output_tokens: 6144 },
+    retries: 0,
   });
 
   const parsed = extractJson(interaction.output_text ?? '') as {
@@ -119,27 +111,21 @@ export async function generateContent(input: ContentInput): Promise<ContentResul
     faqs?: { question: string; answer: string }[];
     keywords?: string[];
   };
+  if (!parsed || typeof parsed.title !== 'string' || typeof parsed.body !== 'string' || typeof parsed.metaDescription !== 'string') {
+    throw new Error('Gemini returned an incomplete content draft. No draft was saved.');
+  }
 
-  const faqs = parsed.faqs ?? [];
-  const articleSchema = buildArticleSchema(
-    parsed.title,
-    parsed.metaDescription,
-    input.project.business_name,
-    input.project.website
-  );
-
-  const combinedSchema = faqs.length > 0
-    ? [articleSchema, buildFaqSchema(faqs)]
-    : articleSchema;
-
-  const wordCount = parsed.body.replace(/<[^>]*>/g, ' ').split(/\s+/).filter(Boolean).length;
+  const faqs = Array.isArray(parsed.faqs) ? parsed.faqs : [];
+  const articleSchema = buildArticleSchema(parsed.title, parsed.metaDescription, input.project.business_name, input.project.website);
+  const combinedSchema = faqs.length > 0 ? [articleSchema, buildFaqSchema(faqs)] : articleSchema;
+  const wordCount = parsed.body.replace(/<[^>]*>/g, ' ').split(/\\s+/).filter(Boolean).length;
 
   return {
     title: parsed.title,
     body: parsed.body,
     metaDescription: parsed.metaDescription,
     schemaMarkup: combinedSchema as Record<string, unknown>,
-    keywords: parsed.keywords ?? input.keywords,
+    keywords: Array.isArray(parsed.keywords) ? parsed.keywords : input.keywords,
     wordCount,
   };
 }
