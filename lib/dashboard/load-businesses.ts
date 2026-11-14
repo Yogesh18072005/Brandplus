@@ -30,7 +30,7 @@ export interface DashboardBusiness {
   recheckOpen: boolean;
   /** Every completed check, oldest first: how often AI named the business. */
   history: Array<{ date: string; named: number; total: number }>;
-  sourceCoverage: DashboardSourceCoverage | null;
+  sourceCoverage?: DashboardSourceCoverage | null;
 }
 
 interface ProjectRow { id: string; business_name: string; website: string | null; category: string | null; city: string | null }
