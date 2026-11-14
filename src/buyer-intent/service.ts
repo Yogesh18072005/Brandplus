@@ -16,6 +16,7 @@ import {
   type BuyerIntentLogger,
   type BuyerIntentRepository,
   type BuyerIntentRunIdentity,
+  type BuyerQuestionCandidate,
   type BuyerQuestionSet,
 } from './types';
 
