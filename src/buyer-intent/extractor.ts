@@ -116,10 +116,10 @@ export class GeminiBuyerIntentExtractor implements BuyerIntentExtractor {
       let evidenceCount = 0;
       try {
         const parsed = JSON.parse(input) as {
-          business_understanding?: { entities?: unknown[]; evidence?: unknown[] };
+          business_understanding?: { entities?: Array<{ evidence_options?: unknown[] }> };
         };
         entityCount = parsed.business_understanding?.entities?.length ?? 0;
-        evidenceCount = parsed.business_understanding?.evidence?.length ?? 0;
+        evidenceCount = parsed.business_understanding?.entities?.reduce((total, entity) => total + (entity.evidence_options?.length ?? 0), 0) ?? 0;
       } catch {
         // Prompt-size logging must never interfere with candidate generation.
       }
