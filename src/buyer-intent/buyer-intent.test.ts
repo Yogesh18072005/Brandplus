@@ -339,6 +339,31 @@ test('candidate retry receives bounded identifier-validation feedback', async ()
   assert.ok((retryInput.correction?.validation_error?.length ?? 0) <= 500);
 });
 
+
+test('Ollama candidates with omitted grounding IDs recover only matching entity-linked evidence', () => {
+  const understanding = profile();
+  const ungrounded = {
+    ...candidate(),
+    supporting_business_evidence_ids: [],
+    supporting_business_entity_ids: [],
+  };
+  const result = validateCandidateBatchWithOmissions({ candidates: [ungrounded] }, understanding);
+  assert.deepEqual(result[0]?.supporting_business_entity_ids, ['product-pump']);
+  assert.deepEqual(result[0]?.supporting_business_evidence_ids, ['e-product']);
+});
+
+test('candidates without a real entity-and-evidence text match are not assigned invented grounding', () => {
+  const ungrounded = {
+    ...candidate({ question: 'Which aerospace satellite manufacturers should procurement teams shortlist?' }),
+    supporting_business_evidence_ids: [],
+    supporting_business_entity_ids: [],
+  };
+  assert.throws(
+    () => validateCandidateBatchWithOmissions({ candidates: [ungrounded] }, profile()),
+    /expected array to have >=1 items/,
+  );
+});
+
 test('19: invented evidence IDs fail schema validation', () => {
   const item = candidate({ supporting_business_evidence_ids: ['invented-evidence'] });
   assert.throws(() => validateCandidateBatch({ candidates: [item] }, profile()), /missing evidence/);
