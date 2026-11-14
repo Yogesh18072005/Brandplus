@@ -190,6 +190,7 @@ export function DecisionReport({ model, full }: { model: CustomerReportViewModel
         <Link href="/" aria-label="BrandPulse home"><ReportWordmark /></Link>
         <div>
           <span>{model.kind === 'LEGACY' ? 'Historical compatibility report' : full ? 'Complete evidence report' : 'Report preview'}</span>
+          <a href={`/api/reports/${model.reportId}/pdf`} className="report-v2-download" aria-label="Download an updated PDF from this saved audit">Download updated PDF</a>
           <PrintButton reportId={model.reportId} />
         </div>
       </header>
