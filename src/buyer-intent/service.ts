@@ -4,6 +4,8 @@ import { deduplicateCandidates, filterCandidates, finalizeQuestions } from './no
 import { GeminiBuyerIntentExtractor } from './extractor';
 import { config } from '@/src/config';
 import { ollamaCall } from '@/src/ollama-client';
+import { buyerIntentBusinessEntities } from './schema';
+import type { BusinessEntity } from '@/src/business-understanding/types';
 import {
   BUYER_INTENT_GENERATION_VERSION,
   BUYER_INTENT_RANKING_VERSION,
@@ -89,6 +91,38 @@ function baseResult(input: BuyerIntentInput, identity: BuyerIntentRunIdentity): 
   };
 }
 
+
+const BUYER_INTENT_BATCH_SIZE = 8;
+const BUYER_INTENT_EVALUATION_BATCH_SIZE = 5;
+
+function chunk<T>(items: T[], size: number): T[][] {
+  const batches: T[][] = [];
+  for (let index = 0; index < items.length; index += size) batches.push(items.slice(index, index + size));
+  return batches;
+}
+
+/** Keep only entities and their own linked evidence in each model request. */
+function understandingForEntities(
+  understanding: BuyerIntentInput['understanding'],
+  entities: BusinessEntity[],
+): BuyerIntentInput['understanding'] {
+  const entityIds = new Set(entities.map((entity) => entity.id));
+  const evidenceIds = new Set(entities.flatMap((entity) => entity.evidence_ids));
+  return {
+    ...understanding,
+    products: understanding.products.filter((item) => entityIds.has(item.id)),
+    services: understanding.services.filter((item) => entityIds.has(item.id)),
+    capabilities: understanding.capabilities.filter((item) => entityIds.has(item.id)),
+    buyer_types: understanding.buyer_types.filter((item) => entityIds.has(item.id)),
+    industries: understanding.industries.filter((item) => entityIds.has(item.id)),
+    use_cases: understanding.use_cases.filter((item) => entityIds.has(item.id)),
+    geographies: understanding.geographies.filter((item) => entityIds.has(item.id)),
+    certifications: understanding.certifications.filter((item) => entityIds.has(item.id)),
+    business_model_signals: understanding.business_model_signals.filter((item) => entityIds.has(item.id)),
+    evidence: understanding.evidence.filter((item) => evidenceIds.has(item.id)),
+  };
+}
+
 function assertUsableInput(input: BuyerIntentInput): void {
   if (input.understanding.project_id !== input.projectId) throw new BuyerIntentInputError('Business Understanding belongs to a different project');
   if (!['SUCCESS', 'PARTIAL_SUCCESS'].includes(input.understanding.status)) {
@@ -148,33 +182,71 @@ export class BuyerIntentService {
     });
 
     try {
-      // Keep the first local-model batch close to the requested benchmark size.
-      // A small buffer allows deterministic filtering without asking a 3B CPU model
-      // to produce a disproportionately large JSON response.
+      // Break the canonical grounding graph into small, evidence-preserving batches.
+      // Each entity travels only with evidence explicitly linked to it.
+      const evidenceIds = new Set(input.understanding.evidence.map((item) => item.id));
+      const groundedEntities = buyerIntentBusinessEntities(input.understanding)
+        .filter((entity) => entity.evidence_ids.some((id) => evidenceIds.has(id)));
+      const entityBatches = chunk(groundedEntities, BUYER_INTENT_BATCH_SIZE);
+      if (!entityBatches.length) throw new Error('Business Understanding contains no entities with linked supporting evidence');
+
       const candidateTarget = Math.min(25, Math.max(10, count + 5));
-      let generated = await this.extractor.generateCandidates(input.understanding, candidateTarget);
+      const perBatchTarget = Math.max(2, Math.ceil(candidateTarget / entityBatches.length));
+      const batchResults: Array<{ entities: BusinessEntity[]; candidates: ReturnType<typeof filterCandidates>['accepted']; failed: boolean }> = [];
+      let generated: BuyerQuestionCandidate[] = [];
+
+      for (let batchIndex = 0; batchIndex < entityBatches.length; batchIndex++) {
+        const entities = entityBatches[batchIndex]!;
+        const batchUnderstanding = understandingForEntities(input.understanding, entities);
+        try {
+          const batchCandidates = await this.extractor.generateCandidates(batchUnderstanding, perBatchTarget);
+          const namespaced = batchCandidates.map((item) => ({
+            ...item,
+            id: (`b${batchIndex + 1}-${item.id}`).slice(0, 120),
+          }));
+          generated.push(...namespaced);
+          batchResults.push({ entities, candidates: filterCandidates(namespaced, input.understanding).accepted, failed: false });
+        } catch (error) {
+          const message = error instanceof Error ? error.message : String(error);
+          result.warnings.push(`Buyer-intent batch ${batchIndex + 1}/${entityBatches.length} failed: ${message.slice(0, 240)}`);
+          batchResults.push({ entities, candidates: [], failed: true });
+        }
+      }
+
       let filtered = filterCandidates(generated, input.understanding);
       const minimumDistinctCandidates = Math.min(count, MINIMUM_AUDIT_QUESTIONS);
       const distinctAcceptedBeforeRetry = deduplicateCandidates(filtered.accepted).length;
       if (distinctAcceptedBeforeRetry < minimumDistinctCandidates) {
         const reasons = [...new Set(filtered.rejected.map((item) => item.reason))].slice(0, 6).join('; ');
-        const examples = generated.slice(0, 8).map((item) => item.question.replace(/\s+/g, ' ').slice(0, 140));
+        const examples = generated.slice(0, 8).map((item) => item.question.replace(/\\s+/g, ' ').slice(0, 140));
         const feedback = [
-          'The previous candidate batch did not produce enough distinct, grounded buyer questions.',
+          'The previous candidate batches did not produce enough distinct, grounded buyer questions.',
           'Distinct grounded candidates: ' + distinctAcceptedBeforeRetry + '; minimum required: ' + minimumDistinctCandidates + '.',
-          reasons ? 'Rejection reasons: ' + reasons : 'The batch may contain repeated or overly similar questions.',
+          reasons ? 'Rejection reasons: ' + reasons : 'The batches may contain repeated or overly similar questions.',
           'Previous questions to avoid: ' + examples.join(' | '),
           'Generate additional, genuinely different buyer questions. Do not repeat or lightly rephrase previous questions, do not mention the target business name, and preserve exact entity/evidence ID grounding.',
         ].join(' ');
         result.warnings.push(
-          `First-pass generation produced only ${distinctAcceptedBeforeRetry} distinct grounded candidates; requesting one additional batch.`,
+          `First-pass generation produced only ${distinctAcceptedBeforeRetry} distinct grounded candidates; retrying successful entity batches once.`,
         );
-        const retryCandidates = await this.extractor.generateCandidates(input.understanding, candidateTarget, feedback);
-        const retryWithUniqueIds = retryCandidates.map((item, index) => ({
-          ...item,
-          id: ('retry-' + (index + 1) + '-' + item.id).slice(0, 120),
-        }));
-        generated = [...generated, ...retryWithUniqueIds];
+
+        const retryCandidates: BuyerQuestionCandidate[] = [];
+        for (let batchIndex = 0; batchIndex < batchResults.length; batchIndex++) {
+          const batch = batchResults[batchIndex]!;
+          if (batch.failed) continue; // A timed-out batch is not immediately repeated.
+          const batchUnderstanding = understandingForEntities(input.understanding, batch.entities);
+          try {
+            const retry = await this.extractor.generateCandidates(batchUnderstanding, perBatchTarget, feedback);
+            retryCandidates.push(...retry.map((item) => ({
+              ...item,
+              id: (`retry-b${batchIndex + 1}-${item.id}`).slice(0, 120),
+            })));
+          } catch (error) {
+            const message = error instanceof Error ? error.message : String(error);
+            result.warnings.push(`Buyer-intent retry batch ${batchIndex + 1} failed: ${message.slice(0, 200)}`);
+          }
+        }
+        generated = [...generated, ...retryCandidates];
         filtered = filterCandidates(generated, input.understanding);
       }
       result.candidate_count = generated.length;
@@ -210,7 +282,16 @@ export class BuyerIntentService {
         accepted: distinct.length,
         rejected: deterministicRejections,
       });
-      const evaluations = await this.extractor.evaluateCandidates(input.understanding, distinct);
+      const evaluations: Awaited<ReturnType<BuyerIntentExtractor['evaluateCandidates']>> = [];
+      const entityById = new Map(buyerIntentBusinessEntities(input.understanding).map((entity) => [entity.id, entity]));
+      for (const candidateBatch of chunk(distinct, BUYER_INTENT_EVALUATION_BATCH_SIZE)) {
+        const referencedEntities = [...new Set(candidateBatch.flatMap((item) => item.supporting_business_entity_ids))]
+          .map((id) => entityById.get(id))
+          .filter((item): item is BusinessEntity => Boolean(item));
+        const evaluationUnderstanding = understandingForEntities(input.understanding, referencedEntities);
+        const batchEvaluations = await this.extractor.evaluateCandidates(evaluationUnderstanding, candidateBatch);
+        evaluations.push(...batchEvaluations);
+      }
       result.questions = finalizeQuestions(distinct, evaluations, input.understanding, result.id, count);
       result.rejected_candidate_count = generated.length - result.questions.length;
       if (!result.questions.length) throw new Error('No evaluated buyer questions met the minimum quality threshold');
