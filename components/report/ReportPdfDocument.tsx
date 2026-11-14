@@ -243,6 +243,43 @@ export function ReportPdfDocument({ model, full }: { model: CustomerReportViewMo
       <Page size="A4" style={styles.page}>
         <View style={styles.header} fixed><Text>{model.business.name}</Text><PdfBrand /></View>
         <Text style={styles.footerLeft} fixed>Confidential - observed {formatDate(model.observationDate)}</Text>
+        <Text style={styles.sectionTitle}>Evidence-based page and listing opportunities</Text>
+        <Text style={styles.sectionIntro}>These suggestions are derived from the buyer questions missed in this saved audit and the external domains it actually cited. No new AI request is made.</Text>
+        <View style={styles.table}>
+          <Text style={[styles.analysisTitle, { paddingTop: 8, paddingBottom: 6 }]}>1. Pages to create or improve</Text>
+          {model.evidence.filter((item) => item.outcome === 'NOT_MENTIONED').slice(0, 5).length ? model.evidence.filter((item) => item.outcome === 'NOT_MENTIONED').slice(0, 5).map((item, index) => (
+            <View key={item.id} style={styles.tableRow} wrap={false}>
+              <View style={{ width: '100%' }}>
+                <Text style={{ color: colors.blue, fontFamily: 'Helvetica-Bold', fontSize: 7.5 }}>PRIORITY {index + 1}</Text>
+                <Text style={{ fontFamily: 'Helvetica-Bold', marginTop: 3 }}>Create or improve a page answering:</Text>
+                <Text style={{ marginTop: 3 }}>“{item.question}”</Text>
+                {item.diagnosedGap ? <Text style={{ color: colors.secondary, fontSize: 8, marginTop: 4 }}>Observed gap: {item.diagnosedGap}</Text> : null}
+                <Text style={{ color: colors.secondary, fontSize: 8, marginTop: 4 }}>Include verified service details, relevant use cases, proof such as case studies or certifications, and a clear enquiry route. Improve an existing suitable page rather than creating a duplicate.</Text>
+              </View>
+            </View>
+          )) : <Text style={{ color: colors.secondary, paddingVertical: 8 }}>No clear NOT MENTIONED questions were retained, so this audit does not prescribe a new page.</Text>}
+        </View>
+        <View style={styles.table}>
+          <Text style={[styles.analysisTitle, { paddingTop: 8, paddingBottom: 6 }]}>2. Directory and profile opportunities</Text>
+          {model.sources.filter((source) => ['justdial.com', 'sulekha.com', 'indiamart.com', 'tradeindia.com', 'exportersindia.com', 'connect2india.com', 'indiayellowpages.com', 'yellowpages.in', 'yelp.com', 'clutch.co', 'ambitionbox.com', 'mouthshut.com', 'grotal.com', 'thomasnet.com', 'kompass.com', 'go4worldbusiness.com', 'trustpilot.com', 'glassdoor.com', 'facebook.com', 'linkedin.com'].includes(source.domain.toLowerCase().replace(/^www\\./, ''))).slice(0, 5).length ? model.sources.filter((source) => ['justdial.com', 'sulekha.com', 'indiamart.com', 'tradeindia.com', 'exportersindia.com', 'connect2india.com', 'indiayellowpages.com', 'yellowpages.in', 'yelp.com', 'clutch.co', 'ambitionbox.com', 'mouthshut.com', 'grotal.com', 'thomasnet.com', 'kompass.com', 'go4worldbusiness.com', 'trustpilot.com', 'glassdoor.com', 'facebook.com', 'linkedin.com'].includes(source.domain.toLowerCase().replace(/^www\\./, ''))).slice(0, 5).map((source) => (
+            <View key={source.id} style={styles.tableRow} wrap={false}>
+              <View style={{ width: '100%' }}>
+                <Text style={{ fontFamily: 'Helvetica-Bold' }}>{source.domain}</Text>
+                <Text style={{ color: colors.secondary, fontSize: 8, marginTop: 3 }}>Cited in {source.observedCount} audited observation{source.observedCount === 1 ? '' : 's'}. Check whether your business already has a complete profile; verify eligibility before claiming or creating one.</Text>
+                {source.url ? <Link src={source.url} style={styles.citationLink}>Open observed source</Link> : null}
+              </View>
+            </View>
+          )) : <Text style={{ color: colors.secondary, paddingVertical: 8 }}>No known business directory was identified among the sources captured in this audit. No listing target is invented.</Text>}
+        </View>
+        <View style={[styles.verdict, { marginTop: 12 }]}>
+          <Text style={{ color: colors.amber, fontFamily: 'Helvetica-Bold' }}>Before publishing</Text>
+          <Text style={{ marginTop: 5 }}>These are evidence-led opportunities, not proof that a page or profile is missing. Check the live website and listing first, and publish only verified business facts. AI visibility is not guaranteed.</Text>
+        </View>
+      </Page>
+
+      <Page size="A4" style={styles.page}>
+        <View style={styles.header} fixed><Text>{model.business.name}</Text><PdfBrand /></View>
+        <Text style={styles.footerLeft} fixed>Confidential - observed {formatDate(model.observationDate)}</Text>
         <Text style={styles.sectionTitle}>Implementation and recheck</Text>
         <Text style={styles.sectionIntro}>Compare only like-for-like questions under recorded conditions. A changed answer is an observation, not automatic proof of causality.</Text>
         <View style={styles.compareRow}>
