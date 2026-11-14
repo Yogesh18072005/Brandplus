@@ -129,3 +129,77 @@ export async function generateContent(input: ContentInput): Promise<ContentResul
     wordCount,
   };
 }
+
+
+export async function generateContentBatch(input: {
+  topics: string[];
+  keywords: string[];
+  project: ContentInput['project'];
+}): Promise<(ContentResult & { question: string })[]> {
+  if (!config.googleApiKey) throw new Error('Gemini is not configured. Add GOOGLE_API_KEY before generating drafts.');
+  if (input.topics.length < 1 || input.topics.length > 5) throw new Error('Generate between 1 and 5 page drafts at a time.');
+
+  const topicList = input.topics.map((topic, index) => `${index + 1}. ${topic}`).join('\\n');
+  const prompt = `You are an AEO content editor. Create one useful, concise webpage draft for EACH buyer question below. Return exactly ${input.topics.length} drafts in the same order.
+
+VERIFIED BUSINESS PROFILE:
+Business: ${input.project.business_name}
+Website: ${input.project.website}
+Category: ${input.project.category}
+City: ${input.project.city}
+
+BUYER QUESTIONS:
+${topicList}
+
+TARGET KEYWORDS: ${input.keywords.join(', ') || 'derive naturally'}
+
+FACT RULES:
+- Use only the business facts above as verified facts.
+- Never invent services, products, certifications, customers, years, prices, statistics, locations, awards, guarantees, capabilities, testimonials or contact details.
+- Put [VERIFY: exact missing fact] wherever a business-specific fact is needed but not supplied.
+- Separate general educational advice from claims about this business.
+- Do not fabricate citations or claim a page is already published.
+
+FOR EACH QUESTION:
+- Give a direct answer first, then a clear title and useful H2/H3 sections.
+- Include 2-3 FAQs.
+- Keep each draft concise (about 250-400 words).
+- Include a meta description under 160 characters and relevant keywords.
+- HTML may use only h2, h3, p, ul, li, strong and em tags.
+
+Return only valid JSON in this shape:
+{"drafts":[{"question":"original question","title":"...","body":"...","metaDescription":"...","faqs":[{"question":"...","answer":"..."}],"keywords":["..."]}]}`;
+
+  const interaction = await geminiCall({
+    kind: 'tool:content-writer',
+    model: config.engineModel,
+    input: prompt,
+    generationConfig: { thinking_level: 'minimal', temperature: 0.3, max_output_tokens: 8192 },
+    retries: 0,
+  });
+  const parsed = extractJson(interaction.output_text ?? '') as {
+    drafts?: { question: string; title: string; body: string; metaDescription: string; faqs?: { question: string; answer: string }[]; keywords?: string[] }[];
+  };
+  if (!Array.isArray(parsed?.drafts) || parsed.drafts.length !== input.topics.length) {
+    throw new Error('Gemini returned an incomplete set of drafts. No drafts were saved.');
+  }
+
+  return parsed.drafts.map((draft, index) => {
+    if (typeof draft.title !== 'string' || typeof draft.body !== 'string' || typeof draft.metaDescription !== 'string') {
+      throw new Error('Gemini returned an incomplete draft. No drafts were saved.');
+    }
+    const faqs = Array.isArray(draft.faqs) ? draft.faqs : [];
+    const schemaMarkup = faqs.length > 0
+      ? [buildArticleSchema(draft.title, draft.metaDescription, input.project.business_name, input.project.website), buildFaqSchema(faqs)]
+      : buildArticleSchema(draft.title, draft.metaDescription, input.project.business_name, input.project.website);
+    return {
+      title: draft.title,
+      body: draft.body,
+      metaDescription: draft.metaDescription,
+      schemaMarkup: schemaMarkup as Record<string, unknown>,
+      keywords: Array.isArray(draft.keywords) ? draft.keywords : input.keywords,
+      wordCount: draft.body.replace(/<[^>]*>/g, ' ').split(/\\s+/).filter(Boolean).length,
+      question: input.topics[index],
+    };
+  });
+}
