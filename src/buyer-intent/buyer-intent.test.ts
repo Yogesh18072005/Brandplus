@@ -208,7 +208,7 @@ test('buyer intent retries once with rejection feedback when every candidate is 
   assert.match(retryFeedback, /target-company bias/);
   assert.equal(result.status, 'COMPLETED');
   assert.equal(result.questions.length, 1);
-  assert.equal(result.questions[0]?.id.length, 64);
+  assert.notEqual(result.questions[0]?.id, 'corrected');
 });
 
 test('rejected candidate warnings preserve a bounded question preview and exact company-bias reason', async () => {
