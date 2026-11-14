@@ -5,6 +5,7 @@ export const AI_OBSERVATION_PROMPT_VERSION = '1.0.0' as const;
 export const AI_OBSERVATION_PARSER_VERSION = '1.0.1' as const;
 export const AI_OBSERVATION_SCHEMA_VERSION = '1.0.0' as const;
 export const GEMINI_OBSERVATION_ADAPTER_VERSION = '1.0.0' as const;
+export const OPENAI_OBSERVATION_ADAPTER_VERSION = '1.0.0' as const;
 
 export type ObservationRunStatus = 'PENDING' | 'RUNNING' | 'PARTIAL_SUCCESS' | 'COMPLETED' | 'FAILED';
 export type QuestionObservationStatus = 'PENDING' | 'RUNNING' | 'COMPLETED' | 'FAILED';
