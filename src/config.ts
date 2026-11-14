@@ -10,7 +10,7 @@ function env(name: string, fallback: string): string {
   return v && v.trim() !== '' ? v.trim() : fallback;
 }
 
-const DEFAULT_MODEL = 'gemini-3.5-flash';
+const DEFAULT_MODEL = 'gemini-3.5-flash-lite';
 
 export const config = {
   googleApiKey: process.env.GOOGLE_API_KEY?.trim() ?? '',
