@@ -56,7 +56,7 @@ export async function loadDashboardBusinesses(projects: ProjectRow[]): Promise<D
     const audit = audits?.find((a) => a.project_id === project.id) ?? null;
     const request = requests?.find((r) => r.project_id === project.id) ?? null;
     const understandingRun = understandingRuns?.find((run) => run.project_id === project.id) ?? null;
-    const rawCoverage = understandingRun?.source_coverage as Partial<DashboardSourceCoverage> | null;
+    const rawCoverage = understandingRun?.source_coverage as unknown as Partial<DashboardSourceCoverage> | null;
     const coverageNumber = (value: unknown) => typeof value === 'number' && Number.isFinite(value) ? Math.max(0, Math.floor(value)) : 0;
     const sourceCoverage: DashboardSourceCoverage | null = understandingRun && rawCoverage ? {
       status: understandingRun.status,
