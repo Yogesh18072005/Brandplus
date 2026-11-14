@@ -199,7 +199,7 @@ export function SimpleReport({
             How we checked: {model.total} real buyer questions asked to {model.engineLabel}{date ? ` on ${date}` : ''}. AI answers change over time, so we re-ask the same questions after fixes go live.
           </p>
           <div>
-            {pdfHref && <a href={pdfHref} className="sr-foot-link" aria-label="Download the updated PDF with the evidence-based action plan">Download updated PDF</a>}
+            {pdfHref && <a href={pdfHref} className="sr-foot-link" aria-label="Download the updated PDF with the evidence-based action plan">Download audit report PDF</a>}
             {shareHref && <ShareLinkButton href={shareHref} />}
             {technicalHref && <a href={technicalHref} className="sr-foot-link">Technical report</a>}
           </div>
