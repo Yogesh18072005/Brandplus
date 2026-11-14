@@ -169,7 +169,7 @@ export class BuyerIntentService {
         for (const rejection of filtered.rejected) summary.set(rejection.reason, (summary.get(rejection.reason) ?? 0) + 1);
         const rejectionSamples = filtered.rejected.slice(0, 5).map((rejection) => {
           const rejectedCandidate = generated.find((candidate) => candidate.id === rejection.id);
-          const question = rejectedCandidate?.question.replace(/\\s+/g, ' ').slice(0, 160) ?? `candidate id ${rejection.id}`;
+          const question = rejectedCandidate?.question.replace(/\s+/g, ' ').slice(0, 160) ?? `candidate id ${rejection.id}`;
           return `"${question}" [${rejection.reason}]`;
         });
         result.warnings.push(
