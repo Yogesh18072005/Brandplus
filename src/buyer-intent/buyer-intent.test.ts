@@ -418,6 +418,22 @@ test('candidates without a real entity-and-evidence text match are not assigned 
   );
 });
 
+test('an evidence ID in the entity ID array is rejected with an explicit type diagnostic', () => {
+  const item = candidate({ supporting_business_entity_ids: ['evidence_9685f58c53c177b388af4071'] });
+  assert.throws(
+    () => validateCandidateBatch({ candidates: [item] }, profile()),
+    /placed an evidence ID in supporting_business_entity_ids/,
+  );
+});
+
+test('entity-only labels such as FusionIQ are rejected as incomplete buyer questions', () => {
+  const item = candidate({ question: 'FusionIQ' });
+  assert.throws(
+    () => validateCandidateBatch({ candidates: [item] }, profile()),
+    /not a complete natural buyer question/,
+  );
+});
+
 test('19: invented evidence IDs fail schema validation', () => {
   const item = candidate({ supporting_business_evidence_ids: ['invented-evidence'] });
   assert.throws(() => validateCandidateBatch({ candidates: [item] }, profile()), /missing evidence/);
