@@ -2,6 +2,8 @@ import { stableId } from '@/src/business-understanding/normalize';
 import { BUYER_INTENT_PROMPT_VERSION } from './prompts';
 import { deduplicateCandidates, filterCandidates, finalizeQuestions } from './normalize';
 import { GeminiBuyerIntentExtractor } from './extractor';
+import { config } from '@/src/config';
+import { ollamaCall } from '@/src/ollama-client';
 import {
   BUYER_INTENT_GENERATION_VERSION,
   BUYER_INTENT_RANKING_VERSION,
@@ -107,7 +109,16 @@ export class BuyerIntentService {
   private readonly defaultQuestionCount: number;
 
   constructor(options: BuyerIntentServiceOptions = {}) {
-    this.extractor = options.extractor ?? new GeminiBuyerIntentExtractor();
+    const provider = config.buyerIntentProvider;
+    if (options.extractor) {
+      this.extractor = options.extractor;
+    } else if (provider === 'ollama') {
+      this.extractor = new GeminiBuyerIntentExtractor(ollamaCall, `ollama:${config.ollamaModel}`);
+    } else if (provider === 'gemini') {
+      this.extractor = new GeminiBuyerIntentExtractor();
+    } else {
+      throw new Error(`Unsupported BUYER_INTENT_PROVIDER: ${provider}. Use ollama or gemini.`);
+    }
     this.repository = options.repository;
     this.logger = options.logger;
     this.defaultQuestionCount = options.defaultQuestionCount ?? Number(process.env.BUYER_INTENT_QUESTION_COUNT ?? 20);
