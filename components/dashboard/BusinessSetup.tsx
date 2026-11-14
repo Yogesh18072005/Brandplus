@@ -28,6 +28,8 @@ interface Form {
   competitors: string[];
 }
 
+const BUSINESS_TYPES = ['IT', 'Cosmetics', 'Finance', 'Real Estate', 'Healthcare'] as const;
+
 const EMPTY: Form = { businessName: '', website: '', category: '', city: 'India', competitors: [] };
 
 type StepKey = 'businessName' | 'website' | 'category' | 'competitors' | 'review';
@@ -145,7 +147,7 @@ export function BusinessSetup({ mode }: { mode: 'first' | 'another' | 'preview' 
       setForm({
         businessName: text(prefill.businessName, 80),
         website: text(prefill.website, 120),
-        category: text(prefill.category, 60),
+        category: BUSINESS_TYPES.includes(text(prefill.category, 60) as (typeof BUSINESS_TYPES)[number]) ? text(prefill.category, 60) : '',
         city: 'India',
         competitors,
       });
@@ -197,7 +199,7 @@ export function BusinessSetup({ mode }: { mode: 'first' | 'another' | 'preview' 
   function problem(key: StepKey): string {
     if (key === 'businessName' && !form.businessName.trim()) return 'Add your business name to continue.';
     if (key === 'website' && !looksLikeSite(form.website)) return 'Enter a website like yourbusiness.com';
-    if (key === 'category' && !form.category.trim()) return 'Add what you do, in a few words.';
+    if (key === 'category' && !BUSINESS_TYPES.includes(form.category as (typeof BUSINESS_TYPES)[number])) return 'Select a business type to continue.';
     if (key === 'competitors' && !form.competitors.length && !draft.trim()) return 'Add at least one competitor.';
     return '';
   }
@@ -330,11 +332,7 @@ export function BusinessSetup({ mode }: { mode: 'first' | 'another' | 'preview' 
                       className={`mt-8 w-full rounded-xl border border-[#e4e3f0] bg-white px-4 py-4 text-[18px] font-medium outline-none transition-colors focus:border-brand ${INK}`}
                     >
                       <option value="">Choose a business type</option>
-                      <option value="IT">IT</option>
-                      <option value="Cosmetics">Cosmetics</option>
-                      <option value="Finance">Finance</option>
-                      <option value="Real Estate">Real Estate</option>
-                      <option value="Healthcare">Healthcare</option>
+                      {BUSINESS_TYPES.map((type) => <option key={type} value={type}>{type}</option>)}
                     </select>
                   ) : null}
                   {current.key === 'competitors' && form.competitors.length > 0 && (
