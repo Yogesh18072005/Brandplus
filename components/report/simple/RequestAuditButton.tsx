@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ensureAccountClaim } from '@/lib/client/account-claim';
 
-/** Asks for this business's audit. Nothing runs or is charged until we run it. */
+/** Requests a free audit for this business; the server auto-approves it without deducting credits. */
 export function RequestAuditButton({ projectId, label = 'Request my audit', buttonClassName }: { projectId: string; label?: string; buttonClassName?: string }) {
   const router = useRouter();
   const [state, setState] = useState<'idle' | 'sending'>('idle');
