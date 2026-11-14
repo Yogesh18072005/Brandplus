@@ -495,6 +495,19 @@ async function saveBusinessName(e: FormEvent<HTMLFormElement>) {
             <p><strong className={INK}>{business.sourceCoverage.pages_partial}</strong><span className="block">Partial</span></p>
             <p><strong className={INK}>{business.sourceCoverage.pages_duplicate}</strong><span className="block">Duplicates</span></p>
           </div>
+          {business.sourceCoverage.issues.length > 0 && (
+            <div className="mt-4 border-t border-[#eeedf3] pt-3">
+              <p className={`text-[12.5px] font-semibold ${INK}`}>Pages needing attention</p>
+              <ul className="mt-2 space-y-2">
+                {business.sourceCoverage.issues.map((issue) => (
+                  <li key={issue.url} className="flex flex-wrap items-start justify-between gap-2 text-[12px]">
+                    <span className={`min-w-0 flex-1 truncate ${MUTED}`}>{issue.title || issue.url}</span>
+                    <span className="text-right text-[#7d7a94]">{issue.status.replaceAll('_', ' ').toLowerCase()} · {issue.reason}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </section>
       )}
       {editingName && business && (
