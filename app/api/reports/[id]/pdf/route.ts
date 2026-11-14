@@ -58,7 +58,28 @@ async function loadOwnedContentDrafts(projectId: string): Promise<SavedContentDr
       console.error('[report-pdf] Could not locate the latest content batch:', latestError.message);
       return null;
     }
-    if (!latest?.generation_batch_id) return [];
+    if (!latest) return [];
+    if (!latest.generation_batch_id) {
+      // Drafts created before batch metadata was introduced: retain the latest
+      // saved set so users do not have to spend Gemini quota to export them.
+      const { data: legacyDrafts, error: legacyError } = await admin
+        .from('generated_content')
+        .select('buyer_question,title,body,meta_description')
+        .eq('project_id', projectId)
+        .eq('content_type', 'answer_page')
+        .order('created_at', { ascending: false })
+        .limit(5);
+      if (legacyError) {
+        console.error('[report-pdf] Could not load older saved drafts:', legacyError.message);
+        return null;
+      }
+      return (legacyDrafts ?? []).reverse().map((draft) => ({
+        buyer_question: draft.buyer_question,
+        title: draft.title,
+        body: draft.body,
+        meta_description: draft.meta_description,
+      }));
+    }
 
     const { data, error } = await admin
       .from('generated_content')
