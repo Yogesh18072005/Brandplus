@@ -7,7 +7,7 @@ import { buyerIntentExtractorTestables, GeminiBuyerIntentExtractor } from './ext
 import { buyerIntentGrounding } from './prompts';
 import { deduplicateCandidates, filterCandidates, finalizeQuestions } from './normalize';
 import { validateCandidateBatch, validateCandidateBatchWithOmissions, validateEvaluationBatch } from './schema';
-import { BuyerIntentService } from './service';
+import { BuyerIntentService, buyerIntentServiceTestables } from './service';
 import type { BeginBuyerIntentRunResult, BuyerIntentExtractor, BuyerIntentRepository, BuyerIntentRunIdentity, BuyerQuestionCandidate, BuyerQuestionEvaluation, BuyerQuestionSet } from './types';
 
 const evidence = (id: string, evidence_text: string) => ({
@@ -483,6 +483,35 @@ test('large buyer-intent profiles are broken into small evidence-linked batches 
   assert.equal(result.status, 'COMPLETED');
   assert.equal(result.candidate_count, 3);
   assert.equal(result.questions.length, 1);
+});
+
+test('entity batching filters every business-entity category and keeps only linked evidence', () => {
+  const understanding = profile({
+    products: [entity('product-keep', 'PRODUCT', 'industrial pumps', ['e-keep'])],
+    proof_assets: [entity('proof-drop', 'PROOF_ASSET', 'case study', ['e-drop'])],
+    commercial_claims: [entity('claim-drop', 'COMMERCIAL_CLAIM', 'market leader', ['e-drop'])],
+    differentiators: [entity('diff-drop', 'DIFFERENTIATOR', 'custom engineering', ['e-drop'])],
+    conversion_signals: [entity('conversion-drop', 'CONVERSION_SIGNAL', 'request a quote', ['e-drop'])],
+    company_identity: [entity('identity-drop', 'COMPANY_IDENTITY', 'Acme Pumps', ['e-drop'])],
+    evidence: [
+      evidence('e-keep', 'We manufacture industrial pumps.'),
+      evidence('e-drop', 'Unrelated evidence for another entity category.'),
+    ],
+  });
+
+  const batch = buyerIntentServiceTestables.understandingForEntities(
+    understanding,
+    understanding.products,
+  );
+
+  assert.deepEqual(batch.products.map((item) => item.id), ['product-keep']);
+  assert.deepEqual(batch.proof_assets, []);
+  assert.deepEqual(batch.commercial_claims, []);
+  assert.deepEqual(batch.differentiators, []);
+  assert.deepEqual(batch.conversion_signals, []);
+  assert.deepEqual(batch.company_identity, []);
+  assert.deepEqual(batch.evidence.map((item) => item.id), ['e-keep']);
+  assert.equal(buyerIntentGrounding(batch).entities.length, 1);
 });
 
 test('buyer-intent grounding labels entity IDs and evidence IDs unambiguously', () => {
