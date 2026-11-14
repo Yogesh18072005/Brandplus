@@ -4,6 +4,7 @@ import test from 'node:test';
 import { deriveObservation, extractCitationsAndSources, extractEntities, genericMarkdownLabel, inferEntityType } from './extract';
 import { hostnameBelongsToDomain, normalizeSourceUrl } from './normalize';
 import { ObservationProviderError } from './provider';
+import { DEFAULT_OBSERVATION_PARAMETERS, observationGroundingFromEnv } from './prompt';
 import { mapWithConcurrency, ObservationService } from './service';
 import type {
   CreateObservationRunResult, DerivedObservation, ObservationExecutionPlan, ObservationProvider,
@@ -254,4 +255,33 @@ test('41 markdown headings and process labels are identified as generic labels',
 test('42 genuine companies and organizations preserve correct entity types', () => {
   assert.equal(inferEntityType('Hatti of India Pvt Ltd'), 'COMPANY');
   assert.equal(inferEntityType('Tata Global Sourcing'), 'ORGANIZATION');
+});
+
+
+test('43 observation grounding stays on by default and only turns off for an explicit false', () => {
+  assert.equal(DEFAULT_OBSERVATION_PARAMETERS.grounding, true);
+  assert.equal(observationGroundingFromEnv({}), true);
+  assert.equal(observationGroundingFromEnv({ OBSERVATION_GROUNDING: '' }), true);
+  assert.equal(observationGroundingFromEnv({ OBSERVATION_GROUNDING: 'true' }), true);
+  assert.equal(observationGroundingFromEnv({ OBSERVATION_GROUNDING: 'false' }), false);
+  assert.equal(observationGroundingFromEnv({ OBSERVATION_GROUNDING: ' FALSE ' }), false);
+});
+
+test('44 every Engine 03 run honours OBSERVATION_GROUNDING, and an explicit parameter still wins', async () => {
+  const previous = process.env.OBSERVATION_GROUNDING;
+  try {
+    const repository = new MemoryRepository();
+    const service = new ObservationService({ repository, providers: [mockProvider(async () => response('ok'))] });
+    const base = { projectId: 'p', buyerQuestionSetId: 's', businessUnderstandingRunId: 'b', providerName: 'mock' };
+    delete process.env.OBSERVATION_GROUNDING;
+    const onByDefault = await service.createRun({ ...base, idempotencyKey: 'grounding-default-key-1' });
+    process.env.OBSERVATION_GROUNDING = 'false';
+    const off = await service.createRun({ ...base, idempotencyKey: 'grounding-off-key-0001' });
+    const explicit = await service.createRun({ ...base, idempotencyKey: 'grounding-explicit-key-1', generationParameters: { grounding: true } });
+    assert.equal(onByDefault.run.generationParameters.grounding, true);
+    assert.equal(off.run.generationParameters.grounding, false);
+    assert.equal(explicit.run.generationParameters.grounding, true);
+  } finally {
+    if (previous === undefined) delete process.env.OBSERVATION_GROUNDING; else process.env.OBSERVATION_GROUNDING = previous;
+  }
 });
