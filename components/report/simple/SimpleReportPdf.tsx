@@ -277,7 +277,7 @@ export function SimpleReportPdf({ model, reportUrl, drafts = [] }: { model: Simp
       </Page>
 
       {drafts.map((draft, index) => (
-        <Page key={\`draft-\${index}\`} size="A4" style={s.page}>
+        <Page key={`draft-${index}`} size="A4" style={s.page}>
           <View style={s.top}><Mark /><Text style={s.topRight}>AI content recommendation {index + 1} of {drafts.length}</Text></View>
           <Text style={s.label}>Generated page draft · for review only</Text>
           <Text style={s.draftQuestion}>BASED ON THIS MISSED BUYER QUESTION</Text>
