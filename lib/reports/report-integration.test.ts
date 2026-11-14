@@ -72,13 +72,15 @@ test('report print styles hide browser-only controls and keep atomic evidence an
   assert.match(css, /color:\s*#121026\s*!important/);
 });
 
-test('dashboard consumes canonical report snapshots and never calculates a legacy score', () => {
+test('dashboard loads canonical report snapshots and never calculates a legacy score', () => {
   const page = source('app/dashboard/page.tsx');
+  const loader = source('lib/dashboard/load-businesses.ts');
   const workspace = source('components/dashboard/VisibilityWorkspace.tsx');
-  assert.match(page, /loadLatestIntelligenceReports/);
-  assert.match(page, /toDashboardSnapshot/);
-  assert.doesNotMatch(page, /visibilityScore|brandpulseScore|topCompetitor/);
-  assert.match(page, /isCanonicalAudit\(audit\.report_data\)/);
+  assert.match(page, /loadDashboardBusinesses/);
+  assert.match(loader, /loadLatestIntelligenceReports/);
+  assert.match(loader, /simpleReportFor/);
+  assert.match(loader, /loadIntelligenceReportHistory/);
+  assert.doesNotMatch(`${page}\n${loader}`, /visibilityScore|brandpulseScore|topCompetitor/);
   assert.doesNotMatch(workspace, /\/ 100|Score \/ 100|Top competitor/);
   assert.match(workspace, /historical.*Open activity/s);
 });
