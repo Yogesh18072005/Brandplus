@@ -218,7 +218,7 @@ export class BuyerIntentService {
       const distinctAcceptedBeforeRetry = deduplicateCandidates(filtered.accepted).length;
       if (distinctAcceptedBeforeRetry < minimumDistinctCandidates) {
         const reasons = [...new Set(filtered.rejected.map((item) => item.reason))].slice(0, 6).join('; ');
-        const examples = generated.slice(0, 8).map((item) => item.question.replace(/\\s+/g, ' ').slice(0, 140));
+        const examples = generated.slice(0, 8).map((item) => item.question.replace(/\s+/g, ' ').slice(0, 140));
         const feedback = [
           'The previous candidate batches did not produce enough distinct, grounded buyer questions.',
           'Distinct grounded candidates: ' + distinctAcceptedBeforeRetry + '; minimum required: ' + minimumDistinctCandidates + '.',
