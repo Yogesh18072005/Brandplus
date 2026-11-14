@@ -5,6 +5,17 @@ import type { SimpleReport } from '@/lib/reports/simple-report';
 
 export type BusinessStage = 'none' | 'requested' | 'running' | 'ready' | 'incomplete';
 
+export interface DashboardSourceCoverage {
+  status: string;
+  pages_analyzed: number;
+  pages_successfully_analyzed: number;
+  pages_failed: number;
+  pages_empty: number;
+  pages_blocked: number;
+  pages_partial: number;
+  pages_duplicate: number;
+}
+
 export interface DashboardBusiness {
   id: string;
   name: string;
@@ -18,6 +29,7 @@ export interface DashboardBusiness {
   recheckOpen: boolean;
   /** Every completed check, oldest first: how often AI named the business. */
   history: Array<{ date: string; named: number; total: number }>;
+  sourceCoverage: DashboardSourceCoverage | null;
 }
 
 interface ProjectRow { id: string; business_name: string; website: string | null; category: string | null; city: string | null }
@@ -32,16 +44,30 @@ export async function loadDashboardBusinesses(projects: ProjectRow[]): Promise<D
   const ids = projects.map((p) => p.id);
   if (!ids.length) return [];
   const admin = createAdminClient();
-  const [reports, { data: audits }, { data: requests }] = await Promise.all([
+  const [reports, { data: audits }, { data: requests }, { data: understandingRuns }] = await Promise.all([
     loadLatestIntelligenceReports(ids).catch(() => []),
     admin.from('audits').select('project_id, status, created_at').in('project_id', ids).order('created_at', { ascending: false }),
     admin.from('audit_queue').select('project_id, status, requires_approval, approved_at, created_at').in('project_id', ids).eq('job_type', 'AUDIT').order('created_at', { ascending: false }),
+    admin.from('business_understanding_runs').select('project_id, status, source_coverage, created_at').in('project_id', ids).neq('status', 'PROCESSING').order('created_at', { ascending: false }),
   ]);
 
   return Promise.all(projects.map(async (project) => {
     const report = reports.find((r) => r.projectId === project.id) ?? null;
     const audit = audits?.find((a) => a.project_id === project.id) ?? null;
     const request = requests?.find((r) => r.project_id === project.id) ?? null;
+    const understandingRun = understandingRuns?.find((run) => run.project_id === project.id) ?? null;
+    const rawCoverage = understandingRun?.source_coverage as Partial<DashboardSourceCoverage> | null;
+    const coverageNumber = (value: unknown) => typeof value === 'number' && Number.isFinite(value) ? Math.max(0, Math.floor(value)) : 0;
+    const sourceCoverage: DashboardSourceCoverage | null = understandingRun && rawCoverage ? {
+      status: understandingRun.status,
+      pages_analyzed: coverageNumber(rawCoverage.pages_analyzed),
+      pages_successfully_analyzed: coverageNumber(rawCoverage.pages_successfully_analyzed),
+      pages_failed: coverageNumber(rawCoverage.pages_failed),
+      pages_empty: coverageNumber(rawCoverage.pages_empty),
+      pages_blocked: coverageNumber(rawCoverage.pages_blocked),
+      pages_partial: coverageNumber(rawCoverage.pages_partial),
+      pages_duplicate: coverageNumber(rawCoverage.pages_duplicate),
+    } : null;
     const open = Boolean(audit && ['queued', 'running', 'processing'].includes(audit.status));
     const awaitingApproval = Boolean(request?.requires_approval && !request.approved_at && request.status === 'pending');
     const complete = report?.status === 'COMPLETE' ? report : null;
@@ -62,6 +88,7 @@ export async function loadDashboardBusinesses(projects: ProjectRow[]): Promise<D
       report: complete ? await simpleReportFor(complete) : null,
       recheckOpen: Boolean(complete && open && audit && new Date(audit.created_at) > new Date(complete.generatedAt)),
       history: past.map((r) => ({ date: r.generatedAt, named: r.summary.meaningfulAppearances, total: r.summary.totalQuestions })),
+      sourceCoverage,
     };
   }));
 }
