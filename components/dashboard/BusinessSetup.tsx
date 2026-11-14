@@ -269,14 +269,21 @@ export function BusinessSetup({ mode }: { mode: 'first' | 'another' | 'preview' 
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) { setSaving(false); setError(data.error ?? 'We couldn’t create your business. Try again.'); return; }
+    // Start a free audit for every newly added business, not only first-time onboarding.
+    // The API queues and auto-approves it; the background worker performs the long-running work.
+    const auditResponse = await fetch('/api/audits', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ projectId: data.id }),
+    }).catch(() => null);
     if (first) {
-      // Request the first audit straight away; it waits for the founder to run it.
-      await fetch('/api/audits', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ projectId: data.id }),
-      }).catch(() => null);
       try { localStorage.removeItem(ONBOARDING_PREFILL_KEY); } catch { /* storage unavailable */ }
+    }
+    if (auditResponse && !auditResponse.ok) {
+      const auditError = await auditResponse.json().catch(() => ({}));
+      setError(typeof auditError.error === 'string'
+        ? `Business saved. Audit could not start: ${auditError.error}`
+        : 'Business saved, but the audit could not start. You can retry from the business page.');
     }
     router.push(`/dashboard/projects/${data.id}`);
   }
@@ -370,7 +377,7 @@ export function BusinessSetup({ mode }: { mode: 'first' | 'another' | 'preview' 
                 <p className={`mt-8 max-w-[30em] text-[18px] leading-relaxed ${MUTED}`}>
                   We’ll ask AI what buyers of <b className={`font-semibold ${INK}`}>{form.category.trim()}</b> in <b className={`font-semibold ${INK}`}>{form.city.trim()}</b> ask,
                   and count how often it names <b className={`font-semibold ${INK}`}>{form.businessName.trim()}</b> against <b className={`font-semibold ${INK}`}>{form.competitors.join(', ')}</b>.
-                  Your report lands within one working day{mode === 'another' ? '' : ', free'}.
+                  Your free audit starts as soon as you finish. The report appears here when it’s ready.
                 </p>
               )}
               {nudge && <p className="mt-3 text-[14px] text-[#d93036]" role="alert">{nudge}</p>}
