@@ -236,7 +236,7 @@ test('buyer intent retries when the first batch has too few distinct grounded ca
   assert.equal(calls, 2);
   assert.match(retryFeedback, /Distinct grounded candidates: 1; minimum required: 5/);
   assert.equal(result.status, 'FAILED');
-  assert.match(result.failure_message ?? '', /minimum 5/);
+  assert.match(result.warnings.join(' '), /minimum 5/);
 });
 
 test('rejected candidate warnings preserve a bounded question preview and exact company-bias reason', async () => {
