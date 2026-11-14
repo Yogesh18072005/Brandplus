@@ -158,6 +158,11 @@ export function parseListingLines(text: string, domains: string[]): Map<string, 
   return out;
 }
 
+/** A directory listing is verified only when its URL belongs to that directory and the fetched page names the business. */
+export function verifyDirectoryListing(url: string, pageText: string, domain: string, name: string, aliases?: string[]): boolean {
+  return domainMatches(url, domain) && nameAppearsIn(pageText, name, aliases);
+}
+
 export async function checkDirectories(input: FootprintInput, citedPages: CitedPage[], citationCounts: { domain: string; count: number }[], limit = 5): Promise<DirectoryListing[]> {
   const dirs = citationCounts.filter((c) => DIRECTORY_DOMAINS.has(c.domain)).slice(0, limit);
   if (dirs.length === 0) return [];
@@ -167,7 +172,7 @@ export async function checkDirectories(input: FootprintInput, citedPages: CitedP
     const candidate = citedPages.find((p) => p.domain === d.domain && p.status === 'read' && p.brandNamed);
     if (!candidate) return { domain: d.domain, citedIn: d.count, listed: null, how: 'search' as const };
     const page = await readPage(candidate.url);
-    const verified = !!page && nameAppearsIn(page.text, input.name, input.aliases);
+    const verified = !!page && verifyDirectoryListing(candidate.url, page.text, d.domain, input.name, input.aliases);
     return {
       domain: d.domain,
       citedIn: d.count,
@@ -191,7 +196,7 @@ export async function checkDirectories(input: FootprintInput, citedPages: CitedP
     // include a same-directory URL which we can fetch and verify ourselves.
     if (p.yes && p.url && domainMatches(p.url, l.domain)) {
       const page = await readPage(p.url);
-      if (page && nameAppearsIn(page.text, input.name, input.aliases)) {
+      if (page && verifyDirectoryListing(p.url, page.text, l.domain, input.name, input.aliases)) {
         l.listed = true;
         l.url = p.url;
       }
