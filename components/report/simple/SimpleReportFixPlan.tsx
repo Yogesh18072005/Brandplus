@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-type FixQuestion = { id: string; question: string };
+type FixQuestion = { id: string; question: string; quote?: string | null; competitorsNamed?: string[] };
 type Draft = { question: string; title: string; body: string; metaDescription: string; wordCount: number };
 
 export function SimpleReportFixPlan({
@@ -36,6 +36,7 @@ export function SimpleReportFixPlan({
         body: JSON.stringify({
           projectId,
           topics: questions.map((question) => question.question),
+          evidence: questions.map((question) => ({ question: question.question, answerQuote: question.quote ?? null, competitorsNamed: question.competitorsNamed ?? [] })),
           contentType: 'answer_page',
           keywords: [],
         }),
