@@ -96,6 +96,9 @@ export function candidateGenerationPrompt(
       'Every candidate must reference at least one supplied entity id and one of that entity\'s evidence ids.',
       'Never leave either supporting ID array empty. Select IDs by matching the question to the supplied entity value/description and its allowed evidence; do not guess or invent identifiers.',
       'Before returning, verify that every entity ID exists in the supplied entities list and every evidence ID exists in that entity\'s allowed_evidence_ids.',
+      'The response_contract_example is a structural example using real IDs from this input. Copy the field-to-ID mapping exactly; never swap the two ID types.',
+      'supporting_business_entity_ids is an array of entity_id values from entities[].entity_id. supporting_business_evidence_ids is an array of evidence_id values from that selected entity evidence_options.',
+      'A product or service name by itself is not a buyer question. The question must be a complete natural-language sentence ending in a question mark and express a buyer decision or research need.',
       'Copy supporting_business_entity_ids only from entity_id fields.',
       'Copy supporting_business_evidence_ids only from evidence_id fields. Never put an entity_id in supporting_business_evidence_ids.',
       'Each supporting_business_evidence_id must also appear in allowed_evidence_ids for at least one referenced entity.',
@@ -113,6 +116,23 @@ export function candidateGenerationPrompt(
         instruction: 'Return a completely corrected candidate batch. Use only the exact supplied entity_id and evidence_id values.',
       },
     } : {}),
+    response_contract_example: (() => {
+      const firstEntity = buyerIntentBusinessEntities(understanding).find((entity) =>
+        entity.evidence_ids.some((id) => understanding.evidence.some((item) => item.id === id)),
+      );
+      const firstEvidence = firstEntity
+        ? understanding.evidence.find((item) => firstEntity.evidence_ids.includes(item.id))
+        : undefined;
+      return firstEntity && firstEvidence ? {
+        id: 'candidate-example',
+        question: `Which suppliers should buyers evaluate for ${firstEntity.value}?`,
+        intent: 'SHORTLIST',
+        buyer_stage: 'EVALUATION',
+        dimensions: [firstEntity.type === 'PRODUCT' ? 'PRODUCT' : 'SERVICE'],
+        supporting_business_entity_ids: [firstEntity.id],
+        supporting_business_evidence_ids: [firstEvidence.id],
+      } : null;
+    })(),
     business_understanding: buyerIntentGrounding(understanding),
   });
 }
