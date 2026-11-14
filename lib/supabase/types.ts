@@ -213,6 +213,7 @@ export interface Database {
           project_id: string;
           content_type: string;
           buyer_question: string | null;
+          generation_batch_id: string | null;
           title: string;
           body: string;
           meta_description: string | null;
@@ -227,6 +228,7 @@ export interface Database {
           project_id: string;
           content_type: string;
           buyer_question?: string | null;
+          generation_batch_id?: string | null;
           title: string;
           body?: string;
           meta_description?: string | null;
@@ -241,6 +243,7 @@ export interface Database {
           project_id?: string;
           content_type?: string;
           buyer_question?: string | null;
+          generation_batch_id?: string | null;
           title?: string;
           body?: string;
           meta_description?: string | null;
