@@ -151,16 +151,21 @@ export class BuyerIntentService {
       const candidateTarget = Math.min(40, Math.max(20, count * 2));
       let generated = await this.extractor.generateCandidates(input.understanding, candidateTarget);
       let filtered = filterCandidates(generated, input.understanding);
-      if (!filtered.accepted.length && filtered.rejected.length) {
+      const minimumDistinctCandidates = Math.min(count, MINIMUM_AUDIT_QUESTIONS);
+      const distinctAcceptedBeforeRetry = deduplicateCandidates(filtered.accepted).length;
+      if (distinctAcceptedBeforeRetry < minimumDistinctCandidates) {
         const reasons = [...new Set(filtered.rejected.map((item) => item.reason))].slice(0, 6).join('; ');
-        const examples = generated.slice(0, 5).map((item) => item.question.replace(/\s+/g, ' ').slice(0, 140));
+        const examples = generated.slice(0, 8).map((item) => item.question.replace(/\s+/g, ' ').slice(0, 140));
         const feedback = [
-          'The previous candidate batch was entirely rejected by deterministic buyer-intent validation.',
-          'Rejection reasons: ' + reasons,
-          'Rejected examples: ' + examples.join(' | '),
-          'Generate a fresh batch of neutral buyer questions. Do not mention the target business name, do not repeat rejected questions, and preserve exact entity/evidence ID grounding.',
+          'The previous candidate batch did not produce enough distinct, grounded buyer questions.',
+          'Distinct grounded candidates: ' + distinctAcceptedBeforeRetry + '; minimum required: ' + minimumDistinctCandidates + '.',
+          reasons ? 'Rejection reasons: ' + reasons : 'The batch may contain repeated or overly similar questions.',
+          'Previous questions to avoid: ' + examples.join(' | '),
+          'Generate additional, genuinely different buyer questions. Do not repeat or lightly rephrase previous questions, do not mention the target business name, and preserve exact entity/evidence ID grounding.',
         ].join(' ');
-        result.warnings.push('All first-pass buyer questions were rejected; requesting one corrected batch.');
+        result.warnings.push(
+          `First-pass generation produced only ${distinctAcceptedBeforeRetry} distinct grounded candidates; requesting one additional batch.`,
+        );
         const retryCandidates = await this.extractor.generateCandidates(input.understanding, candidateTarget, feedback);
         const retryWithUniqueIds = retryCandidates.map((item, index) => ({
           ...item,
