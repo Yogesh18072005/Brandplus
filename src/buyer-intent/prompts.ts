@@ -2,7 +2,7 @@ import type { CanonicalBusinessUnderstanding } from '@/src/business-understandin
 import type { BuyerQuestionCandidate } from './types';
 import { buyerIntentBusinessEntities } from './schema';
 
-export const BUYER_INTENT_PROMPT_VERSION = '1.0.4' as const;
+export const BUYER_INTENT_PROMPT_VERSION = '1.0.5' as const;
 
 export const BUYER_INTENT_SYSTEM_PROMPT = `You are the Buyer Intent Discovery Engine of BRANDPULSE.
 
@@ -28,6 +28,7 @@ Every question must sound natural when asked to an AI assistant, be self-contain
 
 export function buyerIntentGrounding(understanding: CanonicalBusinessUnderstanding) {
   const entities = buyerIntentBusinessEntities(understanding);
+  const evidenceById = new Map(understanding.evidence.map((item) => [item.id, item]));
   const evidenceIds = new Set(entities.flatMap((entity) => entity.evidence_ids));
   return {
     business: {
@@ -44,6 +45,17 @@ export function buyerIntentGrounding(understanding: CanonicalBusinessUnderstandi
       statement_kind: entity.statement_kind,
       confidence: entity.confidence,
       allowed_evidence_ids: entity.evidence_ids,
+      // Keep each entity beside its own source records so a small model can
+      // select grounding from a compact, explicit entity/evidence pair.
+      evidence_options: entity.evidence_ids
+        .map((id) => evidenceById.get(id))
+        .filter((item): item is NonNullable<typeof item> => Boolean(item))
+        .map((item) => ({
+          evidence_id: item.id,
+          evidence_text: item.evidence_text,
+          confidence: item.confidence,
+          source_url: item.source_url,
+        })),
     })),
     evidence: understanding.evidence.filter((item) => evidenceIds.has(item.id)).map((item) => ({
       evidence_id: item.id,
