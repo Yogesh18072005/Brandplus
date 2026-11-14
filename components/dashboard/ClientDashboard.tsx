@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { ArrowRight, ArrowUpRight, Check, Download, Link2, Search } from 'lucide-react';
 import type { SimpleReport, SimpleVerdict } from '@/lib/reports/simple-report';
