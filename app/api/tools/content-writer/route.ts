@@ -12,20 +12,23 @@ export async function POST(request: Request) {
 
   const body = await request.json().catch(() => null);
   if (!body || typeof body !== 'object') return NextResponse.json({ error: 'Invalid request.' }, { status: 400 });
-  const { projectId, topics, contentType = 'answer_page', keywords = [] } = body;
+  const { projectId, topics, evidence = [], contentType = 'answer_page', keywords = [] } = body;
 
   if (typeof projectId !== 'string' || !Array.isArray(topics) || topics.length < 1 || topics.length > 5 ||
       topics.some((topic) => typeof topic !== 'string' || !topic.trim() || topic.length > 1000)) {
     return NextResponse.json({ error: 'Provide between 1 and 5 valid buyer questions.' }, { status: 400 });
   }
   if (contentType !== 'answer_page') return NextResponse.json({ error: 'Invalid content type.' }, { status: 400 });
+  if (!Array.isArray(evidence) || evidence.length > 5 || evidence.some((item) => !item || typeof item !== 'object' || typeof item.question !== 'string' || (item.answerQuote !== null && item.answerQuote !== undefined && typeof item.answerQuote !== 'string') || !Array.isArray(item.competitorsNamed) || item.competitorsNamed.some((name: unknown) => typeof name !== 'string'))) {
+    return NextResponse.json({ error: 'Invalid audit evidence.' }, { status: 400 });
+  }
   if (!Array.isArray(keywords) || keywords.length > 20 || keywords.some((keyword) => typeof keyword !== 'string' || keyword.length > 100)) {
     return NextResponse.json({ error: 'Invalid keywords.' }, { status: 400 });
   }
 
   const { data: project } = await supabase
     .from('projects')
-    .select('id, user_id, business_name, website, category, city, competitors')
+    .select('id, user_id, business_name, website, category, city, competitors, products, services, locations, target_customers, markets')
     .eq('id', projectId)
     .eq('user_id', user.id)
     .single();
@@ -38,6 +41,7 @@ export async function POST(request: Request) {
   try {
     const drafts = await generateContentBatch({
       topics,
+      evidence,
       keywords,
       project: { ...project, competitors: (project.competitors ?? []) as { name: string }[] },
     });
