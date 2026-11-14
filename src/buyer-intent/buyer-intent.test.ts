@@ -66,9 +66,11 @@ function evaluation(item: BuyerQuestionCandidate, over: Partial<BuyerQuestionEva
 class FakeExtractor implements BuyerIntentExtractor {
   model = 'fake-model';
   generationCalls = 0;
+  generationTargets: number[] = [];
   constructor(public candidates: BuyerQuestionCandidate[], private readonly malformed = false) {}
-  async generateCandidates(): Promise<BuyerQuestionCandidate[]> {
+  async generateCandidates(_understanding: CanonicalBusinessUnderstanding, candidateCount: number): Promise<BuyerQuestionCandidate[]> {
     this.generationCalls++;
+    this.generationTargets.push(candidateCount);
     if (this.malformed) throw new Error('malformed model response');
     return structuredClone(this.candidates);
   }
@@ -380,6 +382,40 @@ test('buyer-intent structured parser rejects prose-wrapped JSON', () => {
     () => buyerIntentExtractorTestables.parseJson('Result: {"candidates":[]}'),
     /Unexpected token|Unexpected non-whitespace character/,
   );
+});
+
+test('Ollama timeouts are not retried as schema errors', async () => {
+  let attempts = 0;
+  await assert.rejects(
+    () => buyerIntentExtractorTestables.withSchemaRetry(async () => {
+      attempts++;
+      throw new Error('Ollama request timed out after 120000ms');
+    }, 2),
+    /Ollama request timed out/,
+  );
+  assert.equal(attempts, 1);
+});
+
+test('Ollama candidate and evaluation requests use bounded output budgets', async () => {
+  const budgets: number[] = [];
+  const item = candidate();
+  const extractor = new GeminiBuyerIntentExtractor(async (options) => {
+    budgets.push(options.generationConfig?.max_output_tokens ?? 0);
+    return budgets.length === 1
+      ? { output_text: JSON.stringify({ candidates: [item] }) }
+      : { output_text: JSON.stringify({ evaluations: [evaluation(item)] }) };
+  });
+
+  await extractor.generateCandidates(profile(), 1);
+  await extractor.evaluateCandidates(profile(), [item]);
+
+  assert.deepEqual(budgets, [2500, 1500]);
+});
+
+test('local-model first candidate batch is bounded near the requested question count', async () => {
+  const extractor = new FakeExtractor([candidate()]);
+  await new BuyerIntentService({ extractor }).generate(input(profile(), 10));
+  assert.deepEqual(extractor.generationTargets, [15, 15]);
 });
 
 test('buyer-intent grounding labels entity IDs and evidence IDs unambiguously', () => {
