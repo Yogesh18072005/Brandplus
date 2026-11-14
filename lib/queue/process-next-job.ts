@@ -106,7 +106,7 @@ async function processQueueJob(supabase: AdminClient, job: ClaimedJob): Promise<
     return processExecutionQueueJob(supabase, job);
   }
 
-  const capInr = positiveNumber(process.env.MAX_TOTAL_SPEND_INR, 1000);
+  const capInr = positiveNumber(process.env.MAX_TOTAL_SPEND_INR, 100);
   const usdInr = positiveNumber(process.env.USD_INR, 90);
   const { data: costRows, error: costError } = await supabase.from('audits').select('cost_estimate_cents');
   if (costError) {
