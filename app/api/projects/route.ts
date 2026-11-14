@@ -52,7 +52,6 @@ if (profileError) {
     { status: 500 }
   );
 }
-  if (profileError) return NextResponse.json({ error: profileError.message }, { status: 500 });
 
   const plan = getEffectivePlan(profile);
   const limits = getPlanLimits(plan);
