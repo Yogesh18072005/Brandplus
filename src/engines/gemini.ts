@@ -113,8 +113,8 @@ export const geminiAdapter: EngineAdapter = {
 
   async runPrompt(prompt, _opts): Promise<EngineResult> {
     const wantGrounding = config.engineGrounding;
-    // Cache key includes the mode so an ungrounded answer is never reused
-    // as if it were grounded (and vice versa) once config/quota changes.
+    // Cache key includes the grounding mode and model so answers are never reused
+    // across different execution configurations.
     const cacheKey = `${wantGrounding ? 'gemini' : 'gemini:ungrounded'}:${config.engineModel}`;
 
     const cached = cacheGet<EngineResult>(cacheKey, prompt);
