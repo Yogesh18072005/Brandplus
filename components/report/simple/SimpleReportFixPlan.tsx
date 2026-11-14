@@ -9,10 +9,12 @@ export function SimpleReportFixPlan({
   projectId,
   questions,
   canGenerate,
+  reportId,
 }: {
   projectId: string;
   questions: FixQuestion[];
   canGenerate: boolean;
+  reportId: string;
 }) {
   const [generating, setGenerating] = useState(false);
   const [drafts, setDrafts] = useState<Draft[]>([]);
@@ -49,6 +51,8 @@ export function SimpleReportFixPlan({
     }
   }
 
+  const pdfUrl = `/api/reports/${encodeURIComponent(reportId)}/pdf?includeDrafts=1`;
+
   return (
     <div style={{ display: 'grid', gap: 16, marginTop: 18 }}>
       <div>
@@ -70,29 +74,19 @@ export function SimpleReportFixPlan({
         {error && <p role="alert" style={{ color: '#b42318', fontSize: 13, marginTop: 10 }}>{error}</p>}
       </div>
 
-      {questions.map((question, index) => {
-        const draft = drafts[index];
-        return (
-          <article key={question.id} style={{ border: '1px solid var(--sr-line, #dedee8)', borderRadius: 12, padding: 18, background: 'var(--sr-panel, #fff)' }}>
-            <p style={{ margin: '0 0 6px', fontSize: 12, fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: '#6256d9' }}>Recommended page {index + 1}</p>
-            <h3 style={{ margin: '0 0 12px', fontSize: 18, lineHeight: 1.4, color: 'var(--sr-text, #171725)' }}>{question.question}</h3>
-            {draft && (
-              <div style={{ marginTop: 14, display: 'grid', gap: 10 }}>
-                <h4 style={{ margin: 0, color: 'var(--sr-text, #171725)' }}>{draft.title}</h4>
-                <p style={{ margin: 0, fontSize: 13, color: 'var(--sr-muted, #626274)' }}>{draft.metaDescription} · {draft.wordCount} words</p>
-                <pre style={{ margin: 0, padding: 14, borderRadius: 8, background: '#f5f4fa', color: '#242333', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', fontSize: 13, lineHeight: 1.6 }}>{draft.body}</pre>
-                <button
-                  type="button"
-                  onClick={() => navigator.clipboard.writeText(draft.body)}
-                  style={{ justifySelf: 'start', border: '1px solid #c9c7d8', borderRadius: 999, padding: '8px 14px', background: '#fff', color: '#29283a', fontWeight: 600, cursor: 'pointer' }}
-                >
-                  Copy this draft
-                </button>
-              </div>
-            )}
-          </article>
-        );
-      })}
+      {drafts.length > 0 && (
+        <div style={{ border: '1px solid var(--sr-line, #dedee8)', borderRadius: 12, padding: 18, background: 'var(--sr-panel, #fff)', display: 'grid', gap: 12 }}>
+          <div>
+            <p style={{ margin: '0 0 5px', fontWeight: 700, color: 'var(--sr-text, #171725)' }}>Your complete report is ready</p>
+            <p style={{ margin: 0, fontSize: 13, lineHeight: 1.6, color: 'var(--sr-muted, #626274)' }}>The audit findings, action plan and all {drafts.length} AI-generated page drafts are combined into one PDF. The original audit report remains unchanged. Nothing is published automatically.</p>
+          </div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+            <a href={`${pdfUrl}&disposition=inline`} target="_blank" rel="noreferrer" style={{ display: 'inline-block', borderRadius: 999, padding: '10px 16px', background: '#463eda', color: '#fff', fontWeight: 700, textDecoration: 'none' }}>View complete PDF</a>
+            <a href={`${pdfUrl}&disposition=attachment`} style={{ display: 'inline-block', border: '1px solid #c9c7d8', borderRadius: 999, padding: '10px 16px', background: '#fff', color: '#29283a', fontWeight: 700, textDecoration: 'none' }}>Download complete PDF</a>
+            <button type="button" onClick={() => navigator.clipboard.writeText(drafts.map((draft, index) => `Recommended page ${index + 1}\n${draft.question}\n${draft.title}\n${draft.metaDescription}\n${draft.body}`).join('\n\n---\n\n'))} style={{ border: '1px solid #c9c7d8', borderRadius: 999, padding: '10px 16px', background: '#fff', color: '#29283a', fontWeight: 700, cursor: 'pointer' }}>Copy all drafts</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
