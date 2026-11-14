@@ -80,7 +80,7 @@ function similarity(a: string, b: string): number {
   return intersection / new Set([...left, ...right]).size;
 }
 
-function companyBiased(question: string, understanding: CanonicalBusinessUnderstanding): boolean {
+function companyBiasReason(question: string, understanding: CanonicalBusinessUnderstanding): string | null {
   const normalized = question.toLocaleLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ');
   const companyNames = [understanding.business.name, ...understanding.company_identity.map((item) => item.value)]
     .map((value) => value.toLocaleLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim())
@@ -88,9 +88,14 @@ function companyBiased(question: string, understanding: CanonicalBusinessUnderst
   const businessVocabulary = meaningfulTokens(buyerIntentBusinessEntities(understanding).map((item) => item.value).join(' '));
   const brandTokens = companyNames.flatMap((name) => name.split(' '))
     .filter((token) => token.length >= 4 && !businessVocabulary.has(stem(token)) && !/^(private|limited|incorporated|company|group)$/.test(token));
-  return companyNames.some((name) => normalized.includes(name))
-    || brandTokens.some((token) => new RegExp(`\\b${token}\\b`, 'i').test(normalized))
-    || BIASED.test(question);
+  if (companyNames.some((name) => normalized.includes(name))) return 'business name appears in question';
+  if (brandTokens.some((token) => new RegExp(`\\b${token}\\b`, 'i').test(normalized))) return 'company identity token appears in question';
+  if (BIASED.test(question)) return 'promotional chooser opener';
+  return null;
+}
+
+function companyBiased(question: string, understanding: CanonicalBusinessUnderstanding): boolean {
+  return companyBiasReason(question, understanding) !== null;
 }
 
 function unsupportedTerms(candidate: BuyerQuestionCandidate, understanding: CanonicalBusinessUnderstanding): string[] {
@@ -129,10 +134,13 @@ export function filterCandidates(
     const words = candidate.question.replace(/[^\p{L}\p{N}]+/gu, ' ').trim().split(/\s+/);
     if (!QUESTION_OPENERS.test(candidate.question) || words.length < 5) reason = 'not a natural buyer question';
     else if (!ALLOWED_STAGE[candidate.intent].has(candidate.buyer_stage)) reason = 'intent and buyer stage are inconsistent';
-    else if (companyBiased(candidate.question, understanding)) reason = 'target-company bias';
-    else if (!hasGeography && (candidate.intent === 'GEOGRAPHIC' || candidate.dimensions.includes('GEOGRAPHY'))) reason = 'unsupported geography';
-    else if (!hasCertification && (candidate.intent === 'COMPLIANCE' || candidate.dimensions.includes('COMPLIANCE'))) reason = 'unsupported compliance requirement';
     else {
+      const biasReason = companyBiasReason(candidate.question, understanding);
+      if (biasReason) reason = `target-company bias: ${biasReason}`;
+    }
+    if (!reason && !hasGeography && (candidate.intent === 'GEOGRAPHIC' || candidate.dimensions.includes('GEOGRAPHY'))) reason = 'unsupported geography';
+    else if (!reason && !hasCertification && (candidate.intent === 'COMPLIANCE' || candidate.dimensions.includes('COMPLIANCE'))) reason = 'unsupported compliance requirement';
+    else if (!reason) {
       const unsupported = unsupportedTerms(candidate, understanding);
       if (unsupported.length) {
         reason = `unsupported constraint: ${unsupported.slice(0, 3).join(', ')}`;
