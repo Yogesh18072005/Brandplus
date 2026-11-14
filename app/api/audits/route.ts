@@ -63,7 +63,7 @@ export async function POST(request: Request) {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('plan, plan_expires_at, free_credit_status, email, credits_reset_at')
+    .select('plan, plan_expires_at, free_credit_status, credits_reset_at')
     .eq('id', user.id)
     .single();
 
@@ -123,8 +123,8 @@ export async function POST(request: Request) {
   }
 
   // Trusted writes use the service role. Browser clients have no direct INSERT
-  // grant on audits/audit_queue; ownership and the credit check above are
-  // therefore the only supported path into the queue.
+  // grant on audits/audit_queue; ownership and the plan-allowance check above
+  // are therefore the only supported path into the queue.
   const { data: audit, error: auditErr } = await admin
     .from('audits')
     .insert({
