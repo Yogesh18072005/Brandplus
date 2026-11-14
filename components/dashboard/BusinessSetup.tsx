@@ -28,15 +28,14 @@ interface Form {
   competitors: string[];
 }
 
-const EMPTY: Form = { businessName: '', website: '', category: '', city: '', competitors: [] };
+const EMPTY: Form = { businessName: '', website: '', category: '', city: 'India', competitors: [] };
 
-type StepKey = 'businessName' | 'website' | 'category' | 'city' | 'competitors' | 'review';
+type StepKey = 'businessName' | 'website' | 'category' | 'competitors' | 'review';
 
 const STEPS: { key: StepKey; question: string; hint: string; placeholder?: string }[] = [
   { key: 'businessName', question: 'What’s your business called?', hint: 'The name your buyers know you by.', placeholder: 'Your business name' },
   { key: 'website', question: 'What’s your website?', hint: 'So we can tell when AI cites you.', placeholder: 'yourbusiness.com' },
-  { key: 'category', question: 'What do you do, in a few words?', hint: 'Say it the way a buyer would search for it.', placeholder: 'e.g. cosmetic dentist, CRM software' },
-  { key: 'city', question: 'Where are your buyers?', hint: 'A city, a country, or “worldwide”.', placeholder: 'e.g. Delhi, or worldwide' },
+  { key: 'category', question: 'Select your business type', hint: 'Choose the category that best describes your business.' },
   { key: 'competitors', question: 'Who do you lose deals to?', hint: 'Up to three. We count how often AI names each of them.', placeholder: 'Type a competitor, press Enter' },
   { key: 'review', question: 'Ready to see what AI says?', hint: '' },
 ];
@@ -147,7 +146,7 @@ export function BusinessSetup({ mode }: { mode: 'first' | 'another' | 'preview' 
         businessName: text(prefill.businessName, 80),
         website: text(prefill.website, 120),
         category: text(prefill.category, 60),
-        city: text(prefill.city, 60),
+        city: 'India',
         competitors,
       });
     } catch {
@@ -199,7 +198,6 @@ export function BusinessSetup({ mode }: { mode: 'first' | 'another' | 'preview' 
     if (key === 'businessName' && !form.businessName.trim()) return 'Add your business name to continue.';
     if (key === 'website' && !looksLikeSite(form.website)) return 'Enter a website like yourbusiness.com';
     if (key === 'category' && !form.category.trim()) return 'Add what you do, in a few words.';
-    if (key === 'city' && !form.city.trim()) return 'Add a location, or “worldwide”.';
     if (key === 'competitors' && !form.competitors.length && !draft.trim()) return 'Add at least one competitor.';
     return '';
   }
@@ -324,6 +322,21 @@ export function BusinessSetup({ mode }: { mode: 'first' | 'another' | 'preview' 
 
               {current.key !== 'review' ? (
                 <>
+                  {current.key === 'category' ? (
+                    <select
+                      value={form.category}
+                      onChange={(e) => setValue('category', e.target.value)}
+                      aria-label="Business type"
+                      className={`mt-8 w-full rounded-xl border border-[#e4e3f0] bg-white px-4 py-4 text-[18px] font-medium outline-none transition-colors focus:border-brand ${INK}`}
+                    >
+                      <option value="">Choose a business type</option>
+                      <option value="IT">IT</option>
+                      <option value="Cosmetics">Cosmetics</option>
+                      <option value="Finance">Finance</option>
+                      <option value="Real Estate">Real Estate</option>
+                      <option value="Healthcare">Healthcare</option>
+                    </select>
+                  ) : null}
                   {current.key === 'competitors' && form.competitors.length > 0 && (
                     <ul className="mt-8 flex flex-wrap gap-2">
                       {form.competitors.map((c) => (
@@ -335,7 +348,7 @@ export function BusinessSetup({ mode }: { mode: 'first' | 'another' | 'preview' 
                       ))}
                     </ul>
                   )}
-                  {!(current.key === 'competitors' && form.competitors.length >= 3) && (
+                  {current.key !== 'category' && !(current.key === 'competitors' && form.competitors.length >= 3) && (
                     <input
                       ref={input}
                       value={value(current.key)}
