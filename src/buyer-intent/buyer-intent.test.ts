@@ -466,6 +466,24 @@ test('candidates without a real entity-and-evidence text match are not assigned 
   );
 });
 
+test('misplaced entity and evidence IDs are corrected only when they exist in canonical collections', () => {
+  const item = candidate({
+    supporting_business_entity_ids: ['e-product'],
+    supporting_business_evidence_ids: ['product-pump'],
+  });
+  const result = validateCandidateBatchWithOmissions({ candidates: [item] }, profile());
+  assert.deepEqual(result[0]?.supporting_business_entity_ids, ['product-pump']);
+  assert.deepEqual(result[0]?.supporting_business_evidence_ids, ['e-product']);
+});
+
+test('duplicate model questions are removed after grounding validation', () => {
+  const first = candidate({ id: 'duplicate-one' });
+  const second = candidate({ id: 'duplicate-two' });
+  const result = validateCandidateBatchWithOmissions({ candidates: [first, second] }, profile());
+  assert.equal(result.length, 1);
+  assert.equal(result[0]?.id, 'duplicate-one');
+});
+
 test('an evidence ID in the entity ID array is rejected with an explicit type diagnostic', () => {
   const item = candidate({ supporting_business_entity_ids: ['evidence_9685f58c53c177b388af4071'] });
   assert.throws(
