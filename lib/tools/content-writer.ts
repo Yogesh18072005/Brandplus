@@ -118,7 +118,7 @@ export async function generateContent(input: ContentInput): Promise<ContentResul
   const faqs = Array.isArray(parsed.faqs) ? parsed.faqs : [];
   const articleSchema = buildArticleSchema(parsed.title, parsed.metaDescription, input.project.business_name, input.project.website);
   const combinedSchema = faqs.length > 0 ? [articleSchema, buildFaqSchema(faqs)] : articleSchema;
-  const wordCount = parsed.body.replace(/<[^>]*>/g, ' ').split(/\\s+/).filter(Boolean).length;
+  const wordCount = parsed.body.replace(/<[^>]*>/g, ' ').split(/\s+/).filter(Boolean).length;
 
   return {
     title: parsed.title,
@@ -198,7 +198,7 @@ Return only valid JSON in this shape:
       metaDescription: draft.metaDescription,
       schemaMarkup: schemaMarkup as Record<string, unknown>,
       keywords: Array.isArray(draft.keywords) ? draft.keywords : input.keywords,
-      wordCount: draft.body.replace(/<[^>]*>/g, ' ').split(/\\s+/).filter(Boolean).length,
+      wordCount: draft.body.replace(/<[^>]*>/g, ' ').split(/\s+/).filter(Boolean).length,
       question: input.topics[index],
     };
   });
