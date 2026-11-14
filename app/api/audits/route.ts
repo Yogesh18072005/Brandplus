@@ -97,7 +97,8 @@ export async function POST(request: Request) {
     let usageQuery = admin
       .from('audits')
       .select('id, projects!inner(user_id)', { count: 'exact', head: true })
-      .eq('projects.user_id', user.id);
+      .eq('projects.user_id', user.id)
+      .neq('status', 'failed');
     if (plan !== 'free') {
       const resetAt = profile?.credits_reset_at ? new Date(profile.credits_reset_at).getTime() : Number.NaN;
       const periodStart = Number.isFinite(resetAt) && resetAt > Date.now()
