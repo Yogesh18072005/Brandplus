@@ -44,16 +44,34 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
       ? 'Weekly (every Monday)'
       : 'Not included on the Free plan';
 
-  // Ownership is checked above; run rows are read with the service client.
-  const { data: run } = await createAdminClient()
-    .from('intervention_generation_runs')
+  // Canonical reports are addressed by the parent audit ID. Load the latest
+  // completed audit first; loadIntelligenceReport resolves its Engine 01–05
+  // lineage to the final intervention run. This avoids depending on a separate
+  // intervention-run lookup to discover the report.
+  const admin = createAdminClient();
+  const { data: latestCompletedAudit } = await admin
+    .from('audits')
     .select('id')
     .eq('project_id', project.id)
-    .in('status', ['COMPLETED', 'PARTIAL_SUCCESS'])
+    .eq('status', 'completed')
     .order('created_at', { ascending: false })
     .limit(1)
     .maybeSingle();
-  const report = run ? await getIntelligenceReport(run.id) : null;
+  let report = latestCompletedAudit ? await getIntelligenceReport(latestCompletedAudit.id) : null;
+
+  // Backward compatibility for reports created before canonical audit lineage.
+  if (!report || report.status !== 'COMPLETE') {
+    const { data: run } = await admin
+      .from('intervention_generation_runs')
+      .select('id')
+      .eq('project_id', project.id)
+      .in('status', ['COMPLETED', 'PARTIAL_SUCCESS', 'INCONCLUSIVE'])
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    const legacyReport = run ? await getIntelligenceReport(run.id) : null;
+    if (legacyReport?.status === 'COMPLETE') report = legacyReport;
+  }
 
   if (!report || report.status !== 'COMPLETE') {
     const admin = createAdminClient();
