@@ -176,18 +176,56 @@ export function validateCandidateBatchWithOmissions(
 ): BuyerQuestionCandidate[] {
   const rawCandidates = candidateEnvelopeSchema.parse(raw).candidates;
   const accepted: BuyerQuestionCandidate[] = [];
+  const diagnostics: string[] = [];
   let firstError: unknown;
 
-  for (const rawCandidate of rawCandidates) {
+  for (const [index, rawCandidate] of rawCandidates.entries()) {
     try {
       const groundedCandidate = inferMissingCandidateGrounding(rawCandidate, understanding);
       accepted.push(validateCandidateBatch({ candidates: [groundedCandidate] }, understanding)[0]!);
     } catch (error) {
       firstError ??= error;
+      const candidate = rawCandidate && typeof rawCandidate === 'object' && !Array.isArray(rawCandidate)
+        ? rawCandidate as Record<string, unknown>
+        : {};
+      const question = typeof candidate.question === 'string'
+        ? candidate.question.replace(/\\s+/g, ' ').slice(0, 220)
+        : '[missing question]';
+      const entityIds = Array.isArray(candidate.supporting_business_entity_ids)
+        ? candidate.supporting_business_entity_ids.filter((id): id is string => typeof id === 'string')
+        : [];
+      const evidenceIds = Array.isArray(candidate.supporting_business_evidence_ids)
+        ? candidate.supporting_business_evidence_ids.filter((id): id is string => typeof id === 'string')
+        : [];
+      const questionTokens = groundingTokens(question);
+      const eligibleEntities = buyerIntentBusinessEntities(understanding).filter((entity) => {
+        const entityTokens = groundingTokens([entity.value, entity.description ?? '', entity.category ?? ''].join(' '));
+        return sharedTokenCount(questionTokens, entityTokens) >= 2;
+      });
+      const evidenceMatches = eligibleEntities.reduce((count, entity) => {
+        const entityTokens = groundingTokens([entity.value, entity.description ?? '', entity.category ?? ''].join(' '));
+        return count + entity.evidence_ids.filter((id) => {
+          const item = understanding.evidence.find((entry) => entry.id === id);
+          if (!item) return false;
+          const evidenceTokens = groundingTokens(item.evidence_text);
+          return sharedTokenCount(questionTokens, evidenceTokens) >= 2
+            && sharedTokenCount(entityTokens, evidenceTokens) >= 1;
+        }).length;
+      }, 0);
+      const reason = error instanceof Error ? error.message.slice(0, 260) : 'Unknown validation error';
+      diagnostics.push(
+        `candidate[${index}]: question="${question}"; supplied_entity_ids=${entityIds.length}; supplied_evidence_ids=${evidenceIds.length}; eligible_entities=${eligibleEntities.length}; linked_evidence_matches=${evidenceMatches}; validation=${reason}`,
+      );
     }
   }
 
-  if (!accepted.length) throw firstError ?? new Error('No valid buyer-question candidates were returned');
+  if (!accepted.length) {
+    const summary = diagnostics.slice(0, 8).join(' | ');
+    throw new Error(
+      `No buyer-intent candidates passed grounding validation. Diagnostics: ${summary || 'No candidate diagnostics available'}`,
+      { cause: firstError },
+    );
+  }
   return validateCandidateBatch({ candidates: accepted }, understanding);
 }
 
