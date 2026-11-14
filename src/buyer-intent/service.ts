@@ -153,7 +153,7 @@ export class BuyerIntentService {
       let filtered = filterCandidates(generated, input.understanding);
       if (!filtered.accepted.length && filtered.rejected.length) {
         const reasons = [...new Set(filtered.rejected.map((item) => item.reason))].slice(0, 6).join('; ');
-        const examples = generated.slice(0, 5).map((item) => item.question.replace(/\\s+/g, ' ').slice(0, 140));
+        const examples = generated.slice(0, 5).map((item) => item.question.replace(/\s+/g, ' ').slice(0, 140));
         const feedback = [
           'The previous candidate batch was entirely rejected by deterministic buyer-intent validation.',
           'Rejection reasons: ' + reasons,
