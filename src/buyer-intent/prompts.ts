@@ -2,7 +2,7 @@ import type { CanonicalBusinessUnderstanding } from '@/src/business-understandin
 import type { BuyerQuestionCandidate } from './types';
 import { buyerIntentBusinessEntities } from './schema';
 
-export const BUYER_INTENT_PROMPT_VERSION = '1.0.6' as const;
+export const BUYER_INTENT_PROMPT_VERSION = '1.0.7' as const;
 
 export const BUYER_INTENT_SYSTEM_PROMPT = `You are the Buyer Intent Discovery Engine of BRANDPULSE.
 
@@ -113,7 +113,7 @@ export function candidateGenerationPrompt(
       correction: {
         previous_response_rejected: true,
         validation_error: validationError,
-        instruction: 'Return a completely corrected candidate batch. Use only the exact supplied entity_id and evidence_id values.',
+        instruction: 'Return a fresh corrected candidate batch. Do not repeat rejected questions or mention the target business name. Use only the exact supplied entity_id and evidence_id values, and preserve evidence grounding.',
       },
     } : {}),
     response_contract_example: (() => {
