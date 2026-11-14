@@ -469,6 +469,34 @@ async function saveBusinessName(e: FormEvent<HTMLFormElement>) {
   )}
 </div>
       </header>
+      {business?.sourceCoverage && (
+        <section aria-label="Website crawl coverage" className={`rounded-[24px] bg-white p-5 ring-1 ring-[#e9e8ef]`}>
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className={`text-[15px] font-semibold ${INK}`}>Website pages checked</p>
+              <p className={`mt-1 text-[12.5px] ${FAINT}`}>Latest business evidence scan · {business.sourceCoverage.status.replaceAll('_', ' ').toLowerCase()}</p>
+            </div>
+            <p className={`text-[14px] font-semibold tabular-nums ${INK}`}>
+              {business.sourceCoverage.pages_successfully_analyzed} of {business.sourceCoverage.pages_analyzed} readable
+            </p>
+          </div>
+          <div className="mt-3 h-2 overflow-hidden rounded-full bg-[#f0eff4]">
+            <div
+              className="h-full rounded-full bg-[#463eda]"
+              style={{ width: `${business.sourceCoverage.pages_analyzed ? Math.min(100, business.sourceCoverage.pages_successfully_analyzed / business.sourceCoverage.pages_analyzed * 100) : 0}%` }}
+            />
+          </div>
+          <div className={`mt-4 grid grid-cols-2 gap-3 text-[12.5px] sm:grid-cols-4 lg:grid-cols-7 ${MUTED}`}>
+            <p><strong className={INK}>{business.sourceCoverage.pages_analyzed}</strong><span className="block">Discovered</span></p>
+            <p><strong className={INK}>{business.sourceCoverage.pages_successfully_analyzed}</strong><span className="block">Readable</span></p>
+            <p><strong className={INK}>{business.sourceCoverage.pages_failed}</strong><span className="block">Failed</span></p>
+            <p><strong className={INK}>{business.sourceCoverage.pages_blocked}</strong><span className="block">Blocked</span></p>
+            <p><strong className={INK}>{business.sourceCoverage.pages_empty}</strong><span className="block">Empty</span></p>
+            <p><strong className={INK}>{business.sourceCoverage.pages_partial}</strong><span className="block">Partial</span></p>
+            <p><strong className={INK}>{business.sourceCoverage.pages_duplicate}</strong><span className="block">Duplicates</span></p>
+          </div>
+        </section>
+      )}
       {editingName && business && (
   <form
     onSubmit={saveBusinessName}
