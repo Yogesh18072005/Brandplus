@@ -9,6 +9,8 @@ import { AuditAutoRefresh, RequestAuditButton } from '@/components/report/simple
 import { BookWalkthrough } from '@/components/report/simple/BookWalkthrough';
 import { ErrorNote } from '@/components/dashboard/project/kit';
 import ProjectOverviewClient from './OverviewClient';
+import { getEffectivePlan } from '@/lib/billing/effective-plan';
+import { getPlanLimits } from '@/lib/billing/plans';
 
 /**
  * A client sees one page: the plain-language report and a way to get the
@@ -28,6 +30,19 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
     .eq('user_id', user.id)
     .maybeSingle();
   if (!project) return <ErrorNote message="Business not found" />;
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('plan, plan_expires_at')
+    .eq('id', user.id)
+    .maybeSingle();
+  const plan = getEffectivePlan(profile);
+  const planLimits = getPlanLimits(plan);
+  const scheduledReportLabel = planLimits.dailyTracking
+    ? 'Daily'
+    : planLimits.weeklyTracking
+      ? 'Weekly (every Monday)'
+      : 'Not included on the Free plan';
 
   // Ownership is checked above; run rows are read with the service client.
   const { data: run } = await createAdminClient()
@@ -63,12 +78,13 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
               <>
                 <h2>See what AI tells your buyers about {project.business_name}</h2>
                 <p className="sr-sub">We ask AI the questions your buyers ask before they choose, record every answer word for word, and email you the report.</p>
-                <RequestAuditButton projectId={project.id} />
+                <RequestAuditButton projectId={project.id} label="Get me a report now" />
               </>
             ) : (
               <>
                 <h2>We’re preparing {project.business_name}’s report</h2>
                 <p className="sr-sub">This free audit is processing in the background. This page refreshes automatically and your report will appear here when it’s ready.</p>
+                <p className="sr-sub"><strong>Scheduled reports:</strong> {scheduledReportLabel}.</p>
                 <ol className="sr-steps">
                   <li className="is-done">Audit requested</li>
                   <li className={stage === 'running' ? 'is-now' : ''}>Ask AI your buyers’ questions</li>
@@ -91,7 +107,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
       mode="dashboard"
       pdfHref={`/api/reports/${report.id}/pdf`}
       shareHref={`/r/${report.id}`}
-      recheck={<RequestAuditButton projectId={project.id} label="Request a re-check" />}
+      recheck={<div className="flex flex-col items-start gap-2"><p className="sr-sub"><strong>Scheduled reports:</strong> {scheduledReportLabel}.</p><RequestAuditButton projectId={project.id} label="Get me a report now" /></div>}
       cta={<FixPlanOffer projectId={project.id} businessName={simple.businessName} gaps={simple.gaps} total={simple.total} />}
     />
   );
