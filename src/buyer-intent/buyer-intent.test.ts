@@ -211,6 +211,34 @@ test('buyer intent retries once with rejection feedback when every candidate is 
   assert.notEqual(result.questions[0]?.id, 'corrected');
 });
 
+test('buyer intent retries when the first batch has too few distinct grounded candidates', async () => {
+  let calls = 0;
+  let retryFeedback = '';
+  const extractor: BuyerIntentExtractor = {
+    model: 'retry-short-batch-model',
+    async generateCandidates(_understanding, _count, feedback) {
+      calls++;
+      if (feedback) retryFeedback = feedback;
+      return calls === 1
+        ? [candidate({ id: 'first-pass' })]
+        : [candidate({
+          id: 'retry-pass',
+          question: 'Where can procurement teams find industrial pump suppliers for chemical processing?',
+        })];
+    },
+    async evaluateCandidates(_understanding, candidates) {
+      return candidates.map((item) => evaluation(item));
+    },
+  };
+
+  const result = await new BuyerIntentService({ extractor }).generate(input(profile(), 10));
+
+  assert.equal(calls, 2);
+  assert.match(retryFeedback, /Distinct grounded candidates: 1; minimum required: 5/);
+  assert.equal(result.status, 'FAILED');
+  assert.match(result.failure_message ?? '', /minimum 5/);
+});
+
 test('rejected candidate warnings preserve a bounded question preview and exact company-bias reason', async () => {
   const item = candidate({ question: 'Why should I choose Acme Pumps for industrial pumps?' });
   const result = await new BuyerIntentService({ extractor: new FakeExtractor([item]) }).generate(input());
