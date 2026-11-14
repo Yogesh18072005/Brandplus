@@ -41,7 +41,7 @@ interface CreateOpts {
   // Cost levers: thinking tokens bill as OUTPUT tokens (the expensive
   // direction), so callers default to minimal thinking; output caps stop
   // runaway generations. Set via generationConfig.
-  generationConfig?: { thinking_level?: string; max_output_tokens?: number };
+  generationConfig?: { thinking_level?: string; temperature?: number; max_output_tokens?: number };
   retries?: number; // override config.maxRetries (0 = single attempt)
 }
 
