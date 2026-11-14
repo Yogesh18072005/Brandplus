@@ -421,3 +421,33 @@ test('fewer than five defensible questions fails instead of producing a thin aud
   assert.equal(result.status, 'FAILED');
   assert.match(result.warnings.join(' '), /minimum 5/);
 });
+
+
+test('grounding failure reports candidate and matching diagnostics without weakening validation', () => {
+  const item = {
+    id: 'missing-grounding',
+    question: 'Which AgentIQ platform supports modern application engineering?',
+    intent: 'COMPARISON',
+    buyer_stage: 'EVALUATION',
+    dimensions: ['PRODUCT'],
+    supporting_business_evidence_ids: [],
+    supporting_business_entity_ids: [],
+  };
+  const understanding = profile({
+    products: [entity('product-agent', 'PRODUCT', 'AgentIQ', ['e-agent'])],
+    services: [], capabilities: [], buyer_types: [], geographies: [],
+    evidence: [evidence('e-agent', 'AgentIQ supports modern application engineering across the SDLC.')],
+  });
+
+  assert.throws(
+    () => validateCandidateBatchWithOmissions({ candidates: [item] }, understanding),
+    (error: unknown) => {
+      assert.ok(error instanceof Error);
+      assert.match(error.message, /No buyer-intent candidates passed grounding validation/);
+      assert.match(error.message, /Which AgentIQ platform supports modern application engineering/);
+      assert.match(error.message, /eligible_entities=0/);
+      assert.match(error.message, /linked_evidence_matches=0/);
+      return true;
+    },
+  );
+});
