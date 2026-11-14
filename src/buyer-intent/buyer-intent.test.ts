@@ -418,6 +418,73 @@ test('local-model first candidate batch is bounded near the requested question c
   assert.deepEqual(extractor.generationTargets, [15, 15]);
 });
 
+test('large buyer-intent profiles are broken into small evidence-linked batches and merged', async () => {
+  const products = Array.from({ length: 17 }, (_, index) =>
+    entity(`product-${index}`, 'PRODUCT', `industrial pump ${index}`, [`e-product-${index}`]),
+  );
+  const evidenceItems = products.map((item, index) =>
+    evidence(`e-product-${index}`, `We manufacture industrial pump ${index} for chemical processing applications.`),
+  );
+  const understanding = profile({
+    products,
+    services: [],
+    capabilities: [],
+    buyer_types: [],
+    industries: [],
+    use_cases: [],
+    geographies: [],
+    certifications: [],
+    business_model_signals: [],
+    evidence: evidenceItems,
+  });
+  const observedGenerationSizes: Array<{ entities: number; evidence: number; target: number }> = [];
+  const observedEvaluationSizes: Array<{ entities: number; evidence: number; candidates: number }> = [];
+  const extractor: BuyerIntentExtractor = {
+    model: 'batch-test-model',
+    async generateCandidates(batchUnderstanding, target) {
+      const entityList = batchUnderstanding.products;
+      observedGenerationSizes.push({
+        entities: entityList.length,
+        evidence: batchUnderstanding.evidence.length,
+        target,
+      });
+      assert.ok(entityList.length <= 8);
+      assert.ok(batchUnderstanding.evidence.length <= 8);
+      const first = entityList[0]!;
+      const evidenceId = first.evidence_ids[0]!;
+      return [candidate({
+        id: 'same-model-id',
+        question: `Which suppliers should procurement teams shortlist for ${first.value}?`,
+        supporting_business_entity_ids: [first.id],
+        supporting_business_evidence_ids: [evidenceId],
+      })];
+    },
+    async evaluateCandidates(batchUnderstanding, candidates) {
+      observedEvaluationSizes.push({
+        entities: batchUnderstanding.products.length,
+        evidence: batchUnderstanding.evidence.length,
+        candidates: candidates.length,
+      });
+      assert.ok(batchUnderstanding.products.length <= 5);
+      assert.ok(batchUnderstanding.evidence.length <= 5);
+      return candidates.map((item) => evaluation(item));
+    },
+  };
+
+  const result = await new BuyerIntentService({ extractor }).generate(input(understanding, 1));
+
+  assert.equal(observedGenerationSizes.length, 3);
+  assert.deepEqual(observedGenerationSizes.map((item) => item.entities), [8, 8, 1]);
+  assert.deepEqual(observedGenerationSizes.map((item) => item.evidence), [8, 8, 1]);
+  assert.ok(observedGenerationSizes.every((item) => item.target <= 10));
+  assert.equal(observedEvaluationSizes.length, 1);
+  assert.equal(observedEvaluationSizes[0]?.entities, 3);
+  assert.equal(observedEvaluationSizes[0]?.evidence, 3);
+  assert.equal(result.status, 'COMPLETED');
+  assert.equal(result.candidate_count, 3);
+  assert.equal(result.questions.length, 1);
+});
+
 test('buyer-intent grounding labels entity IDs and evidence IDs unambiguously', () => {
   const grounding = buyerIntentGrounding(profile());
   assert.equal(grounding.entities[0]?.entity_id, 'product-pump');
