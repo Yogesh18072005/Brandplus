@@ -4,6 +4,8 @@ import { useState, type CSSProperties } from 'react';
 import { startExecution } from '@/components/dashboard/api';
 import type { GeneratedIntervention } from '@/src/intervention-generation/types';
 
+type Draft = { id?: string; title: string; body: string; metaDescription: string; wordCount: number };
+
 function humanize(value: string): string {
   const text = value.replace(/_/g, ' ').toLowerCase();
   return text.charAt(0).toUpperCase() + text.slice(1);
@@ -21,6 +23,9 @@ const PRIORITY_LABEL: Record<GeneratedIntervention['priority'], string> = {
 export function FixCard({ item, rank, projectId, isOps, onExecuted }: { item: GeneratedIntervention; rank: number; projectId: string; isOps: boolean; onExecuted: () => void }) {
   const [state, setState] = useState<'idle' | 'starting'>('idle');
   const [error, setError] = useState('');
+  const [draft, setDraft] = useState<Draft | null>(null);
+  const [draftBusy, setDraftBusy] = useState(false);
+  const [draftError, setDraftError] = useState('');
   const needsInput = (item.requiredBusinessInputs ?? []).filter((input) => input.status === 'INPUT_REQUIRED');
   const otherQuestions = (item.affectedQuestions ?? []).filter((q) => q.exactQuestion !== item.exactBuyerQuestion).length;
 
@@ -34,6 +39,30 @@ export function FixCard({ item, rank, projectId, isOps, onExecuted }: { item: Ge
       setError(err instanceof Error ? err.message : 'Failed to start execution');
     } finally {
       setState('idle');
+    }
+  }
+
+  async function generateDraft() {
+    const confirmed = window.confirm(
+      'Generate an AI draft for this fix? This sends the fix details and business profile to Google Gemini and uses your Gemini API quota. Nothing will be published automatically.'
+    );
+    if (!confirmed) return;
+    setDraftBusy(true);
+    setDraftError('');
+    setDraft(null);
+    try {
+      const response = await fetch(`/api/projects/${projectId}/interventions/${item.id}/draft`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({}),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error ?? 'Draft generation failed');
+      setDraft(data);
+    } catch (err) {
+      setDraftError(err instanceof Error ? err.message : 'Draft generation failed');
+    } finally {
+      setDraftBusy(false);
     }
   }
 
@@ -60,6 +89,28 @@ export function FixCard({ item, rank, projectId, isOps, onExecuted }: { item: Ge
             <span>We’ll need from you</span>
             <ul>{needsInput.slice(0, 3).map((input) => <li key={input.id}>{input.description}</li>)}</ul>
           </div>
+        )}
+        <div className="mt-4 flex flex-wrap gap-2">
+          <button onClick={generateDraft} disabled={draftBusy} className="zw-btn zw-btn-primary zw-btn-sm">
+            {draftBusy ? 'Generating draft…' : 'Generate draft with AI'}
+          </button>
+          <span className="self-center text-xs text-gray-500">Optional · uses Gemini quota · never auto-publishes</span>
+        </div>
+        {draftError && <p className="zw-talk-error" role="alert">{draftError}</p>}
+        {draft && (
+          <section className="mt-4 rounded-xl border border-white/10 bg-black/20 p-4" aria-label="Generated content draft">
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+              <h4 className="font-semibold">{draft.title}</h4>
+              <span className="text-xs text-gray-400">{draft.wordCount} words · Draft only</span>
+            </div>
+            <p className="mb-3 text-sm text-gray-400">{draft.metaDescription}</p>
+            <pre className="max-h-[480px] overflow-auto whitespace-pre-wrap break-words font-sans text-sm leading-6 text-gray-200">{draft.body}</pre>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <button onClick={() => void navigator.clipboard.writeText(draft.body)} className="zw-btn zw-btn-ghost zw-btn-sm">Copy HTML</button>
+              <button onClick={() => void navigator.clipboard.writeText(draft.metaDescription)} className="zw-btn zw-btn-ghost zw-btn-sm">Copy meta description</button>
+            </div>
+            <p className="mt-3 text-xs text-amber-300">Review every claim and replace any [VERIFY] placeholders with confirmed business information before publishing.</p>
+          </section>
         )}
         {isOps && (
           <div className="zw-fix-ops">
