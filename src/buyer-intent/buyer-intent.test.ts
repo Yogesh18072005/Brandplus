@@ -311,6 +311,8 @@ test('buyer-intent grounding labels entity IDs and evidence IDs unambiguously', 
   assert.equal(grounding.entities[0]?.entity_id, 'product-pump');
   assert.deepEqual(grounding.entities[0]?.allowed_evidence_ids, ['e-product']);
   assert.equal(grounding.evidence[0]?.evidence_id, 'e-product');
+  assert.equal(grounding.entities[0]?.evidence_options[0]?.evidence_id, 'e-product');
+  assert.equal(grounding.entities[0]?.evidence_options[0]?.evidence_text, 'We manufacture industrial pumps for chemical processing applications.');
   assert.equal('id' in grounding.entities[0]!, false);
   assert.equal('id' in grounding.evidence[0]!, false);
 });
@@ -350,6 +352,46 @@ test('Ollama candidates with omitted grounding IDs recover only matching entity-
   const result = validateCandidateBatchWithOmissions({ candidates: [ungrounded] }, understanding);
   assert.deepEqual(result[0]?.supporting_business_entity_ids, ['product-pump']);
   assert.deepEqual(result[0]?.supporting_business_evidence_ids, ['e-product']);
+});
+
+test('evidence-first recovery uses only evidence already linked to the matched entity', () => {
+  const understanding = profile({
+    products: [],
+    services: [entity('service-ai', 'SERVICE', 'AI-led engineering services', ['e-service-ai'])],
+    capabilities: [],
+    evidence: [evidence('e-service-ai', 'LTM provides consulting and engineering services for enterprise software teams.')],
+  });
+  const ungrounded = {
+    ...candidate({
+      id: 'ai-services',
+      question: 'Which AI-led engineering service providers should enterprise teams evaluate?',
+      dimensions: ['SERVICE'],
+    }),
+    supporting_business_evidence_ids: [],
+    supporting_business_entity_ids: [],
+  };
+
+  const result = validateCandidateBatchWithOmissions({ candidates: [ungrounded] }, understanding);
+  assert.deepEqual(result[0]?.supporting_business_entity_ids, ['service-ai']);
+  assert.deepEqual(result[0]?.supporting_business_evidence_ids, ['e-service-ai']);
+});
+
+test('unsupported pricing questions are rejected even when their service entity is grounded', () => {
+  const ungrounded = {
+    ...candidate({
+      question: 'What is the pricing structure for industrial pump services?',
+      intent: 'DISCOVERY',
+      buyer_stage: 'RESEARCH',
+      dimensions: ['PRODUCT', 'SERVICE'],
+    }),
+    supporting_business_evidence_ids: [],
+    supporting_business_entity_ids: [],
+  };
+  const understanding = profile();
+  const recovered = validateCandidateBatchWithOmissions({ candidates: [ungrounded] }, understanding);
+  const filtered = filterCandidates(recovered, understanding);
+  assert.equal(filtered.accepted.length, 0);
+  assert.match(filtered.rejected[0]?.reason ?? '', /unsupported constraint: pricing/);
 });
 
 test('candidates without a real entity-and-evidence text match are not assigned invented grounding', () => {
