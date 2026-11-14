@@ -51,8 +51,8 @@ test('the admin console page requires a signed-in, allowlisted administrator', (
   const page = source('app/admin/page.tsx');
   assert.match(page, /const clerkUser = await currentUser\(\);\s*if \(!clerkUser\) redirect\(signInHref\);/);
   assert.match(page, /if \(!isOpsUser\(email\)\) redirect\(/);
-  // The privileged console renders only after both checks.
-  assert.ok(page.indexOf('isOpsUser(email)') < page.indexOf('<OperationsConsole'));
+  // The privileged admin console renders only after both checks.
+  assert.ok(page.indexOf('isOpsUser(email)') < page.indexOf('<AdminConsole'));
 });
 
 test('client modules do not import provider SDKs or server credentials', () => {
