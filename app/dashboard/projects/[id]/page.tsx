@@ -78,6 +78,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
               <>
                 <h2>See what AI tells your buyers about {project.business_name}</h2>
                 <p className="sr-sub">We ask AI the questions your buyers ask before they choose, record every answer word for word, and email you the report.</p>
+                <p className="sr-sub"><strong>Scheduled reports:</strong> {scheduledReportLabel}.</p>
                 <RequestAuditButton projectId={project.id} label="Get me a report now" />
               </>
             ) : (
