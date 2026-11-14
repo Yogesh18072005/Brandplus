@@ -118,8 +118,13 @@ function understandingForEntities(
     industries: understanding.industries.filter((item) => entityIds.has(item.id)),
     use_cases: understanding.use_cases.filter((item) => entityIds.has(item.id)),
     geographies: understanding.geographies.filter((item) => entityIds.has(item.id)),
+    proof_assets: understanding.proof_assets.filter((item) => entityIds.has(item.id)),
     certifications: understanding.certifications.filter((item) => entityIds.has(item.id)),
+    commercial_claims: understanding.commercial_claims.filter((item) => entityIds.has(item.id)),
+    differentiators: understanding.differentiators.filter((item) => entityIds.has(item.id)),
+    conversion_signals: understanding.conversion_signals.filter((item) => entityIds.has(item.id)),
     business_model_signals: understanding.business_model_signals.filter((item) => entityIds.has(item.id)),
+    company_identity: understanding.company_identity.filter((item) => entityIds.has(item.id)),
     evidence: understanding.evidence.filter((item) => evidenceIds.has(item.id)),
   };
 }
@@ -328,3 +333,6 @@ export class BuyerIntentService {
     }
   }
 }
+
+
+export const buyerIntentServiceTestables = { understandingForEntities };
