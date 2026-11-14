@@ -45,18 +45,33 @@ async function loadOwnedContentDrafts(projectId: string): Promise<SavedContentDr
       .maybeSingle();
     if (!project) return null;
 
-    const { data, error } = await createAdminClient()
+    const admin = createAdminClient();
+    const { data: latest, error: latestError } = await admin
       .from('generated_content')
-      .select('buyer_question,title,body,meta_description,created_at')
+      .select('generation_batch_id')
       .eq('project_id', projectId)
       .eq('content_type', 'answer_page')
       .order('created_at', { ascending: false })
-      .limit(5);
+      .limit(1)
+      .maybeSingle();
+    if (latestError) {
+      console.error('[report-pdf] Could not locate the latest content batch:', latestError.message);
+      return null;
+    }
+    if (!latest?.generation_batch_id) return [];
+
+    const { data, error } = await admin
+      .from('generated_content')
+      .select('buyer_question,title,body,meta_description')
+      .eq('project_id', projectId)
+      .eq('generation_batch_id', latest.generation_batch_id)
+      .eq('content_type', 'answer_page')
+      .order('created_at', { ascending: true });
     if (error) {
       console.error('[report-pdf] Could not load saved content drafts:', error.message);
       return null;
     }
-    return (data ?? []).reverse().map((draft) => ({
+    return (data ?? []).map((draft) => ({
       buyer_question: draft.buyer_question,
       title: draft.title,
       body: draft.body,
