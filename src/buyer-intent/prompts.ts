@@ -41,28 +41,16 @@ export function buyerIntentGrounding(understanding: CanonicalBusinessUnderstandi
       type: entity.type,
       value: entity.value,
       description: entity.description,
-      category: entity.category,
-      statement_kind: entity.statement_kind,
-      confidence: entity.confidence,
       allowed_evidence_ids: entity.evidence_ids,
-      // Keep each entity beside its own source records so a small model can
-      // select grounding from a compact, explicit entity/evidence pair.
+      // Evidence is included only here, beside the entity it supports.
+      // Avoid duplicating the same evidence again in a top-level evidence list.
       evidence_options: entity.evidence_ids
         .map((id) => evidenceById.get(id))
         .filter((item): item is NonNullable<typeof item> => Boolean(item))
         .map((item) => ({
           evidence_id: item.id,
           evidence_text: item.evidence_text,
-          confidence: item.confidence,
-          source_url: item.source_url,
         })),
-    })),
-    evidence: understanding.evidence.filter((item) => evidenceIds.has(item.id)).map((item) => ({
-      evidence_id: item.id,
-      evidence_text: item.evidence_text,
-      confidence: item.confidence,
-      source_url: item.source_url,
-      source_type: item.source_type,
     })),
     unknowns: understanding.unknowns,
     conflicts: understanding.conflicts,
@@ -76,7 +64,7 @@ export function candidateGenerationPrompt(
 ): string {
   return JSON.stringify({
     task: `Generate up to ${candidateCount} distinct, commercially useful buyer-question candidates.`,
-    required_range: { preferred: candidateCount, maximum: 40 },
+    required_range: { preferred: candidateCount, maximum: candidateCount },
     buyer_decision_coverage: [
       'supplier discovery and shortlisting for an evidenced product or service',
       'comparison criteria that a buyer or procurement team would actually use',
