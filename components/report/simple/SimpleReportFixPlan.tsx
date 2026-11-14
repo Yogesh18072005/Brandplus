@@ -75,19 +75,17 @@ export function SimpleReportFixPlan({
         {error && <p role="alert" style={{ color: '#b42318', fontSize: 13, marginTop: 10 }}>{error}</p>}
       </div>
 
-      {drafts.length > 0 && (
-        <div style={{ border: '1px solid var(--sr-line, #dedee8)', borderRadius: 12, padding: 18, background: 'var(--sr-panel, #fff)', display: 'grid', gap: 12 }}>
-          <div>
-            <p style={{ margin: '0 0 5px', fontWeight: 700, color: 'var(--sr-text, #171725)' }}>Your complete report is ready</p>
-            <p style={{ margin: 0, fontSize: 13, lineHeight: 1.6, color: 'var(--sr-muted, #626274)' }}>The audit findings, action plan and all {drafts.length} AI-generated page drafts are combined into one PDF. The original audit report remains unchanged. Nothing is published automatically.</p>
-          </div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
-            <a href={`${pdfUrl}&disposition=inline`} target="_blank" rel="noreferrer" style={{ display: 'inline-block', borderRadius: 999, padding: '10px 16px', background: '#463eda', color: '#fff', fontWeight: 700, textDecoration: 'none' }}>View complete PDF</a>
-            <a href={`${pdfUrl}&disposition=attachment`} style={{ display: 'inline-block', border: '1px solid #c9c7d8', borderRadius: 999, padding: '10px 16px', background: '#fff', color: '#29283a', fontWeight: 700, textDecoration: 'none' }}>Download complete PDF</a>
-            <button type="button" onClick={() => navigator.clipboard.writeText(drafts.map((draft, index) => `Recommended page ${index + 1}\n${draft.question}\n${draft.title}\n${draft.metaDescription}\n${draft.body}`).join('\n\n---\n\n'))} style={{ border: '1px solid #c9c7d8', borderRadius: 999, padding: '10px 16px', background: '#fff', color: '#29283a', fontWeight: 700, cursor: 'pointer' }}>Copy all drafts</button>
-          </div>
+      <div style={{ border: '1px solid var(--sr-line, #dedee8)', borderRadius: 12, padding: 18, background: 'var(--sr-panel, #fff)', display: 'grid', gap: 12 }}>
+        <div>
+          <p style={{ margin: '0 0 5px', fontWeight: 700, color: 'var(--sr-text, #171725)' }}>One complete report PDF</p>
+          <p style={{ margin: 0, fontSize: 13, lineHeight: 1.6, color: 'var(--sr-muted, #626274)' }}>View or download the audit findings and action plan together with the latest saved AI page drafts. This is a review document only; nothing is published automatically.</p>
         </div>
-      )}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+          <a href={`${pdfUrl}&disposition=inline`} target="_blank" rel="noreferrer" style={{ display: 'inline-block', borderRadius: 999, padding: '10px 16px', background: '#463eda', color: '#fff', fontWeight: 700, textDecoration: 'none' }}>View complete PDF</a>
+          <a href={`${pdfUrl}&disposition=attachment`} style={{ display: 'inline-block', border: '1px solid #c9c7d8', borderRadius: 999, padding: '10px 16px', background: '#fff', color: '#29283a', fontWeight: 700, textDecoration: 'none' }}>Download complete PDF</a>
+          {drafts.length > 0 && <button type="button" onClick={() => navigator.clipboard.writeText(drafts.map((draft, index) => `Recommended page ${index + 1}\n${draft.question}\n${draft.title}\n${draft.metaDescription}\n${draft.body}`).join('\n\n---\n\n'))} style={{ border: '1px solid #c9c7d8', borderRadius: 999, padding: '10px 16px', background: '#fff', color: '#29283a', fontWeight: 700, cursor: 'pointer' }}>Copy all drafts</button>}
+        </div>
+      </div>
     </div>
   );
 }
