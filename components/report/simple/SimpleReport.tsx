@@ -1,6 +1,7 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { Wordmark } from '@/components/brand/Logo';
 import { ShareLinkButton } from './ShareLinkButton';
+import { SimpleReportFixPlan } from './SimpleReportFixPlan';
 import type { SimpleReport as SimpleReportModel, SimpleVerdict } from '@/lib/reports/simple-report';
 
 const VERDICT_LABEL: Record<SimpleVerdict, string> = {
@@ -166,7 +167,20 @@ export function SimpleReport({
           )}
         </section>
 
-        <div id="sr-fix" className="sr-fix">{cta}</div>
+        <section id="sr-fix" className="sr-card sr-fix" aria-label="Your fix plan">
+          <p className="sr-label">Your fix plan</p>
+          <h2>{model.gaps > 0 ? `You’re missing from ${model.gaps} of ${model.total} answers. Start with these pages.` : 'Keep strengthening the answers AI already knows.'}</h2>
+          <p className="sr-sub">Each page recommendation is based on a buyer question from this saved audit. Review every business fact before publishing.</p>
+          {model.gaps > 0 ? (
+            <SimpleReportFixPlan
+              projectId={model.projectId}
+              questions={model.questions.filter((question) => question.verdict === 'missed').slice(0, 5).map((question) => ({ id: question.id, question: question.question }))}
+              canGenerate={mode === 'dashboard' && !sample}
+            />
+          ) : <p className="sr-sub">No missed buyer questions were recorded in this audit.</p>}
+          {model.sources.length === 0 && <p className="sr-sub">No websites were cited in this audit, so we can’t responsibly recommend specific directory listings from this evidence.</p>}
+          <div className="sr-fix-offer">{cta}</div>
+        </section>
 
         {recheck && (
           <section className="sr-card sr-recheck" aria-label="Re-check">

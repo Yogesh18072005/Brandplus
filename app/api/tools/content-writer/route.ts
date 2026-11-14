@@ -2,21 +2,28 @@ import { createServerSupabaseClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 import { generateContent } from '@/lib/tools/content-writer';
 import type { Json } from '@/lib/supabase/types';
-import { TOOLS_ENABLED } from '@/lib/flags';
-import { founderOnly } from '@/lib/auth/founder-only';
+import { consumeRateLimit, rateLimitError, RATE_LIMITS } from '@/lib/security/rate-limit';
 
 export async function POST(request: Request) {
-  if (!TOOLS_ENABLED) return NextResponse.json({ error: 'Not found' }, { status: 404 }); // quarantined (lib/flags.ts)
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  { const denied = founderOnly(user.email); if (denied) return denied; }
+  const limit = await consumeRateLimit(request, RATE_LIMITS.contentDraft, user.id);
+  if (!limit.allowed) return rateLimitError(limit, 'You have reached the draft limit. Try again later.');
 
-  const body = await request.json();
+  const body = await request.json().catch(() => null);
+  if (!body || typeof body !== 'object') return NextResponse.json({ error: 'Invalid request.' }, { status: 400 });
   const { projectId, topic, contentType = 'blog_post', keywords = [] } = body;
 
-  if (!projectId || !topic) {
+  if (typeof projectId !== 'string' || typeof topic !== 'string' || !topic.trim() || topic.length > 1000) {
     return NextResponse.json({ error: 'projectId and topic are required' }, { status: 400 });
+  }
+
+  if (!['blog_post', 'faq_page', 'comparison', 'answer_page'].includes(contentType)) {
+    return NextResponse.json({ error: 'Invalid content type.' }, { status: 400 });
+  }
+  if (!Array.isArray(keywords) || keywords.length > 20 || keywords.some((keyword) => typeof keyword !== 'string' || keyword.length > 100)) {
+    return NextResponse.json({ error: 'Invalid keywords.' }, { status: 400 });
   }
 
   const { data: project } = await supabase

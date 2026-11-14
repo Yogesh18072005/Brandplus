@@ -141,6 +141,7 @@ export const RATE_LIMITS = {
   publicFixPlanRequest: { scope: 'fix-plan-request', limit: 3, windowSeconds: 3600 },
   reportPdf: { scope: 'report-pdf', limit: 20, windowSeconds: 600 },
   aiSuggestion: { scope: 'ai-suggestion', limit: 8, windowSeconds: 3600 },
+  contentDraft: { scope: 'content-draft', limit: 3, windowSeconds: 3600 },
   billing: { scope: 'billing', limit: 10, windowSeconds: 600 },
   cronScheduler: { scope: 'cron-scheduler', limit: 4, windowSeconds: 3600 },
   cronWorker: { scope: 'cron-worker', limit: 60, windowSeconds: 3600 },
