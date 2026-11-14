@@ -184,7 +184,6 @@ export async function checkDirectories(input: FootprintInput, citedPages: CitedP
   const result = await getAdapter('gemini').runPrompt(question, { city: input.city });
   if (result.error) throw new Error(`directory search failed: ${result.error}`);
   const parsed = parseListingLines(result.answerText, unknown.map((l) => l.domain));
-  const citedDomains = new Set(result.citations.map((c) => c.domain));
   for (const l of unknown) {
     const p = parsed.get(l.domain);
     if (!p || p.yes === null) continue;
@@ -198,7 +197,6 @@ export async function checkDirectories(input: FootprintInput, citedPages: CitedP
       }
     }
     // Keep all unsupported negatives as unknown; search coverage is not proof of absence.
-    void citedDomains;
   }
   return listings;
 }
