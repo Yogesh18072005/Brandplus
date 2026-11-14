@@ -198,7 +198,7 @@ export function validateCandidateBatchWithOmissions(
         ? rawCandidate as Record<string, unknown>
         : {};
       const question = typeof candidate.question === 'string'
-        ? candidate.question.replace(/\\s+/g, ' ').slice(0, 220)
+        ? candidate.question.replace(/\s+/g, ' ').slice(0, 220)
         : '[missing question]';
       const entityIds = Array.isArray(candidate.supporting_business_entity_ids)
         ? candidate.supporting_business_entity_ids.filter((id): id is string => typeof id === 'string')
