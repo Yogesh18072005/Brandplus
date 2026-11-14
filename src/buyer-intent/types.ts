@@ -93,7 +93,7 @@ export interface BuyerIntentInput {
 
 export interface BuyerIntentExtractor {
   model: string;
-  generateCandidates(understanding: CanonicalBusinessUnderstanding, candidateCount: number): Promise<BuyerQuestionCandidate[]>;
+  generateCandidates(understanding: CanonicalBusinessUnderstanding, candidateCount: number, feedback?: string): Promise<BuyerQuestionCandidate[]>;
   evaluateCandidates(understanding: CanonicalBusinessUnderstanding, candidates: BuyerQuestionCandidate[]): Promise<BuyerQuestionEvaluation[]>;
 }
 
