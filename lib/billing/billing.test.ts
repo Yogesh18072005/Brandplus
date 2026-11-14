@@ -15,6 +15,7 @@ import {
 import { fixToolsForPlan, canUseFixTool, canToggleFixPlan, canTrackWeekly } from './capabilities';
 import { getEffectivePlan } from './effective-plan';
 import { activatePlanAfterPayment } from './activate-plan';
+import { getPlanLimits } from './plans';
 
 // ── tiny chainable mock of the Supabase client ──
 function mockSupabase(profile: Record<string, unknown> | null) {
@@ -109,6 +110,12 @@ function mockActivationSupabase(
 
 const future = new Date(Date.now() + 10 * 86_400_000).toISOString();
 const past = new Date(Date.now() - 1 * 86_400_000).toISOString();
+
+test('audit question limits stay within the Buyer Intent Engine maximum', () => {
+  assert.equal(getPlanLimits('free').promptsPerAudit, 10);
+  assert.equal(getPlanLimits('starter').promptsPerAudit, 30);
+  assert.equal(getPlanLimits('pro').promptsPerAudit, 30);
+});
 
 // ─────────────────────────── credit logic ───────────────────────────
 
