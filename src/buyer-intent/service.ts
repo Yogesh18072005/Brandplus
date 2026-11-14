@@ -167,7 +167,14 @@ export class BuyerIntentService {
       if (filtered.rejected.length) {
         const summary = new Map<string, number>();
         for (const rejection of filtered.rejected) summary.set(rejection.reason, (summary.get(rejection.reason) ?? 0) + 1);
-        result.warnings.push(`Deterministic filtering rejected ${filtered.rejected.length} candidates: ${[...summary].map(([reason, total]) => `${reason} (${total})`).join('; ')}`);
+        const rejectionSamples = filtered.rejected.slice(0, 5).map((rejection) => {
+          const rejectedCandidate = generated.find((candidate) => candidate.id === rejection.id);
+          const question = rejectedCandidate?.question.replace(/\\s+/g, ' ').slice(0, 160) ?? `candidate id ${rejection.id}`;
+          return `"${question}" [${rejection.reason}]`;
+        });
+        result.warnings.push(
+          `Deterministic filtering rejected ${filtered.rejected.length} candidates: ${[...summary].map(([reason, total]) => `${reason} (${total})`).join('; ')}. Samples: ${rejectionSamples.join(' | ')}`,
+        );
       }
       if (!distinct.length) throw new Error('No grounded buyer-question candidates passed deterministic validation');
 
