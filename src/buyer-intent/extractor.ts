@@ -89,9 +89,11 @@ function validationMessage(error: unknown): string {
 }
 
 export class GeminiBuyerIntentExtractor implements BuyerIntentExtractor {
-  readonly model = config.parserModel;
+  readonly model: string;
 
-  constructor(private readonly call: GeminiCall = geminiCall) {}
+  constructor(private readonly call: GeminiCall = geminiCall, model = config.parserModel) {
+    this.model = model;
+  }
 
   generateCandidates(understanding: CanonicalBusinessUnderstanding, candidateCount: number): Promise<BuyerQuestionCandidate[]> {
     let previousValidationError: string | undefined;
