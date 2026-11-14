@@ -73,8 +73,14 @@ function isRetryable(err: unknown): boolean {
  * generation_config when it's present, costing a failed round-trip per call.
  */
 export function generationConfigFor<T extends Record<string, unknown>>(model: string, generationConfig: T): Partial<T> {
-  if (!/^gemini-[12]\./.test(model) || !('thinking_level' in generationConfig)) return generationConfig;
-  const { thinking_level: _omit, ...rest } = generationConfig;
+  // The Interactions API does not accept the legacy temperature setting.
+  // Keep it in shared call options for the local Ollama adapter, but remove
+  // it before sending a request to Gemini.
+  const { temperature: _omitTemperature, ...supported } = generationConfig;
+  if (!/^gemini-[12]\\./.test(model) || !('thinking_level' in supported)) {
+    return supported as Partial<T>;
+  }
+  const { thinking_level: _omitThinkingLevel, ...rest } = supported;
   return rest as Partial<T>;
 }
 
