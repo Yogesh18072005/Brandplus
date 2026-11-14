@@ -25,13 +25,13 @@ test('OpenAI observation provider is disabled by default and makes no request', 
 });
 
 test('OpenAI Responses API request requires web search and maps URL citations', async () => {
-  let requestBody: Record<string, unknown> | null = null;
+  const requestBodies: Array<Record<string, unknown>> = [];
   const provider = new OpenAIObservationProvider({
     model: 'test-model',
     apiKey: 'test-key',
     enabled: true,
     fetcher: async (_url, init) => {
-      requestBody = JSON.parse(String(init?.body)) as Record<string, unknown>;
+      requestBodies.push(JSON.parse(String(init?.body)) as Record<string, unknown>);
       return new Response(JSON.stringify({
         id: 'resp_test',
         model: 'test-model',
@@ -56,8 +56,8 @@ test('OpenAI Responses API request requires web search and maps URL citations', 
   });
 
   const result = await provider.observeQuestion(input);
-  assert.equal(requestBody?.tool_choice, 'required');
-  assert.deepEqual(requestBody?.tools, [{ type: 'web_search' }]);
+  assert.equal(requestBodies[0]?.tool_choice, 'required');
+  assert.deepEqual(requestBodies[0]?.tools, [{ type: 'web_search' }]);
   assert.equal(result.provider, 'openai');
   assert.equal(result.rawResponse, 'Supplier information is available from Example.');
   assert.equal(result.usage.totalTokens, 165);
