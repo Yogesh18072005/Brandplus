@@ -34,7 +34,13 @@ export function RequestAuditButton({ projectId, label = 'Request my audit', butt
 
   return (
     <div className="sr-request">
-      <button type="button" className={buttonClassName ?? 'sr-hero-cta sr-request-btn'} onClick={request} disabled={state === 'sending'}>
+      <button
+        type="button"
+        className={buttonClassName ?? 'sr-hero-cta sr-request-btn'}
+        style={{ backgroundColor: '#463eda', color: '#ffffff', border: '1px solid #352bbd' }}
+        onClick={request}
+        disabled={state === 'sending'}
+      >
         {state === 'sending' ? 'Requesting…' : label} <span aria-hidden="true">→</span>
       </button>
       {error && <p className="sr-request-error" role="alert">{error}</p>}
