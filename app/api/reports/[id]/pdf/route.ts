@@ -2,6 +2,8 @@ import { createElement } from 'react';
 import { renderToBuffer } from '@react-pdf/renderer';
 import { ReportPdfDocument } from '@/components/report/ReportPdfDocument';
 import { currentUserCanViewFullReport, currentUserIntelligenceReportDepth } from '@/lib/reports/access';
+import { createAdminClient } from '@/lib/supabase/admin';
+import { createServerSupabaseClient } from '@/lib/supabase/server';
 import { loadIntelligenceReportHistory } from '@/lib/reports/load-intelligence-report';
 import { getIntelligenceReport } from '@/lib/reports/cached-intelligence-report';
 import { simpleReportFor } from '@/lib/reports/load-simple-report';
@@ -22,6 +24,49 @@ function safeFilename(value: string): string {
   return `${normalized || 'brandpulse'}-ai-visibility-check.pdf`;
 }
 
+type SavedContentDraft = {
+  buyer_question: string | null;
+  title: string;
+  body: string;
+  meta_description: string | null;
+};
+
+async function loadOwnedContentDrafts(projectId: string): Promise<SavedContentDraft[]> {
+  try {
+    const supabase = await createServerSupabaseClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return [];
+
+    const { data: project } = await supabase
+      .from('projects')
+      .select('id')
+      .eq('id', projectId)
+      .eq('user_id', user.id)
+      .maybeSingle();
+    if (!project) return [];
+
+    const { data, error } = await createAdminClient()
+      .from('generated_content')
+      .select('buyer_question,title,body,meta_description,created_at')
+      .eq('project_id', projectId)
+      .eq('content_type', 'answer_page')
+      .order('created_at', { ascending: false })
+      .limit(5);
+    if (error) {
+      console.error('[report-pdf] Could not load saved content drafts:', error.message);
+      return [];
+    }
+    return (data ?? []).reverse().map((draft) => ({
+      buyer_question: draft.buyer_question,
+      title: draft.title,
+      body: draft.body,
+      meta_description: draft.meta_description,
+    }));
+  } catch {
+    return [];
+  }
+}
+
 function renderReport(model: CustomerReportViewModel, full: boolean) {
   const document = createElement(ReportPdfDocument, { model, full }) as unknown as Parameters<typeof renderToBuffer>[0];
   return renderToBuffer(document);
@@ -29,7 +74,10 @@ function renderReport(model: CustomerReportViewModel, full: boolean) {
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const technical = new URL(request.url).searchParams.get('view') === 'technical';
+  const searchParams = new URL(request.url).searchParams;
+  const technical = searchParams.get('view') === 'technical';
+  const includeDrafts = searchParams.get('includeDrafts') === '1';
+  const disposition = searchParams.get('disposition') === 'inline' ? 'inline' : 'attachment';
   if (!id || id.length > 100) return Response.json({ error: 'Invalid report reference.' }, { status: 400 });
   // Rendering a PDF is CPU-heavy and the link is shareable: cap it per network.
   const rateLimit = await consumeRateLimit(request, RATE_LIMITS.reportPdf);
@@ -46,12 +94,13 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     // lists the fixes, so only the founder can download it.
     if (!technical || !(await currentViewerIsOps())) {
       const simple = await simpleReportFor(intelligence);
-      const document = createElement(SimpleReportPdf, { model: simple, reportUrl: `${getAppUrl()}/r/${id}` }) as unknown as Parameters<typeof renderToBuffer>[0];
+      const drafts = includeDrafts ? await loadOwnedContentDrafts(intelligence.projectId) : [];
+      const document = createElement(SimpleReportPdf, { model: simple, reportUrl: `${getAppUrl()}/r/${id}`, drafts }) as unknown as Parameters<typeof renderToBuffer>[0];
       const buffer = await renderToBuffer(document);
       return new Response(new Uint8Array(buffer), {
         headers: {
           'Content-Type': 'application/pdf',
-          'Content-Disposition': `attachment; filename="${safeFilename(simple.businessName)}"`,
+          'Content-Disposition': `${disposition}; filename="${safeFilename(simple.businessName)}"`,
           'Cache-Control': 'private, no-store, max-age=0',
           'X-Content-Type-Options': 'nosniff',
         },
