@@ -171,6 +171,14 @@ test('9: target-company-biased questions are rejected', () => {
   assert.throws(() => validateCandidateBatch({ candidates: [candidate({ supporting_business_evidence_ids: ['e-claim'], supporting_business_entity_ids: ['claim-leading'] })] }, claimed), /missing entity/);
 });
 
+test('rejected candidate warnings preserve a bounded question preview and exact company-bias reason', async () => {
+  const item = candidate({ question: 'Why should I choose Acme Pumps for industrial pumps?' });
+  const result = await new BuyerIntentService({ extractor: new FakeExtractor([item]) }).generate(input());
+  const warning = result.warnings.find((entry) => entry.includes('Deterministic filtering rejected')) ?? '';
+  assert.match(warning, /Why should I choose Acme Pumps for industrial pumps/);
+  assert.match(warning, /target-company bias: business name appears in question/);
+});
+
 test('10: keyword-only candidates are rejected', () => {
   const item = candidate({ question: 'industrial pump manufacturers' });
   assert.match(filterCandidates([item], profile()).rejected[0]?.reason ?? '', /not a natural buyer question/);
