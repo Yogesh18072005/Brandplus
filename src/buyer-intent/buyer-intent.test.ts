@@ -403,7 +403,7 @@ test('candidate retry receives bounded identifier-validation feedback', async ()
     return {
       output_text: JSON.stringify({
         candidates: [attempt === 1
-          ? { ...valid, supporting_business_evidence_ids: ['product-pump'] }
+          ? { ...valid, supporting_business_evidence_ids: ['missing-evidence'] }
           : valid],
       }),
     };
