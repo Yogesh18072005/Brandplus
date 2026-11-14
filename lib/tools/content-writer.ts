@@ -15,6 +15,11 @@ interface ContentInput {
     category: string;
     city: string;
     competitors: { name: string }[];
+    products?: unknown;
+    services?: unknown;
+    locations?: unknown;
+    target_customers?: unknown;
+    markets?: unknown;
   };
 }
 
@@ -135,6 +140,7 @@ export async function generateContentBatch(input: {
   topics: string[];
   keywords: string[];
   project: ContentInput['project'];
+  evidence?: { question: string; answerQuote: string | null; competitorsNamed: string[] }[];
 }): Promise<(ContentResult & { question: string })[]> {
   if (!config.googleApiKey) throw new Error('Gemini is not configured. Add GOOGLE_API_KEY before generating drafts.');
   if (input.topics.length < 1 || input.topics.length > 5) throw new Error('Generate between 1 and 5 page drafts at a time.');
@@ -142,11 +148,19 @@ export async function generateContentBatch(input: {
   const topicList = input.topics.map((topic, index) => `${index + 1}. ${topic}`).join('\\n');
   const prompt = `You are an AEO content editor. Create one useful, concise webpage draft for EACH buyer question below. Return exactly ${input.topics.length} drafts in the same order.
 
-VERIFIED BUSINESS PROFILE:
+VERIFIED BUSINESS PROFILE (only use supplied profile entries as business facts):
 Business: ${input.project.business_name}
 Website: ${input.project.website}
 Category: ${input.project.category}
 City: ${input.project.city}
+Recorded products: ${JSON.stringify(input.project.products ?? [])}
+Recorded services: ${JSON.stringify(input.project.services ?? [])}
+Recorded locations: ${JSON.stringify(input.project.locations ?? [])}
+Recorded target customers: ${JSON.stringify(input.project.target_customers ?? [])}
+Recorded markets: ${JSON.stringify(input.project.markets ?? [])}
+
+AUDIT EVIDENCE (evidence of what the AI answer said, NOT proof that competitors' capabilities belong to this business):
+${(input.evidence ?? []).map((item, index) => `Question ${index + 1}: ${item.question}\nRecorded answer excerpt: ${item.answerQuote || 'No excerpt retained'}\nCompetitors named in that answer: ${item.competitorsNamed.join(', ') || 'None recorded'}`).join('\n\n')}
 
 BUYER QUESTIONS:
 ${topicList}
@@ -154,10 +168,13 @@ ${topicList}
 TARGET KEYWORDS: ${input.keywords.join(', ') || 'derive naturally'}
 
 FACT RULES:
-- Use only the business facts above as verified facts.
+- Use only non-empty entries in the verified business profile above as verified facts.
+- Treat audit excerpts only as evidence of the answer and the content gap; competitor mentions are not facts about this business.
+- Use recorded products, services, customer types, locations and markets only when relevant to the specific question.
 - Never invent services, products, certifications, customers, years, prices, statistics, locations, awards, guarantees, capabilities, testimonials or contact details.
 - Put [VERIFY: exact missing fact] wherever a business-specific fact is needed but not supplied.
-- Separate general educational advice from claims about this business.
+- Clearly label educational guidance as general guidance and put business-specific claims only in a clearly named business section.
+- If the profile does not establish a service or capability, do not imply it is offered; use a precise [VERIFY: ...] placeholder.
 - Do not fabricate citations or claim a page is already published.
 
 FOR EACH QUESTION:
