@@ -95,8 +95,8 @@ export class GeminiBuyerIntentExtractor implements BuyerIntentExtractor {
     this.model = model;
   }
 
-  generateCandidates(understanding: CanonicalBusinessUnderstanding, candidateCount: number): Promise<BuyerQuestionCandidate[]> {
-    let previousValidationError: string | undefined;
+  generateCandidates(understanding: CanonicalBusinessUnderstanding, candidateCount: number, feedback?: string): Promise<BuyerQuestionCandidate[]> {
+    let previousValidationError: string | undefined = feedback;
     return withSchemaRetry(async (attempt) => {
       const interaction = await this.call({
         kind: `buyer-intent:candidates:${attempt}`,
