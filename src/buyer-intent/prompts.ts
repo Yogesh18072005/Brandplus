@@ -2,7 +2,7 @@ import type { CanonicalBusinessUnderstanding } from '@/src/business-understandin
 import type { BuyerQuestionCandidate } from './types';
 import { buyerIntentBusinessEntities } from './schema';
 
-export const BUYER_INTENT_PROMPT_VERSION = '1.0.5' as const;
+export const BUYER_INTENT_PROMPT_VERSION = '1.0.6' as const;
 
 export const BUYER_INTENT_SYSTEM_PROMPT = `You are the Buyer Intent Discovery Engine of BRANDPULSE.
 
