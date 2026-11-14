@@ -1,4 +1,5 @@
 import { createServerSupabaseClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { NextResponse } from 'next/server';
 import { generateContentBatch } from '@/lib/tools/content-writer';
 import type { Json } from '@/lib/supabase/types';
@@ -22,9 +23,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Invalid keywords.' }, { status: 400 });
   }
 
-  const limit = await consumeRateLimit(request, RATE_LIMITS.contentDraft, user.id);
-  if (!limit.allowed) return rateLimitError(limit, 'You have reached the draft limit. Try again later.');
-
   const { data: project } = await supabase
     .from('projects')
     .select('id, user_id, business_name, website, category, city, competitors')
@@ -34,6 +32,9 @@ export async function POST(request: Request) {
 
   if (!project) return NextResponse.json({ error: 'Project not found' }, { status: 404 });
 
+  const limit = await consumeRateLimit(request, RATE_LIMITS.contentDraft, user.id);
+  if (!limit.allowed) return rateLimitError(limit, 'You have reached the draft limit. Try again later.');
+
   try {
     const drafts = await generateContentBatch({
       topics,
@@ -41,6 +42,9 @@ export async function POST(request: Request) {
       project: { ...project, competitors: (project.competitors ?? []) as { name: string }[] },
     });
 
+    // The project was checked against the signed-in user's identity above.
+    // Use the server-only admin client for this validated server-side mutation.
+    const admin = createAdminClient();
     const rows = drafts.map((draft) => ({
       project_id: projectId,
       content_type: contentType,
@@ -50,12 +54,18 @@ export async function POST(request: Request) {
       schema_markup: draft.schemaMarkup as unknown as Json,
       keywords: draft.keywords as unknown as Json,
     }));
-    const { data: saved, error } = await supabase.from('generated_content').insert(rows).select('id');
-    if (error) throw new Error('Drafts were generated but could not be saved.');
+    const { data: saved, error } = await admin.from('generated_content').insert(rows).select('id');
+    if (error) {
+      console.error('[content-writer] Draft save failed:', error.message);
+      return NextResponse.json({
+        error: 'The drafts were generated, but saving failed. Confirm database migration 027 has been applied.',
+      }, { status: 500 });
+    }
     return NextResponse.json({
       drafts: drafts.map((draft, index) => ({ ...draft, id: saved?.[index]?.id, question: topics[index] })),
     });
   } catch (err) {
+    console.error('[content-writer] Generation or save failed:', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: err instanceof Error ? err.message : 'Content generation failed' }, { status: 500 });
   }
 }
