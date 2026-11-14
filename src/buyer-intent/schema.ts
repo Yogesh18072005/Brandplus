@@ -218,7 +218,7 @@ export function validateCandidateBatchWithOmissions(
     try {
       const groundedCandidate = inferMissingCandidateGrounding(rawCandidate, understanding);
       const validated = validateCandidateBatch({ candidates: [groundedCandidate] }, understanding)[0]!;
-      const normalizedQuestion = validated.question.toLocaleLowerCase().replace(/\\s+/g, ' ').trim();
+      const normalizedQuestion = validated.question.toLocaleLowerCase().replace(/\s+/g, ' ').trim();
       // Duplicate paraphrase-free repeats from small models add no coverage.
       if (seenQuestions.has(normalizedQuestion)) continue;
       seenQuestions.add(normalizedQuestion);
