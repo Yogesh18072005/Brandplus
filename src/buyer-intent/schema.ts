@@ -201,14 +201,8 @@ export function validateCandidateBatchWithOmissions(
         return sharedTokenCount(questionTokens, entityTokens) >= 2;
       });
       const evidenceMatches = eligibleEntities.reduce((count, entity) => {
-        const entityTokens = groundingTokens([entity.value, entity.description ?? '', entity.category ?? ''].join(' '));
-        return count + entity.evidence_ids.filter((id) => {
-          const item = understanding.evidence.find((entry) => entry.id === id);
-          if (!item) return false;
-          const evidenceTokens = groundingTokens(item.evidence_text);
-          return sharedTokenCount(questionTokens, evidenceTokens) >= 2
-            && sharedTokenCount(entityTokens, evidenceTokens) >= 1;
-        }).length;
+        const availableIds = new Set(understanding.evidence.map((item) => item.id));
+        return count + entity.evidence_ids.filter((id) => availableIds.has(id)).length;
       }, 0);
       const reason = error instanceof Error ? error.message.slice(0, 260) : 'Unknown validation error';
       diagnostics.push(
