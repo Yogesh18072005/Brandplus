@@ -49,6 +49,7 @@ export async function POST(request: Request) {
       project_id: projectId,
       content_type: contentType,
       title: draft.title,
+      buyer_question: draft.question,
       body: draft.body,
       meta_description: draft.metaDescription,
       schema_markup: draft.schemaMarkup as unknown as Json,
