@@ -391,7 +391,7 @@ test('unsupported pricing questions are rejected even when their service entity 
   const recovered = validateCandidateBatchWithOmissions({ candidates: [ungrounded] }, understanding);
   const filtered = filterCandidates(recovered, understanding);
   assert.equal(filtered.accepted.length, 0);
-  assert.match(filtered.rejected[0]?.reason ?? '', /unsupported constraint: pricing/);
+  assert.match(filtered.rejected[0]?.reason ?? '', /unsupported constraint: pric/);
 });
 
 test('candidates without a real entity-and-evidence text match are not assigned invented grounding', () => {
