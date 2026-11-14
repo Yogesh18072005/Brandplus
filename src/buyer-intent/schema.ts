@@ -117,8 +117,8 @@ function sharedTokenCount(left: Set<string>, right: Set<string>): number {
 
 /**
  * Small local models sometimes omit the grounding ID arrays. Recover them only
- * when the question independently matches an existing entity and evidence
- * already linked to that entity. No IDs or evidence are ever fabricated.
+ * when the question matches an existing entity, then use only evidence
+ * already linked to that entity in the canonical Business Understanding. No IDs or evidence are ever fabricated.
  */
 export function inferMissingCandidateGrounding(
   rawCandidate: unknown,
@@ -147,16 +147,14 @@ export function inferMissingCandidateGrounding(
       return sharedTokenCount(questionTokens, entityTokens) >= 2;
     });
 
+  // The entity-to-evidence relationship was established during Business Understanding.
+  // Once a question matches that entity, use only evidence already linked to it;
+  // requiring the question to repeat two words from the source text is too brittle
+  // for paraphrased buyer questions and small local models.
   const matched = eligibleEntities.flatMap((entity) => {
-    const entityTokens = groundingTokens([entity.value, entity.description ?? '', entity.category ?? ''].join(' '));
     const supportingEvidence = entity.evidence_ids
       .map((id) => evidenceById.get(id))
-      .filter((item): item is NonNullable<typeof item> => Boolean(item))
-      .filter((item) => {
-        const evidenceTokens = groundingTokens(item.evidence_text);
-        return sharedTokenCount(questionTokens, evidenceTokens) >= 2
-          && sharedTokenCount(entityTokens, evidenceTokens) >= 1;
-      });
+      .filter((item): item is NonNullable<typeof item> => Boolean(item));
     return supportingEvidence.length ? [{ entity, supportingEvidence }] : [];
   });
 
