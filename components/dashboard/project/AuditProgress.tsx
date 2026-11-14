@@ -74,10 +74,10 @@ export function AuditProgress({ auditId }: { auditId: string }) {
   const isComplete = status === 'completed' || envelope?.state === 'COMPLETE';
 
   return (
-    <section className="mt-6 rounded-2xl border border-white/10 bg-white/[0.04] p-5 text-white" aria-live="polite">
+    <section className="mt-6 rounded-2xl border border-[#E4E3EB] bg-white p-5 text-[#171425] shadow-sm" aria-live="polite">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h3 className="text-sm font-semibold">Audit progress</h3>
-        <span className={`rounded-full px-3 py-1 text-xs font-semibold ${isFailed ? 'bg-red-500/15 text-red-200' : isComplete ? 'bg-emerald-500/15 text-emerald-200' : 'bg-white/10 text-white/75'}`}>
+        <span className={`rounded-full px-3 py-1 text-xs font-semibold ${isFailed ? 'bg-red-50 text-red-700' : isComplete ? 'bg-emerald-50 text-emerald-700' : 'bg-[#F3F3F6] text-[#524F6D]'}`}>
           {isFailed ? 'Needs attention' : isComplete ? 'Completed' : status === 'queued' ? 'Queued' : 'In progress'}
         </span>
       </div>
@@ -88,15 +88,15 @@ export function AuditProgress({ auditId }: { auditId: string }) {
           const current = !isFailed && !isComplete && index === currentIndex;
           return (
             <li key={step.state} className="flex gap-3">
-              <span className={`mt-0.5 grid size-6 shrink-0 place-items-center rounded-full text-xs font-bold ${done ? 'bg-emerald-400 text-[#10251b]' : current ? 'bg-white text-[#121118]' : 'border border-white/20 text-white/45'}`}>
+              <span className={`mt-0.5 grid size-6 shrink-0 place-items-center rounded-full text-xs font-bold ${done ? 'bg-emerald-100 text-emerald-800' : current ? 'bg-[#463EDA] text-white' : 'border border-[#CFD0EE] text-[#676480]'}`}>
                 {done ? '✓' : index + 1}
               </span>
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <p className={`text-sm font-semibold ${done || current ? 'text-white' : 'text-white/45'}`}>{step.label}</p>
-                  {current && <span className="text-[11px] font-semibold text-white/60">Working now</span>}
+                  <p className={`text-sm font-semibold ${done || current ? 'text-[#171425]' : 'text-[#676480]'}`}>{step.label}</p>
+                  {current && <span className="text-[11px] font-semibold text-[#463EDA]">Working now</span>}
                 </div>
-                <p className="mt-1 text-xs leading-relaxed text-white/50">{step.detail}</p>
+                <p className="mt-1 text-xs leading-relaxed text-[#64617D]">{step.detail}</p>
               </div>
             </li>
           );
@@ -104,12 +104,12 @@ export function AuditProgress({ auditId }: { auditId: string }) {
       </ol>
 
       {isFailed && (
-        <p className="mt-4 rounded-xl bg-red-500/10 p-3 text-sm text-red-100">
+        <p className="mt-4 rounded-xl bg-red-50 p-3 text-sm text-red-700">
           {envelope?.failure || 'The audit could not finish. Please contact support or try again.'}
         </p>
       )}
-      {loadError && <p className="mt-3 text-xs text-amber-200">{loadError}</p>}
-      {!isFailed && !isComplete && <p className="mt-4 text-xs text-white/45">This updates automatically every 5 seconds. No AI calls are made to check progress.</p>}
+      {loadError && <p className="mt-3 text-xs text-amber-700">{loadError}</p>}
+      {!isFailed && !isComplete && <p className="mt-4 text-xs text-[#64617D]">This updates automatically every 5 seconds. No AI calls are made to check progress.</p>}
     </section>
   );
 }
