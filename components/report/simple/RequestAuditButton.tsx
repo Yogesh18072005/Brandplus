@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ensureAccountClaim } from '@/lib/client/account-claim';
 
@@ -40,4 +40,18 @@ export function RequestAuditButton({ projectId, label = 'Request my audit', butt
       {error && <p className="sr-request-error" role="alert">{error}</p>}
     </div>
   );
+}
+
+
+/** Refreshes a pending audit page until the completed report is available. */
+export function AuditAutoRefresh({ enabled }: { enabled: boolean }) {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!enabled) return;
+    const timer = window.setInterval(() => router.refresh(), 5000);
+    return () => window.clearInterval(timer);
+  }, [enabled, router]);
+
+  return null;
 }
