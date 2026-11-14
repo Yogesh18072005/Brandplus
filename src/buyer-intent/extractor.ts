@@ -111,11 +111,27 @@ export class GeminiBuyerIntentExtractor implements BuyerIntentExtractor {
   generateCandidates(understanding: CanonicalBusinessUnderstanding, candidateCount: number, feedback?: string): Promise<BuyerQuestionCandidate[]> {
     let previousValidationError: string | undefined = feedback;
     return withSchemaRetry(async (attempt) => {
+      const input = candidateGenerationPrompt(understanding, candidateCount, previousValidationError);
+      let entityCount = 0;
+      let evidenceCount = 0;
+      try {
+        const parsed = JSON.parse(input) as {
+          business_understanding?: { entities?: unknown[]; evidence?: unknown[] };
+        };
+        entityCount = parsed.business_understanding?.entities?.length ?? 0;
+        evidenceCount = parsed.business_understanding?.evidence?.length ?? 0;
+      } catch {
+        // Prompt-size logging must never interfere with candidate generation.
+      }
+      // Log counts and size only; never log business data, evidence text, or prompts.
+      console.info(
+        `[buyer-intent] candidate prompt metrics chars=${input.length} entities=${entityCount} evidence=${evidenceCount} requested_candidates=${candidateCount} attempt=${attempt}`,
+      );
       const interaction = await this.call({
         kind: `buyer-intent:candidates:${attempt}`,
         model: this.model,
         systemInstruction: BUYER_INTENT_SYSTEM_PROMPT,
-        input: candidateGenerationPrompt(understanding, candidateCount, previousValidationError),
+        input,
         responseFormat: structuredJsonResponseFormat(CANDIDATE_SCHEMA),
         generationConfig: { thinking_level: 'minimal', temperature: 0.2, max_output_tokens: 2_500 },
         retries: 1,
