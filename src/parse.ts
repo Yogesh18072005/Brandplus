@@ -131,9 +131,9 @@ export async function parseAnswer(
     model: config.parserModel,
     input: buildParserInput(input, engineResult.answerText),
     responseFormat: { type: 'text', mime_type: 'application/json', schema: PARSE_SCHEMA },
-    // Cost + determinism: extraction wants temperature 0, no thinking. Output cap
-    // raised to 2048 — long competitor lists were truncating mid-JSON at 1024.
-    generationConfig: { thinking_level: 'minimal', temperature: 0, max_output_tokens: 2048 },
+    // Cost + determinism: use minimal thinking and cap output. The Interactions
+    // API generation_config does not support temperature.
+    generationConfig: { thinking_level: 'minimal', max_output_tokens: 2048 },
   });
 
   const parsed = extractJson(interaction.output_text ?? '') as Omit<ParsedAnswer, 'brand_cited'>;
