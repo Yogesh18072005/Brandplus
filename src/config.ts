@@ -16,7 +16,7 @@ export const config = {
   googleApiKey: process.env.GOOGLE_API_KEY?.trim() ?? '',
   buyerIntentProvider: env('BUYER_INTENT_PROVIDER', 'ollama').toLowerCase(),
   ollamaBaseUrl: env('OLLAMA_BASE_URL', 'http://127.0.0.1:11434').replace(/\/$/, ''),
-  ollamaModel: env('OLLAMA_MODEL', 'qwen3:4b'),
+  ollamaModel: env('OLLAMA_MODEL', 'qwen2.5:3b'),
   ollamaTimeoutMs: Number(env('OLLAMA_TIMEOUT_MS', '120000')),
 
   // All swappable via env — this space changes weekly.
