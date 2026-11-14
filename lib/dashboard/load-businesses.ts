@@ -14,6 +14,7 @@ export interface DashboardSourceCoverage {
   pages_blocked: number;
   pages_partial: number;
   pages_duplicate: number;
+  issues: Array<{ url: string; title: string; status: string; reason: string }>;
 }
 
 export interface DashboardBusiness {
@@ -48,8 +49,12 @@ export async function loadDashboardBusinesses(projects: ProjectRow[]): Promise<D
     loadLatestIntelligenceReports(ids).catch(() => []),
     admin.from('audits').select('project_id, status, created_at').in('project_id', ids).order('created_at', { ascending: false }),
     admin.from('audit_queue').select('project_id, status, requires_approval, approved_at, created_at').in('project_id', ids).eq('job_type', 'AUDIT').order('created_at', { ascending: false }),
-    admin.from('business_understanding_runs').select('project_id, status, source_coverage, created_at').in('project_id', ids).neq('status', 'PROCESSING').order('created_at', { ascending: false }),
+    admin.from('business_understanding_runs').select('id, project_id, status, source_coverage, created_at').in('project_id', ids).neq('status', 'PROCESSING').order('created_at', { ascending: false }),
   ]);
+  const runIds = (understandingRuns ?? []).map((run) => run.id);
+  const { data: sourcePages } = runIds.length
+    ? await admin.from('business_source_pages').select('run_id, source_url, page_title, crawl_status, warning').in('run_id', runIds)
+    : { data: [] };
 
   return Promise.all(projects.map(async (project) => {
     const report = reports.find((r) => r.projectId === project.id) ?? null;
@@ -67,6 +72,14 @@ export async function loadDashboardBusinesses(projects: ProjectRow[]): Promise<D
       pages_blocked: coverageNumber(rawCoverage.pages_blocked),
       pages_partial: coverageNumber(rawCoverage.pages_partial),
       pages_duplicate: coverageNumber(rawCoverage.pages_duplicate),
+      issues: (sourcePages ?? []).filter((page) => page.run_id === understandingRun.id && page.crawl_status !== 'SUCCESS')
+        .slice(0, 8)
+        .map((page) => ({
+          url: page.source_url,
+          title: page.page_title ?? '',
+          status: page.crawl_status,
+          reason: page.warning || ({ BLOCKED: 'The site blocked this page.', INACCESSIBLE: 'The page could not be reached.', MALFORMED: 'The page response was not valid HTML.', EMPTY: 'The page contained no readable content.', DUPLICATE: 'This page duplicated another page.', PARTIAL: 'Only part of this page could be read.' } as Record<string, string>)[page.crawl_status] || 'The page was not fully analyzed.',
+        })),
     } : null;
     const open = Boolean(audit && ['queued', 'running', 'processing'].includes(audit.status));
     const awaitingApproval = Boolean(request?.requires_approval && !request.approved_at && request.status === 'pending');
