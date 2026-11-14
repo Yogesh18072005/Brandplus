@@ -422,11 +422,11 @@ test('buyer-intent grounding labels entity IDs and evidence IDs unambiguously', 
   const grounding = buyerIntentGrounding(profile());
   assert.equal(grounding.entities[0]?.entity_id, 'product-pump');
   assert.deepEqual(grounding.entities[0]?.allowed_evidence_ids, ['e-product']);
-  assert.equal(grounding.evidence[0]?.evidence_id, 'e-product');
   assert.equal(grounding.entities[0]?.evidence_options[0]?.evidence_id, 'e-product');
   assert.equal(grounding.entities[0]?.evidence_options[0]?.evidence_text, 'We manufacture industrial pumps for chemical processing applications.');
   assert.equal('id' in grounding.entities[0]!, false);
-  assert.equal('id' in grounding.evidence[0]!, false);
+  assert.equal('evidence' in grounding, false);
+  assert.deepEqual(Object.keys(grounding.entities[0]?.evidence_options[0] ?? {}).sort(), ['evidence_id', 'evidence_text']);
 });
 
 test('candidate retry receives bounded identifier-validation feedback', async () => {
