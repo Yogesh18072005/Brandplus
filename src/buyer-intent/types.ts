@@ -3,7 +3,7 @@ import type { CanonicalBusinessUnderstanding } from '@/src/business-understandin
 export const BUYER_INTENT_VERSION = '1.0.0' as const;
 export const BUYER_INTENT_SCHEMA_VERSION = '1.0.0' as const;
 // 1.1.0: common buyer words are generic, near-miss backfill, five-question floor.
-export const BUYER_INTENT_GENERATION_VERSION = '1.1.0' as const;
+export const BUYER_INTENT_GENERATION_VERSION = '1.2.0' as const;
 export const BUYER_INTENT_RANKING_VERSION = '1.0.1' as const;
 
 export type BuyerIntentCategory =
