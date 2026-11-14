@@ -94,6 +94,24 @@ export function extractJson(text: string): unknown {
   }
 }
 
+export function parserCacheKey(input: AuditInput, answerText: string): string {
+  const normalize = (value: string) => value.trim().toLocaleLowerCase();
+  const competitors = input.competitors
+    .map((competitor) => ({
+      name: normalize(competitor.name),
+      aliases: [...(competitor.aliases ?? [])].map(normalize).sort(),
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name));
+  return JSON.stringify({
+    model: config.parserModel,
+    businessName: normalize(input.businessName),
+    website: normalize(input.website),
+    aliases: [...(input.aliases ?? [])].map(normalize).sort(),
+    competitors,
+    answerText,
+  });
+}
+
 export async function parseAnswer(
   input: AuditInput,
   engineResult: EngineResult
@@ -101,7 +119,7 @@ export async function parseAnswer(
   // Parses are deterministic enough to cache: same answer + same brand set →
   // same extraction. Without this, a quota-interrupted audit re-bills every
   // successful parse on resume.
-  const cacheId = `${config.parserModel}|${input.businessName}|${input.website}|${engineResult.answerText}`;
+  const cacheId = parserCacheKey(input, engineResult.answerText);
   const cached = cacheGet<ParsedAnswer>('parser', cacheId);
   if (cached) {
     recordCall({ kind: 'parser', model: config.parserModel, inputTokens: 0, outputTokens: 0, cached: true });
