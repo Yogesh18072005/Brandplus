@@ -106,7 +106,7 @@ export function BusinessesView({ businesses }: { businesses: DashboardBusiness[]
                   {b.stage === 'ready' ? 'Open report' : 'Open'} <ArrowUpRight className="size-4" />
                 </Link>
                 {(b.stage === 'none' || (b.stage === 'ready' && !b.recheckOpen)) && (
-                  <RequestAuditButton projectId={b.id} label={b.stage === 'none' ? 'Request audit' : 'Re-check'}
+                  <RequestAuditButton projectId={b.id} label={b.stage === 'none' ? 'Get me a report now' : 'Get me a report now'}
                     buttonClassName={`inline-flex h-10 items-center rounded-full px-4 text-[13.5px] font-semibold ${dark ? 'bg-white/10 text-white hover:bg-white/15' : 'bg-[#f4f3f7] text-[#171425] hover:bg-[#eae9f0]'}`} />
                 )}
                 {b.recheckOpen && <span className={`text-[12.5px] ${dark ? 'text-white/55' : 'text-[#7d7a94]'}`}>Re-check in progress</span>}
