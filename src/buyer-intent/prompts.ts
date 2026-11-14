@@ -79,7 +79,7 @@ export function candidateGenerationPrompt(
       'Every question must sound natural when asked to an AI assistant, be self-contained, and end with a question mark.',
       'Every candidate must reference at least one supplied entity id and one of that entity\'s evidence ids.',
       'Never leave either supporting ID array empty. Select IDs by matching the question to the supplied entity value/description and its allowed evidence; do not guess or invent identifiers.',
-      'Before returning, verify that every entity ID exists in the supplied entities list and every evidence ID exists in that entity\\'s allowed_evidence_ids.',
+      'Before returning, verify that every entity ID exists in the supplied entities list and every evidence ID exists in that entity\'s allowed_evidence_ids.',
       'Copy supporting_business_entity_ids only from entity_id fields.',
       'Copy supporting_business_evidence_ids only from evidence_id fields. Never put an entity_id in supporting_business_evidence_ids.',
       'Each supporting_business_evidence_id must also appear in allowed_evidence_ids for at least one referenced entity.',
