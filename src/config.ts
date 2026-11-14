@@ -14,9 +14,6 @@ const DEFAULT_MODEL = 'gemini-3.5-flash';
 
 export const config = {
   googleApiKey: process.env.GOOGLE_API_KEY?.trim() ?? '',
-  openaiApiKey: process.env.OPENAI_API_KEY?.trim() ?? '',
-  openaiObservationEnabled: env('OPENAI_OBSERVATION_ENABLED', 'false') === 'true',
-  openaiObservationModel: env('OPENAI_OBSERVATION_MODEL', 'gpt-6-astra'),
   buyerIntentProvider: env('BUYER_INTENT_PROVIDER', 'ollama').toLowerCase(),
   ollamaBaseUrl: env('OLLAMA_BASE_URL', 'http://127.0.0.1:11434').replace(/\/$/, ''),
   ollamaModel: env('OLLAMA_MODEL', 'qwen2.5:3b'),
