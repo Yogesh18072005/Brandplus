@@ -41,7 +41,7 @@ For local Ollama-backed Buyer Intent, start Ollama and configure:
 ```dotenv
 BUYER_INTENT_PROVIDER=ollama
 OLLAMA_BASE_URL=http://127.0.0.1:11434
-OLLAMA_MODEL=llama3.2:3b
+OLLAMA_MODEL=qwen2.5:3b
 OLLAMA_TIMEOUT_MS=120000
 ```
 
