@@ -174,6 +174,7 @@ export function SimpleReport({
           {model.gaps > 0 ? (
             <SimpleReportFixPlan
               projectId={model.projectId}
+              reportId={model.reportId}
               questions={model.questions.filter((question) => question.verdict === 'missed').slice(0, 5).map((question) => ({ id: question.id, question: question.question }))}
               canGenerate={mode === 'dashboard' && !sample}
             />
