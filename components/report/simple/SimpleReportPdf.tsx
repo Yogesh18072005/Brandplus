@@ -137,6 +137,10 @@ function draftBlocks(body: string): { kind: 'h2' | 'h3' | 'p' | 'li'; text: stri
   return plain ? [{ kind: 'p', text: plain }] : [];
 }
 
+function countDraftWords(body: string): number {
+  return draftBlocks(body).map((block) => block.text).join(' ').trim().split(/\\s+/).filter(Boolean).length;
+}
+
 export function SimpleReportPdf({ model, reportUrl, drafts = [] }: { model: SimpleReport; reportUrl: string; drafts?: PdfContentDraft[] }) {
   const named = model.recommended + model.mentioned;
   const date = formatDate(model.observedOn);
@@ -283,7 +287,7 @@ export function SimpleReportPdf({ model, reportUrl, drafts = [] }: { model: Simp
           <Text style={s.draftQuestion}>BASED ON THIS MISSED BUYER QUESTION</Text>
           <Text style={s.qText}>{draft.buyer_question || 'Buyer question recorded in the audit'}</Text>
           <Text style={[s.draftTitle, { marginTop: 16 }]}>{draft.title}</Text>
-          {draft.meta_description && <Text style={s.draftMeta}>SEO DESCRIPTION: {draft.meta_description}</Text>}
+          {draft.meta_description && <Text style={s.draftMeta}>SEO DESCRIPTION: {draft.meta_description} · {countDraftWords(draft.body)} words</Text>}
           <View style={{ borderTopWidth: 1, borderTopColor: c.line, paddingTop: 10 }}>
             {draftBlocks(draft.body).map((block, blockIndex) => (
               <Text key={blockIndex} style={block.kind === 'h2' ? s.draftH2 : block.kind === 'h3' ? s.draftH3 : block.kind === 'li' ? s.draftLi : s.draftP}>
