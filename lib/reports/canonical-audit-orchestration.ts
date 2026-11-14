@@ -9,6 +9,7 @@ import { BusinessUnderstandingService } from '@/src/business-understanding/servi
 import { BuyerIntentService } from '@/src/buyer-intent/service';
 import { ObservationService } from '@/src/ai-observation/service';
 import { GeminiObservationProvider } from '@/src/ai-observation/gemini-provider';
+import { observationGroundingFromEnv } from '@/src/ai-observation/prompt';
 import { EvidenceDiagnosisService } from '@/src/evidence-diagnosis/service';
 import { InterventionGenerationService } from '@/src/intervention-generation/service';
 import { GeminiInterventionGenerator } from '@/src/intervention-generation/gemini-generator';
@@ -211,6 +212,7 @@ export async function processCanonicalAuditBootstrap(client: AdminClient, job: Q
       businessUnderstandingRunId: businessRunId,
       providerName: 'gemini',
       idempotencyKey: `canonical-audit:${audit.id}:engine-03`,
+      generationParameters: { grounding: observationGroundingFromEnv() },
     });
     observationQueued = true;
     envelope = mergeEnvelope(envelope, 'OBSERVING', { observationRunId: created.run.id });
