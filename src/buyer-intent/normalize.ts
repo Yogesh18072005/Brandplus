@@ -81,10 +81,10 @@ function similarity(a: string, b: string): number {
 }
 
 function companyBiasReason(question: string, understanding: CanonicalBusinessUnderstanding): string | null {
-  const normalized = question.toLocaleLowerCase().replace(/[^\\p{L}\\p{N}]+/gu, ' ').trim();
+  const normalized = question.toLocaleLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
   const paddedQuestion = ' ' + normalized + ' ';
   const companyNames = [understanding.business.name, ...understanding.company_identity.map((item) => item.value)]
-    .map((value) => value.toLocaleLowerCase().replace(/[^\\p{L}\\p{N}]+/gu, ' ').trim())
+    .map((value) => value.toLocaleLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim())
     .filter(Boolean);
 
   // Match complete known names only. Individual identity words (e.g. 'technology'
