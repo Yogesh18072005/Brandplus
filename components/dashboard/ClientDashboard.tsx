@@ -487,9 +487,9 @@ async function saveBusinessName(e: FormEvent<HTMLFormElement>) {
             />
           </div>
           <div className={`mt-4 grid grid-cols-2 gap-3 text-[12.5px] sm:grid-cols-4 lg:grid-cols-7 ${MUTED}`}>
-            <p><strong className={INK}>{business.sourceCoverage.pages_analyzed}</strong><span className="block">Discovered</span></p>
+            <p><strong className={INK}>{business.sourceCoverage.pages_analyzed}</strong><span className="block" >Scanned</span></p>
             <p><strong className={INK}>{business.sourceCoverage.pages_successfully_analyzed}</strong><span className="block">Readable</span></p>
-            <p><strong className={INK}>{business.sourceCoverage.pages_failed}</strong><span className="block">Failed</span></p>
+            <p><strong className={INK}>{business.sourceCoverage.pages_failed}</strong><span className="block" >Failed total</span></p>
             <p><strong className={INK}>{business.sourceCoverage.pages_blocked}</strong><span className="block">Blocked</span></p>
             <p><strong className={INK}>{business.sourceCoverage.pages_empty}</strong><span className="block">Empty</span></p>
             <p><strong className={INK}>{business.sourceCoverage.pages_partial}</strong><span className="block">Partial</span></p>
