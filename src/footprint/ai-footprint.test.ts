@@ -3,7 +3,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { analyzePage, findHypeClaims, pickKeyPages, sitemapLocs } from './site-checks';
-import { parseListingLines } from './ai-footprint';
+import { parseListingLines, verifyDirectoryListing } from './ai-footprint';
 
 test('answer blocks: a question heading followed by a short direct answer', () => {
   const answer = 'We build websites and run SEO for small businesses in Bangalore, usually in four to six weeks from brief to launch, with a fixed price agreed before any work starts.';
@@ -60,4 +60,19 @@ test('directory listing lines: yes needs a link on that directory', () => {
   // A "yes" pointing somewhere else keeps no URL, so it won't count as listed without a citation.
   assert.deepEqual(parsed.get('themanifest.com'), { yes: true, url: undefined });
   assert.deepEqual(parsed.get('goodfirms.co'), { yes: null, url: undefined });
+});
+
+test('directory listing is verified only by a matching business name on the directory domain', () => {
+  assert.equal(
+    verifyDirectoryListing('https://www.clutch.co/profile/acme', 'Acme builds software for clinics.', 'clutch.co', 'Acme'),
+    true,
+  );
+  assert.equal(
+    verifyDirectoryListing('https://example.com/acme', 'Acme builds software for clinics.', 'clutch.co', 'Acme'),
+    false,
+  );
+  assert.equal(
+    verifyDirectoryListing('https://www.clutch.co/profile/other', 'Other company profile.', 'clutch.co', 'Acme'),
+    false,
+  );
 });
