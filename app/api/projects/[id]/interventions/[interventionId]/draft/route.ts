@@ -33,7 +33,7 @@ export async function POST(
   const { data: fix, error: fixError } = await supabase
     .from('generated_interventions')
     .select('id, title, objective, exact_buyer_question, expected_deliverable')
-    .eq('id', interventionId)
+    .eq('intervention_key', interventionId)
     .eq('project_id', project.id)
     .maybeSingle();
   if (fixError || !fix) return NextResponse.json({ error: 'This fix was not found for the selected project.' }, { status: 404 });
