@@ -87,7 +87,6 @@ export class GeminiObservationProvider implements ObservationProvider {
       ...(input.generationParameters.grounding ? { tools: [{ type: 'google_search' }] } : {}),
       generationConfig: {
         thinking_level: 'minimal',
-        temperature: Number(input.generationParameters.temperature ?? 0.2),
         max_output_tokens: Number(input.generationParameters.maxOutputTokens ?? 3072),
       },
       retries: 0,
