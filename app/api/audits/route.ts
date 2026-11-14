@@ -99,7 +99,10 @@ export async function POST(request: Request) {
       .select('id, projects!inner(user_id)', { count: 'exact', head: true })
       .eq('projects.user_id', user.id);
     if (plan !== 'free') {
-      const periodStart = profile?.credits_reset_at ?? new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+      const resetAt = profile?.credits_reset_at ? new Date(profile.credits_reset_at).getTime() : Number.NaN;
+      const periodStart = Number.isFinite(resetAt) && resetAt > Date.now()
+        ? new Date(resetAt - 30 * 24 * 60 * 60 * 1000).toISOString()
+        : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
       usageQuery = usageQuery.gte('created_at', periodStart);
     }
     const { count: usedAudits, error: usageError } = await usageQuery;
