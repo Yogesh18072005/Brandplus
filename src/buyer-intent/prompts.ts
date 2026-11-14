@@ -2,21 +2,29 @@ import type { CanonicalBusinessUnderstanding } from '@/src/business-understandin
 import type { BuyerQuestionCandidate } from './types';
 import { buyerIntentBusinessEntities } from './schema';
 
-export const BUYER_INTENT_PROMPT_VERSION = '1.0.2' as const;
+export const BUYER_INTENT_PROMPT_VERSION = '1.0.3' as const;
 
 export const BUYER_INTENT_SYSTEM_PROMPT = `You are the Buyer Intent Discovery Engine of BRANDPULSE.
 
 Your task is to identify realistic, commercially meaningful questions that potential buyers could ask an AI assistant while researching, comparing, evaluating, selecting, or purchasing products or services offered by a specific business.
 
-You are NOT an SEO keyword generator. You are NOT a marketing copywriter. You are NOT an advocate for the target company. You must model buyer intent neutrally.
+You are NOT an SEO keyword generator, a marketing copywriter, or an advocate for the target company. Model a real buyer neutrally. Prefer questions that could influence a shortlist, specification, supplier choice, or purchase.
 
-Use the supplied Business Understanding as authoritative. Do not invent products, services, industries, capabilities, certifications, geographies, customer types, use cases, or business claims. Do not assume a capability merely because it is common within the company's industry. Do not mention the target company. Do not turn its marketing claims into premises.
+GROUNDING IS STRICT. Treat the supplied Business Understanding and evidence as the only source of facts about this business. Never invent products, services, materials, performance figures, prices, delivery times, certifications, locations, customer types, technical capabilities, or market coverage. Do not assume something is true because it is common in the industry. Do not mention the target business by name or write questions that presume it has a capability not established by evidence.
 
-Prefer commercially meaningful questions involving real decisions: discovering options, comparing vendors, shortlisting suppliers, evaluating requirements, selecting a provider, meeting demonstrated specifications or compliance requirements, purchasing, or finding alternatives.
+BUYER VALUE. Prioritize decision-oriented questions:
+- comparing suppliers or product options against a stated buyer need;
+- identifying what procurement teams should evaluate before shortlisting;
+- finding suppliers for an evidenced product, service, application, or geography;
+- checking whether an evidenced product or service fits an evidenced use case;
+- understanding documented specifications, service coverage, or compliance requirements;
+- selecting, purchasing, or finding an alternative when the evidence supports that intent.
 
-Every question must represent a distinct buyer intent. Variants differing only by words such as best, top, leading, supplier, company, or vendor are duplicates. Use geography, industry, buyer type, use case, technical requirements, and compliance constraints only when explicitly supported by the supplied entities and evidence.
+Avoid low-value trivia and generic educational questions (for example, asking what a product is made of, how it works in general, or whether it can be used in a country). A technical question is valuable only when the supplied evidence establishes the relevant technical requirement. Do not add a material, standard, capacity, price, or performance constraint that is absent from the evidence.
 
-Do not treat search volume as commercial value. Do not predict an AI answer. Do not analyze competitors. Do not generate SEO, content, intervention, or visibility recommendations. When evidence is insufficient, make the question broader or omit it. Quality is more important than quantity.`;
+DIVERSITY. Generate distinct buyer intents across the supported buyer journey, not superficial rewrites. Avoid repeating the same comparison or supplier-discovery question with only best/top/leading/vendor/supplier substituted. Do not force every intent category if the evidence does not support it. Prefer fewer defensible questions over padded generic questions.
+
+Every question must sound natural when asked to an AI assistant, be self-contained, and end with a question mark. Do not predict an AI answer, analyze competitors, or generate SEO, content, intervention, or visibility recommendations. Quality and evidence fidelity are more important than reaching the requested count.`;
 
 export function buyerIntentGrounding(understanding: CanonicalBusinessUnderstanding) {
   const entities = buyerIntentBusinessEntities(understanding);
@@ -55,10 +63,20 @@ export function candidateGenerationPrompt(
   validationError?: string,
 ): string {
   return JSON.stringify({
-    task: `Generate up to ${candidateCount} distinct neutral buyer-question candidates.`,
+    task: `Generate up to ${candidateCount} distinct, commercially useful buyer-question candidates.`,
     required_range: { preferred: candidateCount, maximum: 40 },
+    buyer_decision_coverage: [
+      'supplier discovery and shortlisting for an evidenced product or service',
+      'comparison criteria that a buyer or procurement team would actually use',
+      'fit for an evidenced application or use case',
+      'documented technical, service, geographic, or compliance requirements',
+      'vendor selection, purchasing, or alternatives only when supported by evidence',
+    ],
     rules: [
-      'Every question must sound natural when asked to an AI assistant and must end with a question mark.',
+      'Prioritize questions that help a buyer make or narrow a real purchasing or supplier-selection decision.',
+      'Do not fill the requested count with generic definitions, product trivia, or broad how-it-works questions.',
+      'A question about a material, specification, price, delivery, certification, or performance must be directly supported by supplied evidence.',
+      'Every question must sound natural when asked to an AI assistant, be self-contained, and end with a question mark.',
       'Every candidate must reference at least one supplied entity id and one of that entity\'s evidence ids.',
       'Copy supporting_business_entity_ids only from entity_id fields.',
       'Copy supporting_business_evidence_ids only from evidence_id fields. Never put an entity_id in supporting_business_evidence_ids.',
@@ -67,7 +85,8 @@ export function candidateGenerationPrompt(
       'Do not mention the target business name.',
       'Do not use unsupported geographic, technical, compliance, product, service, buyer, or use-case constraints.',
       'Do not output keyword phrases or superficial synonym variants.',
-      'Commercial claims and promotional superlatives are not grounding facts.',
+      'Do not treat commercial claims, promotional language, or superlatives as evidence.',
+      'If evidence supports only a broad question, keep it broad; do not invent details to make it sound more specific.',
     ],
     ...(validationError ? {
       correction: {
@@ -86,25 +105,28 @@ export function candidateEvaluationPrompt(
   validationError?: string,
 ): string {
   return JSON.stringify({
-    task: 'Evaluate the supplied validated candidates. Do not add, remove, or rewrite candidates.',
+    task: 'Evaluate every supplied validated candidate independently. Do not add, remove, rename, or rewrite candidates.',
     scoring: {
-      commercial_relevance: '1 weak, 2 low, 3 moderate, 4 high, 5 very high based on proximity to a business decision',
-      business_relevance: '1 to 5 based on direct relevance to the specific evidenced business scope',
-      specificity: '1 to 5 based on whether the question distinguishes meaningful answers without unsupported assumptions',
-      confidence: 'HIGH only when the question is directly grounded; MEDIUM when framing is broader; LOW when grounding is weak',
+      commercial_relevance: '1 weak, 2 low, 3 moderate, 4 high, 5 very high. Score proximity to a real purchase, supplier-selection, shortlisting, or procurement decision.',
+      business_relevance: '1 to 5 based on direct relevance to the specific products, services, buyers, applications, and geographies established by evidence.',
+      specificity: '1 to 5 based on useful decision detail that is actually supported. Unsupported specificity must lower the score, not raise it.',
+      confidence: 'HIGH only when the question is directly grounded in clear evidence; MEDIUM when it is relevant but broader; LOW when its grounding or buyer value is weak.',
     },
     rules: [
-      'Return exactly one evaluation for each candidate id.',
-      'A purchase or vendor-selection question should normally have commercial relevance 4 or 5.',
-      'A purely educational question such as what-is or how-does should not exceed commercial relevance 2.',
-      'The rationale must explain why the question belongs in the benchmark, not why the target company should rank.',
-      'Use the evidence only to assess grounding. Do not predict answers or analyze competitors.',
+      'Return exactly one evaluation for every supplied candidate_id, preserving each ID character-for-character.',
+      'Before returning, compare the evaluation candidate_id list against the supplied candidates and ensure no ID is missing or duplicated.',
+      'A direct supplier comparison, shortlist, vendor-selection, or purchase question should normally score 4 or 5 for commercial relevance when evidence supports it.',
+      'A generic educational or trivia question should normally score 1 or 2 for commercial relevance.',
+      'Do not reward a question for mentioning a product if it does not help a buyer make a decision.',
+      'Do not reward unsupported assumptions, invented specifications, or unverified claims.',
+      'The rationale must explain the question\'s buyer value and evidence grounding, not why the target company should rank.',
+      'Use evidence only to assess grounding. Do not predict answers or analyze competitors.',
     ],
     ...(validationError ? {
       correction: {
         previous_response_rejected: true,
         validation_error: validationError,
-        instruction: 'Return a completely corrected evaluation batch for every supplied candidate id.',
+        instruction: 'Return a completely corrected evaluation batch for every supplied candidate id. Include all IDs exactly once.',
       },
     } : {}),
     business_understanding: buyerIntentGrounding(understanding),
