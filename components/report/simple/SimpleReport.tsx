@@ -175,7 +175,7 @@ export function SimpleReport({
             <SimpleReportFixPlan
               projectId={model.projectId}
               reportId={model.reportId}
-              questions={model.questions.filter((question) => question.verdict === 'missed').slice(0, 5).map((question) => ({ id: question.id, question: question.question }))}
+              questions={model.questions.filter((question) => question.verdict === 'missed').slice(0, 5).map((question) => ({ id: question.id, question: question.question, quote: question.quote, competitorsNamed: question.competitorsNamed }))}
               canGenerate={mode === 'dashboard' && !sample}
             />
           ) : <p className="sr-sub">No missed buyer questions were recorded in this audit.</p>}
