@@ -145,7 +145,7 @@ export async function generateContentBatch(input: {
   if (!config.googleApiKey) throw new Error('Gemini is not configured. Add GOOGLE_API_KEY before generating drafts.');
   if (input.topics.length < 1 || input.topics.length > 5) throw new Error('Generate between 1 and 5 page drafts at a time.');
 
-  const topicList = input.topics.map((topic, index) => `${index + 1}. ${topic}`).join('\\n');
+  const topicList = input.topics.map((topic, index) => `${index + 1}. ${topic}`).join('\n');
   const prompt = `You are an AEO content editor. Create one useful, concise webpage draft for EACH buyer question below. Return exactly ${input.topics.length} drafts in the same order.
 
 VERIFIED BUSINESS PROFILE (only use supplied profile entries as business facts):
