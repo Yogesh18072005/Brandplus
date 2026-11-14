@@ -71,7 +71,18 @@ export function validateCandidateBatch(raw: unknown, understanding: CanonicalBus
     if (exactQuestions.has(exact)) throw new Error(`Duplicate candidate question: ${candidate.question}`);
     exactQuestions.add(exact);
 
+    if (!candidate.question.endsWith('?') || candidate.question.trim().split(/\\s+/).length < 4) {
+      throw new Error(`Candidate ${candidate.id} is not a complete natural buyer question`);
+    }
+    for (const id of candidate.supporting_business_entity_ids) {
+      if (!entities.has(id) && id.startsWith('evidence_')) {
+        throw new Error(`Candidate ${candidate.id} placed an evidence ID in supporting_business_entity_ids: ${id}`);
+      }
+    }
     for (const id of candidate.supporting_business_evidence_ids) {
+      if (!evidenceIds.has(id) && id.startsWith('entity_')) {
+        throw new Error(`Candidate ${candidate.id} placed an entity ID in supporting_business_evidence_ids: ${id}`);
+      }
       if (!evidenceIds.has(id)) throw new Error(`Candidate ${candidate.id} references missing evidence ${id}`);
     }
     const supportedByEntities = new Set<string>();
