@@ -77,7 +77,7 @@ export function generationConfigFor<T extends Record<string, unknown>>(model: st
   // Keep it in shared call options for the local Ollama adapter, but remove
   // it before sending a request to Gemini.
   const { temperature: _omitTemperature, ...supported } = generationConfig;
-  if (!/^gemini-[12]\\./.test(model) || !('thinking_level' in supported)) {
+  if (!/^gemini-[12]\./.test(model) || !('thinking_level' in supported)) {
     return supported as Partial<T>;
   }
   const { thinking_level: _omitThinkingLevel, ...rest } = supported;
