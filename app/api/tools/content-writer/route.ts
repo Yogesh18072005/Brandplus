@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { NextResponse } from 'next/server';
@@ -49,8 +50,10 @@ export async function POST(request: Request) {
     // The project was checked against the signed-in user's identity above.
     // Use the server-only admin client for this validated server-side mutation.
     const admin = createAdminClient();
+    const generationBatchId = randomUUID();
     const rows = drafts.map((draft) => ({
       project_id: projectId,
+      generation_batch_id: generationBatchId,
       content_type: contentType,
       title: draft.title,
       buyer_question: draft.question,
