@@ -81,19 +81,20 @@ function similarity(a: string, b: string): number {
 }
 
 function companyBiasReason(question: string, understanding: CanonicalBusinessUnderstanding): string | null {
-  const normalized = question.toLocaleLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ');
+  const normalized = question.toLocaleLowerCase().replace(/[^\\p{L}\\p{N}]+/gu, ' ').trim();
+  const paddedQuestion = ' ' + normalized + ' ';
   const companyNames = [understanding.business.name, ...understanding.company_identity.map((item) => item.value)]
-    .map((value) => value.toLocaleLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim())
+    .map((value) => value.toLocaleLowerCase().replace(/[^\\p{L}\\p{N}]+/gu, ' ').trim())
     .filter(Boolean);
-  const businessVocabulary = meaningfulTokens(buyerIntentBusinessEntities(understanding).map((item) => item.value).join(' '));
-  const brandTokens = companyNames.flatMap((name) => name.split(' '))
-    .filter((token) => token.length >= 4 && !businessVocabulary.has(stem(token)) && !/^(private|limited|incorporated|company|group)$/.test(token));
-  if (companyNames.some((name) => normalized.includes(name))) return 'business name appears in question';
-  if (brandTokens.some((token) => new RegExp(`\\b${token}\\b`, 'i').test(normalized))) return 'company identity token appears in question';
+
+  // Match complete known names only. Individual identity words (e.g. 'technology'
+  // or 'solutions') can be ordinary buyer language and must not trigger this guard.
+  if (companyNames.some((name) => paddedQuestion.includes(' ' + name + ' '))) {
+    return 'business name appears in question';
+  }
   if (BIASED.test(question)) return 'promotional chooser opener';
   return null;
 }
-
 function companyBiased(question: string, understanding: CanonicalBusinessUnderstanding): boolean {
   return companyBiasReason(question, understanding) !== null;
 }
