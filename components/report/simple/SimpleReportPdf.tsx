@@ -63,6 +63,14 @@ const s = StyleSheet.create({
   ctaButton: { marginTop: 10, alignSelf: 'flex-start', backgroundColor: c.mint, color: '#0D2B22', fontFamily: 'Helvetica-Bold', fontSize: 10, paddingVertical: 9, paddingHorizontal: 14, borderRadius: 8, textDecoration: 'none' },
   footer: { position: 'absolute', bottom: 20, left: 34, right: 34, flexDirection: 'row', justifyContent: 'space-between', fontSize: 7.5, color: c.faint },
   section: { fontSize: 18, fontFamily: 'Helvetica-Bold', letterSpacing: -0.4, marginBottom: 4 },
+  draftQuestion: { fontSize: 8, color: c.blue, fontFamily: 'Helvetica-Bold', marginBottom: 8 },
+  draftTitle: { fontSize: 21, fontFamily: 'Helvetica-Bold', lineHeight: 1.2, marginBottom: 8 },
+  draftMeta: { fontSize: 8.5, color: c.muted, marginBottom: 14, lineHeight: 1.5 },
+  draftH2: { fontSize: 14, fontFamily: 'Helvetica-Bold', marginTop: 12, marginBottom: 5, lineHeight: 1.25 },
+  draftH3: { fontSize: 11, fontFamily: 'Helvetica-Bold', marginTop: 9, marginBottom: 4 },
+  draftP: { fontSize: 9.5, lineHeight: 1.55, marginBottom: 7 },
+  draftLi: { fontSize: 9.5, lineHeight: 1.5, marginBottom: 4, paddingLeft: 10 },
+  draftNotice: { marginTop: 16, padding: 10, backgroundColor: c.soft, borderRadius: 8, fontSize: 8, color: c.muted, lineHeight: 1.45 },
 });
 
 const VERDICT: Record<SimpleVerdict, { label: string; color: string; bg: string }> = {
@@ -98,7 +106,38 @@ function formatDate(iso: string | null): string {
   return Number.isNaN(date.getTime()) ? '' : date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Kolkata' });
 }
 
-export function SimpleReportPdf({ model, reportUrl }: { model: SimpleReport; reportUrl: string }) {
+type PdfContentDraft = {
+  buyer_question: string | null;
+  title: string;
+  body: string;
+  meta_description: string | null;
+};
+
+function decodeHtml(value: string): string {
+  return value
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;|&apos;/gi, "'")
+    .replace(/&#(\d+);/g, (_, code: string) => String.fromCodePoint(Number(code)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, code: string) => String.fromCodePoint(parseInt(code, 16)));
+}
+
+function draftBlocks(body: string): { kind: 'h2' | 'h3' | 'p' | 'li'; text: string }[] {
+  const blocks = [...body.matchAll(/<(h2|h3|p|li)\b[^>]*>([\s\S]*?)<\/\1>/gi)]
+    .map((match) => ({
+      kind: match[1]!.toLowerCase() as 'h2' | 'h3' | 'p' | 'li',
+      text: decodeHtml(match[2]!.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ')).trim(),
+    }))
+    .filter((block) => block.text.length > 0);
+  if (blocks.length) return blocks;
+  const plain = decodeHtml(body.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ')).trim();
+  return plain ? [{ kind: 'p', text: plain }] : [];
+}
+
+export function SimpleReportPdf({ model, reportUrl, drafts = [] }: { model: SimpleReport; reportUrl: string; drafts?: PdfContentDraft[] }) {
   const named = model.recommended + model.mentioned;
   const date = formatDate(model.observedOn);
   const maxSource = Math.max(1, ...model.sources.map((source) => source.answers));
@@ -236,6 +275,30 @@ export function SimpleReportPdf({ model, reportUrl }: { model: SimpleReport; rep
         </View>
         {footer}
       </Page>
+
+      {drafts.map((draft, index) => (
+        <Page key={\`draft-\${index}\`} size="A4" style={s.page}>
+          <View style={s.top}><Mark /><Text style={s.topRight}>AI content recommendation {index + 1} of {drafts.length}</Text></View>
+          <Text style={s.label}>Generated page draft · for review only</Text>
+          <Text style={s.draftQuestion}>BASED ON THIS MISSED BUYER QUESTION</Text>
+          <Text style={s.qText}>{draft.buyer_question || 'Buyer question recorded in the audit'}</Text>
+          <Text style={[s.draftTitle, { marginTop: 16 }]}>{draft.title}</Text>
+          {draft.meta_description && <Text style={s.draftMeta}>SEO DESCRIPTION: {draft.meta_description}</Text>}
+          <View style={{ borderTopWidth: 1, borderTopColor: c.line, paddingTop: 10 }}>
+            {draftBlocks(draft.body).map((block, blockIndex) => (
+              <Text key={blockIndex} style={block.kind === 'h2' ? s.draftH2 : block.kind === 'h3' ? s.draftH3 : block.kind === 'li' ? s.draftLi : s.draftP}>
+                {block.kind === 'li' ? '- ' : ''}{block.text}
+              </Text>
+            ))}
+          </View>
+          <View style={s.draftNotice}>
+            <Text style={{ fontFamily: 'Helvetica-Bold', marginBottom: 4 }}>How to use this draft</Text>
+            <Text>Audit evidence: the buyer question above was recorded as a missed question in this report. Verified business facts: limited to the business profile saved in BrandPulse at generation time. General industry guidance: educational content, not a claim about this business. Any [VERIFY] note marks information that must be confirmed before use.</Text>
+            <Text style={{ marginTop: 5 }}>This is an AI-generated draft for human review. It has not been published. Verify every service description, capability, certification, statistic and business-specific statement before publishing. BrandPulse does not guarantee AI visibility.</Text>
+          </View>
+          {footer}
+        </Page>
+      ))}
     </Document>
   );
 }
