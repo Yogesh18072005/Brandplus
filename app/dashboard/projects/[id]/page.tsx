@@ -5,7 +5,7 @@ import { getIntelligenceReport } from '@/lib/reports/cached-intelligence-report'
 import { simpleReportFor } from '@/lib/reports/load-simple-report';
 import { SimpleReport } from '@/components/report/simple/SimpleReport';
 import { FixPlanOffer } from '@/components/report/simple/FixPlanOffer';
-import { RequestAuditButton } from '@/components/report/simple/RequestAuditButton';
+import { AuditAutoRefresh, RequestAuditButton } from '@/components/report/simple/RequestAuditButton';
 import { BookWalkthrough } from '@/components/report/simple/BookWalkthrough';
 import { ErrorNote } from '@/components/dashboard/project/kit';
 import ProjectOverviewClient from './OverviewClient';
@@ -56,6 +56,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
     return (
       <div className="zw sr">
         <div className="sr-wrap">
+          <AuditAutoRefresh enabled={stage !== 'none'} />
           <section className="sr-card sr-pending">
             <p className="sr-label">Your report</p>
             {stage === 'none' ? (
@@ -67,11 +68,11 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             ) : (
               <>
                 <h2>We’re preparing {project.business_name}’s report</h2>
-                <p className="sr-sub">We’ll email you the moment it’s ready, usually within one working day. Nothing for you to do.</p>
+                <p className="sr-sub">This free audit is processing in the background. This page refreshes automatically and your report will appear here when it’s ready.</p>
                 <ol className="sr-steps">
                   <li className="is-done">Audit requested</li>
                   <li className={stage === 'running' ? 'is-now' : ''}>Ask AI your buyers’ questions</li>
-                  <li>Email you the report</li>
+                  <li>Show your report here and email you</li>
                   <li>15-minute walkthrough and your fix plan</li>
                 </ol>
               </>
