@@ -148,7 +148,10 @@ export class BuyerIntentService {
     });
 
     try {
-      const candidateTarget = Math.min(40, Math.max(20, count * 2));
+      // Keep the first local-model batch close to the requested benchmark size.
+      // A small buffer allows deterministic filtering without asking a 3B CPU model
+      // to produce a disproportionately large JSON response.
+      const candidateTarget = Math.min(25, Math.max(10, count + 5));
       let generated = await this.extractor.generateCandidates(input.understanding, candidateTarget);
       let filtered = filterCandidates(generated, input.understanding);
       const minimumDistinctCandidates = Math.min(count, MINIMUM_AUDIT_QUESTIONS);
