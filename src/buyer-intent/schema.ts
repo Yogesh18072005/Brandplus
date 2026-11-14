@@ -105,8 +105,8 @@ function groundingTokens(value: string): Set<string> {
     'shortlist', 'shortlisting', 'compare', 'comparison', 'select', 'selection',
   ]);
   return new Set(value.toLocaleLowerCase()
-    .replace(/[^\\p{L}\\p{N}]+/gu, ' ')
-    .split(/\\s+/)
+    .replace(/[^\p{L}\p{N}]+/gu, ' ')
+    .split(/\s+/)
     .map((token) => token.length > 4 && token.endsWith('s') ? token.slice(0, -1) : token)
     .filter((token) => token.length >= 4 && !stopWords.has(token)));
 }
