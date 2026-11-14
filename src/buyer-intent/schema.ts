@@ -94,6 +94,82 @@ const candidateEnvelopeSchema = z.object({
   candidates: z.array(z.unknown()).min(1).max(40),
 }).strict();
 
+function groundingTokens(value: string): Set<string> {
+  const stopWords = new Set([
+    'the', 'and', 'for', 'with', 'from', 'that', 'this', 'which', 'what', 'who',
+    'where', 'when', 'how', 'can', 'could', 'should', 'would', 'are', 'is',
+    'does', 'do', 'their', 'your', 'our', 'they', 'them', 'into', 'under',
+    'over', 'best', 'top', 'leading', 'supplier', 'suppliers', 'vendor', 'vendors',
+    'manufacturer', 'manufacturers', 'company', 'companies', 'business', 'businesses',
+    'team', 'teams', 'buyer', 'buyers', 'procurement', 'purchase', 'purchasing',
+    'shortlist', 'shortlisting', 'compare', 'comparison', 'select', 'selection',
+  ]);
+  return new Set(value.toLocaleLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, ' ')
+    .split(/\s+/)
+    .map((token) => token.length > 4 && token.endsWith('s') ? token.slice(0, -1) : token)
+    .filter((token) => token.length >= 4 && !stopWords.has(token)));
+}
+
+function sharedTokenCount(left: Set<string>, right: Set<string>): number {
+  return [...left].filter((token) => right.has(token)).length;
+}
+
+/**
+ * Small local models sometimes omit the grounding ID arrays. Recover them only
+ * when the question independently matches an existing entity and evidence
+ * already linked to that entity. No IDs or evidence are ever fabricated.
+ */
+export function inferMissingCandidateGrounding(
+  rawCandidate: unknown,
+  understanding: CanonicalBusinessUnderstanding,
+): unknown {
+  if (!rawCandidate || typeof rawCandidate !== 'object' || Array.isArray(rawCandidate)) return rawCandidate;
+  const candidate = rawCandidate as Record<string, unknown>;
+  if (typeof candidate.question !== 'string') return rawCandidate;
+
+  const entityIds = Array.isArray(candidate.supporting_business_entity_ids)
+    ? candidate.supporting_business_entity_ids.filter((id): id is string => typeof id === 'string' && id.length > 0)
+    : [];
+  const evidenceIds = Array.isArray(candidate.supporting_business_evidence_ids)
+    ? candidate.supporting_business_evidence_ids.filter((id): id is string => typeof id === 'string' && id.length > 0)
+    : [];
+  if (entityIds.length && evidenceIds.length) return rawCandidate;
+
+  const questionTokens = groundingTokens(candidate.question);
+  if (questionTokens.size < 2) return rawCandidate;
+
+  const evidenceById = new Map(understanding.evidence.map((item) => [item.id, item]));
+  const eligibleEntities = buyerIntentBusinessEntities(understanding)
+    .filter((entity) => !entityIds.length || entityIds.includes(entity.id))
+    .filter((entity) => {
+      const entityTokens = groundingTokens([entity.value, entity.description ?? '', entity.category ?? ''].join(' '));
+      return sharedTokenCount(questionTokens, entityTokens) >= 2;
+    });
+
+  const matched = eligibleEntities.flatMap((entity) => {
+    const entityTokens = groundingTokens([entity.value, entity.description ?? '', entity.category ?? ''].join(' '));
+    const supportingEvidence = entity.evidence_ids
+      .map((id) => evidenceById.get(id))
+      .filter((item): item is NonNullable<typeof item> => Boolean(item))
+      .filter((item) => {
+        const evidenceTokens = groundingTokens(item.evidence_text);
+        return sharedTokenCount(questionTokens, evidenceTokens) >= 2
+          && sharedTokenCount(entityTokens, evidenceTokens) >= 1;
+      });
+    return supportingEvidence.length ? [{ entity, supportingEvidence }] : [];
+  });
+
+  if (!matched.length) return rawCandidate;
+  return {
+    ...candidate,
+    supporting_business_entity_ids: entityIds.length ? entityIds : matched.map(({ entity }) => entity.id),
+    supporting_business_evidence_ids: evidenceIds.length
+      ? evidenceIds
+      : [...new Set(matched.flatMap(({ supportingEvidence }) => supportingEvidence.map((item) => item.id)))],
+  };
+}
+
 export function validateCandidateBatchWithOmissions(
   raw: unknown,
   understanding: CanonicalBusinessUnderstanding,
@@ -104,7 +180,8 @@ export function validateCandidateBatchWithOmissions(
 
   for (const rawCandidate of rawCandidates) {
     try {
-      accepted.push(validateCandidateBatch({ candidates: [rawCandidate] }, understanding)[0]!);
+      const groundedCandidate = inferMissingCandidateGrounding(rawCandidate, understanding);
+      accepted.push(validateCandidateBatch({ candidates: [groundedCandidate] }, understanding)[0]!);
     } catch (error) {
       firstError ??= error;
     }
