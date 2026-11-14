@@ -149,9 +149,27 @@ export class BuyerIntentService {
 
     try {
       const candidateTarget = Math.min(40, Math.max(20, count * 2));
-      const generated = await this.extractor.generateCandidates(input.understanding, candidateTarget);
+      let generated = await this.extractor.generateCandidates(input.understanding, candidateTarget);
+      let filtered = filterCandidates(generated, input.understanding);
+      if (!filtered.accepted.length && filtered.rejected.length) {
+        const reasons = [...new Set(filtered.rejected.map((item) => item.reason))].slice(0, 6).join('; ');
+        const examples = generated.slice(0, 5).map((item) => item.question.replace(/\\s+/g, ' ').slice(0, 140));
+        const feedback = [
+          'The previous candidate batch was entirely rejected by deterministic buyer-intent validation.',
+          'Rejection reasons: ' + reasons,
+          'Rejected examples: ' + examples.join(' | '),
+          'Generate a fresh batch of neutral buyer questions. Do not mention the target business name, do not repeat rejected questions, and preserve exact entity/evidence ID grounding.',
+        ].join(' ');
+        result.warnings.push('All first-pass buyer questions were rejected; requesting one corrected batch.');
+        const retryCandidates = await this.extractor.generateCandidates(input.understanding, candidateTarget, feedback);
+        const retryWithUniqueIds = retryCandidates.map((item, index) => ({
+          ...item,
+          id: ('retry-' + (index + 1) + '-' + item.id).slice(0, 120),
+        }));
+        generated = [...generated, ...retryWithUniqueIds];
+        filtered = filterCandidates(generated, input.understanding);
+      }
       result.candidate_count = generated.length;
-      const filtered = filterCandidates(generated, input.understanding);
       // When strict grounding leaves too few questions, take back candidates
       // that failed only on one plain unfamiliar word. Invented numbers,
       // geography, compliance and company bias never come back.
