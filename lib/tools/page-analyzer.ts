@@ -5,6 +5,7 @@
 import { geminiCall } from '@/src/gemini-client';
 import { config } from '@/src/config';
 import { extractJson } from '@/src/parse';
+import { fetchPublicResource } from '@/src/business-understanding/crawler';
 
 interface AnalysisScores {
   contentLength: number;
@@ -42,16 +43,18 @@ interface AnalysisResult {
   };
 }
 
-async function fetchPage(url: string): Promise<{ html: string; status: number }> {
-  const res = await fetch(url, {
-    headers: {
-      'User-Agent': 'AEOEngine/1.0 (page-analyzer)',
-      'Accept': 'text/html',
-    },
-    signal: AbortSignal.timeout(20000),
-    redirect: 'follow',
+async function fetchPage(url: string): Promise<{ html: string; status: number; finalUrl: string }> {
+  // Use the shared SSRF-safe fetcher: it validates public DNS/IPs, pins the
+  // resolved destination, and validates every redirect before following it.
+  const res = await fetchPublicResource(url, {
+    timeoutMs: 20_000,
+    maxBytes: 2_000_000,
+    accept: 'text/html,application/xhtml+xml',
   });
-  return { html: await res.text(), status: res.status };
+  if (!/text\/html|application\/xhtml\+xml/i.test(res.contentType)) {
+    throw new Error(`Unsupported page content type: ${res.contentType || 'unknown'}`);
+  }
+  return { html: res.text, status: res.status, finalUrl: res.finalUrl };
 }
 
 function extractMeta(html: string) {
@@ -186,14 +189,14 @@ Focus on actionable, specific recommendations. Maximum 8 recommendations, sorted
 }
 
 export async function analyzePage(pageUrl: string): Promise<AnalysisResult> {
-  const { html, status } = await fetchPage(pageUrl);
+  const { html, status, finalUrl } = await fetchPage(pageUrl);
   if (status >= 400) {
     throw new Error(`Page returned HTTP ${status}`);
   }
 
   const meta = extractMeta(html);
   const detScores = deterministicScores(meta);
-  const ai = await aiAnalysis(pageUrl, meta);
+  const ai = await aiAnalysis(finalUrl, meta);
 
   const scores: AnalysisScores = {
     contentLength: detScores.contentLength ?? 0,
@@ -222,7 +225,7 @@ export async function analyzePage(pageUrl: string): Promise<AnalysisResult> {
   );
 
   return {
-    pageUrl,
+    pageUrl: finalUrl,
     overallScore,
     scores,
     recommendations: ai.recommendations,
