@@ -18,6 +18,9 @@ export async function ollamaCall(opts: CallOptions): Promise<Interaction> {
 
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), config.ollamaTimeoutMs);
+  const startedAt = Date.now();
+  const requestKind = opts.kind || 'buyer-intent';
+  console.info(`[ollama] request started kind=${requestKind} model=${config.ollamaModel} timeout_ms=${config.ollamaTimeoutMs}`);
   try {
     const response = await fetch(`${config.ollamaBaseUrl}/api/chat`, {
       method: 'POST',
@@ -33,7 +36,8 @@ export async function ollamaCall(opts: CallOptions): Promise<Interaction> {
         ],
         options: {
           temperature: opts.generationConfig?.temperature ?? 0.1,
-          num_predict: opts.generationConfig?.max_output_tokens ?? 8192,
+          // Keep an explicit safety ceiling even if a caller requests an oversized response.
+          num_predict: Math.min(opts.generationConfig?.max_output_tokens ?? 2500, 3000),
         },
       }),
     });
@@ -46,14 +50,19 @@ export async function ollamaCall(opts: CallOptions): Promise<Interaction> {
     if (typeof outputText !== 'string' || !outputText.trim()) {
       throw new Error('Ollama returned an empty response');
     }
+    console.info(`[ollama] request completed kind=${requestKind} model=${config.ollamaModel} duration_ms=${Date.now() - startedAt}`);
     return { output_text: outputText };
   } catch (error) {
+    const durationMs = Date.now() - startedAt;
     if (error instanceof Error && error.name === 'AbortError') {
+      console.warn(`[ollama] request timed out kind=${requestKind} model=${config.ollamaModel} duration_ms=${durationMs}`);
       throw new Error(`Ollama request timed out after ${config.ollamaTimeoutMs}ms`);
     }
     if (error instanceof TypeError) {
+      console.warn(`[ollama] request connection error kind=${requestKind} model=${config.ollamaModel} duration_ms=${durationMs}`);
       throw new Error(`Cannot reach Ollama at ${config.ollamaBaseUrl}. Start Ollama and verify the local service is running.`);
     }
+    console.warn(`[ollama] request failed kind=${requestKind} model=${config.ollamaModel} duration_ms=${durationMs}: ${error instanceof Error ? error.message : String(error)}`);
     throw error;
   } finally {
     clearTimeout(timeout);
