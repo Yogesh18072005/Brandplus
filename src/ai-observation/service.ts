@@ -1,4 +1,4 @@
-import { DEFAULT_OBSERVATION_PARAMETERS, OBSERVATION_SYSTEM_INSTRUCTION } from './prompt';
+import { DEFAULT_OBSERVATION_PARAMETERS, OBSERVATION_SYSTEM_INSTRUCTION, observationGroundingFromEnv } from './prompt';
 import { deriveObservation } from './extract';
 import { normalizeProviderError, observeWithRetries } from './provider';
 import type {
@@ -83,7 +83,11 @@ export class ObservationService {
       businessUnderstandingRunId: input.businessUnderstandingRunId,
       provider,
       idempotencyKey: input.idempotencyKey,
-      generationParameters: { ...DEFAULT_OBSERVATION_PARAMETERS, ...(input.generationParameters ?? {}) },
+      generationParameters: {
+        ...DEFAULT_OBSERVATION_PARAMETERS,
+        grounding: observationGroundingFromEnv(),
+        ...(input.generationParameters ?? {}),
+      },
     });
   }
 

@@ -73,8 +73,14 @@ function isRetryable(err: unknown): boolean {
  * generation_config when it's present, costing a failed round-trip per call.
  */
 export function generationConfigFor<T extends Record<string, unknown>>(model: string, generationConfig: T): Partial<T> {
-  if (!/^gemini-[12]\./.test(model) || !('thinking_level' in generationConfig)) return generationConfig;
-  const { thinking_level: _omit, ...rest } = generationConfig;
+  // The Interactions API does not accept the legacy temperature setting.
+  // Keep it in shared call options for the local Ollama adapter, but remove
+  // it before sending a request to Gemini.
+  const { temperature: _omitTemperature, ...supported } = generationConfig;
+  if (!/^gemini-[12]\./.test(model) || !('thinking_level' in supported)) {
+    return supported as Partial<T>;
+  }
+  const { thinking_level: _omitThinkingLevel, ...rest } = supported;
   return rest as Partial<T>;
 }
 
@@ -84,9 +90,6 @@ export async function geminiCall(opts: CreateOpts): Promise<Interaction> {
   // GLOBAL kill-switch: refuse to spend if the cumulative ₹ cap is already hit.
   // Throws a non-retryable GlobalSpendCapError that halts the run.
   assertUnderGlobalCap();
-  // If generation_config is rejected by a model (older models may not accept
-  // thinking_level), retry once without it rather than failing the call.
-  let stripGenerationConfig = false;
   let lastErr: unknown;
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
@@ -101,7 +104,7 @@ export async function geminiCall(opts: CreateOpts): Promise<Interaction> {
       if (opts.systemInstruction) params.system_instruction = opts.systemInstruction;
       if (opts.tools) params.tools = opts.tools;
       if (opts.responseFormat) params.response_format = opts.responseFormat;
-      if (opts.generationConfig && !stripGenerationConfig) params.generation_config = generationConfigFor(opts.model, opts.generationConfig);
+      if (opts.generationConfig) params.generation_config = generationConfigFor(opts.model, opts.generationConfig);
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const interaction = (await (gemini() as any).interactions.create(params, {
@@ -137,17 +140,6 @@ export async function geminiCall(opts: CreateOpts): Promise<Interaction> {
       }
 
       const msg = err instanceof Error ? err.message : String(err);
-      if (
-        !stripGenerationConfig &&
-        opts.generationConfig &&
-        /INVALID_ARGUMENT|invalid|unsupported|unknown field|thinking/i.test(msg) &&
-        !isQuotaError(err)
-      ) {
-        console.warn(`  generation_config rejected by ${opts.model} — retrying without it`);
-        stripGenerationConfig = true;
-        attempt--; // free retry, different request shape
-        continue;
-      }
       if (attempt < maxRetries && isRetryable(err)) {
         // Quota/429s need long waits (per-minute windows), not quick retries
         // that just burn more quota. Other transient errors back off fast.

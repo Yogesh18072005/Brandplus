@@ -99,12 +99,12 @@ export async function POST(request: Request) {
       { status: queueError?.code === '23505' ? 409 : 500 },
     );
   }
-  // Automatically approve the request and reserve one credit atomically.
+  // Admin-console requests have no requester, so approve them as a free founder-run audit.
   const { data: approvalRows, error: approvalError } = await admin.rpc(
     'approve_audit_request',
     {
       p_queue_id: queued.id,
-      p_mode: 'charge',
+      p_mode: 'free',
     }
   );
 

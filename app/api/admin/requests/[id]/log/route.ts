@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
-import { requireOps, RUNS_DIR } from '@/lib/admin/require-ops';
+import { requireOps } from '@/lib/admin/require-ops';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,7 +18,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
   if (!ops.ok) return ops.response;
   const { id } = await params;
   if (!UUID.test(id)) return NextResponse.json({ error: 'Bad request id' }, { status: 400 });
-  const dir = path.join(process.cwd(), RUNS_DIR);
+  const dir = path.join(process.cwd(), '.runs');
   const logFile = path.join(dir, `${id}.log`);
   const stateFile = path.join(dir, `${id}.json`);
   if (!existsSync(logFile)) return NextResponse.json({ running: false, mode: null, lines: [] });

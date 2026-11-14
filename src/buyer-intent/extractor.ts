@@ -75,11 +75,24 @@ function structuredJsonResponseFormat(schema: Record<string, unknown>): Structur
   return { type: 'text', mime_type: 'application/json', schema };
 }
 
-async function withSchemaRetry<T>(operation: (attempt: number) => Promise<T>, attempts = 2): Promise<T> {
+async function withSchemaRetry<T>(
+  operation: (attempt: number) => Promise<T>,
+  attempts = 2,
+): Promise<T> {
   let lastError: unknown;
+
   for (let attempt = 1; attempt <= attempts; attempt++) {
-    try { return await operation(attempt); } catch (error) { lastError = error; }
+    try {
+      return await operation(attempt);
+    } catch (error) {
+      lastError = error;
+      const message = error instanceof Error ? error.message : String(error);
+      // Timeouts are resource/performance failures, not schema failures.
+      // Do not immediately repeat an expensive local-model request.
+      if (/timed out/i.test(message)) throw error;
+    }
   }
+
   throw lastError;
 }
 
@@ -95,16 +108,32 @@ export class GeminiBuyerIntentExtractor implements BuyerIntentExtractor {
     this.model = model;
   }
 
-  generateCandidates(understanding: CanonicalBusinessUnderstanding, candidateCount: number): Promise<BuyerQuestionCandidate[]> {
-    let previousValidationError: string | undefined;
+  generateCandidates(understanding: CanonicalBusinessUnderstanding, candidateCount: number, feedback?: string): Promise<BuyerQuestionCandidate[]> {
+    let previousValidationError: string | undefined = feedback;
     return withSchemaRetry(async (attempt) => {
+      const input = candidateGenerationPrompt(understanding, candidateCount, previousValidationError);
+      let entityCount = 0;
+      let evidenceCount = 0;
+      try {
+        const parsed = JSON.parse(input) as {
+          business_understanding?: { entities?: Array<{ evidence_options?: unknown[] }> };
+        };
+        entityCount = parsed.business_understanding?.entities?.length ?? 0;
+        evidenceCount = parsed.business_understanding?.entities?.reduce((total, entity) => total + (entity.evidence_options?.length ?? 0), 0) ?? 0;
+      } catch {
+        // Prompt-size logging must never interfere with candidate generation.
+      }
+      // Log counts and size only; never log business data, evidence text, or prompts.
+      console.info(
+        `[buyer-intent] candidate prompt metrics chars=${input.length} entities=${entityCount} evidence=${evidenceCount} requested_candidates=${candidateCount} attempt=${attempt}`,
+      );
       const interaction = await this.call({
         kind: `buyer-intent:candidates:${attempt}`,
         model: this.model,
         systemInstruction: BUYER_INTENT_SYSTEM_PROMPT,
-        input: candidateGenerationPrompt(understanding, candidateCount, previousValidationError),
+        input,
         responseFormat: structuredJsonResponseFormat(CANDIDATE_SCHEMA),
-        generationConfig: { thinking_level: 'minimal', temperature: 0.2, max_output_tokens: 10_000 },
+        generationConfig: { thinking_level: 'minimal', temperature: 0.2, max_output_tokens: 2_500 },
         retries: 1,
       });
       try {
@@ -128,7 +157,7 @@ export class GeminiBuyerIntentExtractor implements BuyerIntentExtractor {
         systemInstruction: BUYER_INTENT_SYSTEM_PROMPT,
         input: candidateEvaluationPrompt(understanding, candidates, previousValidationError),
         responseFormat: structuredJsonResponseFormat(EVALUATION_SCHEMA),
-        generationConfig: { thinking_level: 'minimal', temperature: 0, max_output_tokens: 8_000 },
+        generationConfig: { thinking_level: 'minimal', temperature: 0, max_output_tokens: 1_500 },
         retries: 1,
       });
       try {

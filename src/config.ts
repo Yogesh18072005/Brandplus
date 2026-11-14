@@ -10,13 +10,13 @@ function env(name: string, fallback: string): string {
   return v && v.trim() !== '' ? v.trim() : fallback;
 }
 
-const DEFAULT_MODEL = 'gemini-3.5-flash';
+const DEFAULT_MODEL = 'gemini-3.5-flash-lite';
 
 export const config = {
   googleApiKey: process.env.GOOGLE_API_KEY?.trim() ?? '',
   buyerIntentProvider: env('BUYER_INTENT_PROVIDER', 'ollama').toLowerCase(),
   ollamaBaseUrl: env('OLLAMA_BASE_URL', 'http://127.0.0.1:11434').replace(/\/$/, ''),
-  ollamaModel: env('OLLAMA_MODEL', 'qwen3:4b'),
+  ollamaModel: env('OLLAMA_MODEL', 'qwen2.5:3b'),
   ollamaTimeoutMs: Number(env('OLLAMA_TIMEOUT_MS', '120000')),
 
   // All swappable via env — this space changes weekly.
@@ -32,6 +32,10 @@ export const config = {
   // so free-tier keys can run audits without repeated 429 grounding errors.
   // Set ENGINE_GROUNDING=true only when grounding quota is available.
   engineGrounding: env('ENGINE_GROUNDING', 'false') === 'true',
+
+  // Engine 03 Google Search grounding is an explicit opt-in. Gemini 3.x API
+  // grounding is not available on the API free tier; keep disabled at ₹0 budget.
+  geminiSearchGroundingEnabled: env('GEMINI_SEARCH_GROUNDING_ENABLED', 'false') === 'true',
 
   // Resilience knobs (M4 hardens these further).
   // Free-tier RPM limits are tight → single-file requests + a pause between prompts.

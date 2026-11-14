@@ -7,7 +7,7 @@ import { buyerIntentExtractorTestables, GeminiBuyerIntentExtractor } from './ext
 import { buyerIntentGrounding } from './prompts';
 import { deduplicateCandidates, filterCandidates, finalizeQuestions } from './normalize';
 import { validateCandidateBatch, validateCandidateBatchWithOmissions, validateEvaluationBatch } from './schema';
-import { BuyerIntentService } from './service';
+import { BuyerIntentService, buyerIntentServiceTestables } from './service';
 import type { BeginBuyerIntentRunResult, BuyerIntentExtractor, BuyerIntentRepository, BuyerIntentRunIdentity, BuyerQuestionCandidate, BuyerQuestionEvaluation, BuyerQuestionSet } from './types';
 
 const evidence = (id: string, evidence_text: string) => ({
@@ -66,9 +66,11 @@ function evaluation(item: BuyerQuestionCandidate, over: Partial<BuyerQuestionEva
 class FakeExtractor implements BuyerIntentExtractor {
   model = 'fake-model';
   generationCalls = 0;
+  generationTargets: number[] = [];
   constructor(public candidates: BuyerQuestionCandidate[], private readonly malformed = false) {}
-  async generateCandidates(): Promise<BuyerQuestionCandidate[]> {
+  async generateCandidates(_understanding: CanonicalBusinessUnderstanding, candidateCount: number): Promise<BuyerQuestionCandidate[]> {
     this.generationCalls++;
+    this.generationTargets.push(candidateCount);
     if (this.malformed) throw new Error('malformed model response');
     return structuredClone(this.candidates);
   }
@@ -169,6 +171,82 @@ test('9: target-company-biased questions are rejected', () => {
   assert.match(filterCandidates([item], claimed).rejected[0]?.reason ?? '', /target-company bias/);
   assert.equal(filterCandidates([candidate()], claimed).accepted.length, 1);
   assert.throws(() => validateCandidateBatch({ candidates: [candidate({ supporting_business_evidence_ids: ['e-claim'], supporting_business_entity_ids: ['claim-leading'] })] }, claimed), /missing entity/);
+});
+
+test('company identity words do not trigger target-company bias unless the full name appears', () => {
+  const ltm = profile({
+    business: { ...profile().business, name: 'LTM' },
+    company_identity: [entity('company-ltm-solutions', 'COMPANY_IDENTITY', 'LTM Solutions', ['e-product'])],
+  });
+  const generic = candidate({
+    question: 'Which industrial pump solutions should procurement teams shortlist?',
+  });
+  assert.equal(filterCandidates([generic], ltm).accepted.length, 1);
+
+  const explicitlyNamed = candidate({
+    question: 'Which LTM Solutions industrial pump suppliers should buyers shortlist?',
+  });
+  assert.match(filterCandidates([explicitlyNamed], ltm).rejected[0]?.reason ?? '', /business name appears in question/);
+});
+
+test('buyer intent retries once with rejection feedback when every candidate is company-biased', async () => {
+  let calls = 0;
+  let retryFeedback = '';
+  const extractor: BuyerIntentExtractor = {
+    model: 'retry-test-model',
+    async generateCandidates(_understanding, _count, feedback) {
+      calls++;
+      if (feedback) retryFeedback = feedback;
+      return calls === 1
+        ? [candidate({ id: 'biased', question: 'Why should I choose Acme Pumps for industrial pumps?' })]
+        : [candidate({ id: 'corrected' })];
+    },
+    async evaluateCandidates(_understanding, candidates) {
+      return candidates.map((item) => evaluation(item));
+    },
+  };
+  const result = await new BuyerIntentService({ extractor }).generate(input());
+  assert.equal(calls, 2);
+  assert.match(retryFeedback, /target-company bias/);
+  assert.equal(result.status, 'COMPLETED');
+  assert.equal(result.questions.length, 1);
+  assert.notEqual(result.questions[0]?.id, 'corrected');
+});
+
+test('buyer intent retries when the first batch has too few distinct grounded candidates', async () => {
+  let calls = 0;
+  let retryFeedback = '';
+  const extractor: BuyerIntentExtractor = {
+    model: 'retry-short-batch-model',
+    async generateCandidates(_understanding, _count, feedback) {
+      calls++;
+      if (feedback) retryFeedback = feedback;
+      return calls === 1
+        ? [candidate({ id: 'first-pass' })]
+        : [candidate({
+          id: 'retry-pass',
+          question: 'Where can procurement teams find industrial pump suppliers for chemical processing?',
+        })];
+    },
+    async evaluateCandidates(_understanding, candidates) {
+      return candidates.map((item) => evaluation(item));
+    },
+  };
+
+  const result = await new BuyerIntentService({ extractor }).generate(input(profile(), 10));
+
+  assert.equal(calls, 2);
+  assert.match(retryFeedback, /Distinct grounded candidates: 1; minimum required: 5/);
+  assert.equal(result.status, 'FAILED');
+  assert.match(result.warnings.join(' '), /minimum 5/);
+});
+
+test('rejected candidate warnings preserve a bounded question preview and exact company-bias reason', async () => {
+  const item = candidate({ question: 'Why should I choose Acme Pumps for industrial pumps?' });
+  const result = await new BuyerIntentService({ extractor: new FakeExtractor([item]) }).generate(input());
+  const warning = result.warnings.find((entry) => entry.includes('Deterministic filtering rejected')) ?? '';
+  assert.match(warning, /Why should I choose Acme Pumps for industrial pumps/);
+  assert.match(warning, /target-company bias: business name appears in question/);
 });
 
 test('10: keyword-only candidates are rejected', () => {
@@ -306,13 +384,145 @@ test('buyer-intent structured parser rejects prose-wrapped JSON', () => {
   );
 });
 
+test('Ollama timeouts are not retried as schema errors', async () => {
+  let attempts = 0;
+  await assert.rejects(
+    () => buyerIntentExtractorTestables.withSchemaRetry(async () => {
+      attempts++;
+      throw new Error('Ollama request timed out after 120000ms');
+    }, 2),
+    /Ollama request timed out/,
+  );
+  assert.equal(attempts, 1);
+});
+
+test('Ollama candidate and evaluation requests use bounded output budgets', async () => {
+  const budgets: number[] = [];
+  const item = candidate();
+  const extractor = new GeminiBuyerIntentExtractor(async (options) => {
+    budgets.push(options.generationConfig?.max_output_tokens ?? 0);
+    return budgets.length === 1
+      ? { output_text: JSON.stringify({ candidates: [item] }) }
+      : { output_text: JSON.stringify({ evaluations: [evaluation(item)] }) };
+  });
+
+  await extractor.generateCandidates(profile(), 1);
+  await extractor.evaluateCandidates(profile(), [item]);
+
+  assert.deepEqual(budgets, [2500, 1500]);
+});
+
+test('local-model first candidate batch is bounded near the requested question count', async () => {
+  const extractor = new FakeExtractor([candidate()]);
+  await new BuyerIntentService({ extractor }).generate(input(profile(), 10));
+  assert.deepEqual(extractor.generationTargets, [15, 15]);
+});
+
+test('large buyer-intent profiles are broken into small evidence-linked batches and merged', async () => {
+  const products = Array.from({ length: 17 }, (_, index) =>
+    entity(`product-${index}`, 'PRODUCT', `industrial pump ${index}`, [`e-product-${index}`]),
+  );
+  const evidenceItems = products.map((item, index) =>
+    evidence(`e-product-${index}`, `We manufacture industrial pump ${index} for chemical processing applications.`),
+  );
+  const understanding = profile({
+    products,
+    services: [],
+    capabilities: [],
+    buyer_types: [],
+    industries: [],
+    use_cases: [],
+    geographies: [],
+    certifications: [],
+    business_model_signals: [],
+    evidence: evidenceItems,
+  });
+  const observedGenerationSizes: Array<{ entities: number; evidence: number; target: number }> = [];
+  const observedEvaluationSizes: Array<{ entities: number; evidence: number; candidates: number }> = [];
+  const extractor: BuyerIntentExtractor = {
+    model: 'batch-test-model',
+    async generateCandidates(batchUnderstanding, target) {
+      const entityList = batchUnderstanding.products;
+      observedGenerationSizes.push({
+        entities: entityList.length,
+        evidence: batchUnderstanding.evidence.length,
+        target,
+      });
+      assert.ok(entityList.length <= 8);
+      assert.ok(batchUnderstanding.evidence.length <= 8);
+      const first = entityList[0]!;
+      const evidenceId = first.evidence_ids[0]!;
+      return [candidate({
+        id: 'same-model-id',
+        question: `Which suppliers should procurement teams shortlist for ${first.value}?`,
+        supporting_business_entity_ids: [first.id],
+        supporting_business_evidence_ids: [evidenceId],
+      })];
+    },
+    async evaluateCandidates(batchUnderstanding, candidates) {
+      observedEvaluationSizes.push({
+        entities: batchUnderstanding.products.length,
+        evidence: batchUnderstanding.evidence.length,
+        candidates: candidates.length,
+      });
+      assert.ok(batchUnderstanding.products.length <= 5);
+      assert.ok(batchUnderstanding.evidence.length <= 5);
+      return candidates.map((item) => evaluation(item));
+    },
+  };
+
+  const result = await new BuyerIntentService({ extractor }).generate(input(understanding, 1));
+
+  assert.equal(observedGenerationSizes.length, 3);
+  assert.deepEqual(observedGenerationSizes.map((item) => item.entities), [8, 8, 1]);
+  assert.deepEqual(observedGenerationSizes.map((item) => item.evidence), [8, 8, 1]);
+  assert.ok(observedGenerationSizes.every((item) => item.target <= 10));
+  assert.equal(observedEvaluationSizes.length, 1);
+  assert.equal(observedEvaluationSizes[0]?.entities, 3);
+  assert.equal(observedEvaluationSizes[0]?.evidence, 3);
+  assert.equal(result.status, 'COMPLETED');
+  assert.equal(result.candidate_count, 3);
+  assert.equal(result.questions.length, 1);
+});
+
+test('entity batching filters every business-entity category and keeps only linked evidence', () => {
+  const understanding = profile({
+    products: [entity('product-keep', 'PRODUCT', 'industrial pumps', ['e-keep'])],
+    proof_assets: [entity('proof-drop', 'PROOF_ASSET', 'case study', ['e-drop'])],
+    commercial_claims: [entity('claim-drop', 'COMMERCIAL_CLAIM', 'market leader', ['e-drop'])],
+    differentiators: [entity('diff-drop', 'DIFFERENTIATOR', 'custom engineering', ['e-drop'])],
+    conversion_signals: [entity('conversion-drop', 'CONVERSION_SIGNAL', 'request a quote', ['e-drop'])],
+    company_identity: [entity('identity-drop', 'COMPANY_IDENTITY', 'Acme Pumps', ['e-drop'])],
+    evidence: [
+      evidence('e-keep', 'We manufacture industrial pumps.'),
+      evidence('e-drop', 'Unrelated evidence for another entity category.'),
+    ],
+  });
+
+  const batch = buyerIntentServiceTestables.understandingForEntities(
+    understanding,
+    understanding.products,
+  );
+
+  assert.deepEqual(batch.products.map((item) => item.id), ['product-keep']);
+  assert.deepEqual(batch.proof_assets, []);
+  assert.deepEqual(batch.commercial_claims, []);
+  assert.deepEqual(batch.differentiators, []);
+  assert.deepEqual(batch.conversion_signals, []);
+  assert.deepEqual(batch.company_identity, []);
+  assert.deepEqual(batch.evidence.map((item) => item.id), ['e-keep']);
+  assert.equal(buyerIntentGrounding(batch).entities.length, 1);
+});
+
 test('buyer-intent grounding labels entity IDs and evidence IDs unambiguously', () => {
   const grounding = buyerIntentGrounding(profile());
   assert.equal(grounding.entities[0]?.entity_id, 'product-pump');
   assert.deepEqual(grounding.entities[0]?.allowed_evidence_ids, ['e-product']);
-  assert.equal(grounding.evidence[0]?.evidence_id, 'e-product');
+  assert.equal(grounding.entities[0]?.evidence_options[0]?.evidence_id, 'e-product');
+  assert.equal(grounding.entities[0]?.evidence_options[0]?.evidence_text, 'We manufacture industrial pumps for chemical processing applications.');
   assert.equal('id' in grounding.entities[0]!, false);
-  assert.equal('id' in grounding.evidence[0]!, false);
+  assert.equal('evidence' in grounding, false);
+  assert.deepEqual(Object.keys(grounding.entities[0]?.evidence_options[0] ?? {}).sort(), ['evidence_id', 'evidence_text']);
 });
 
 test('candidate retry receives bounded identifier-validation feedback', async () => {
@@ -325,7 +535,7 @@ test('candidate retry receives bounded identifier-validation feedback', async ()
     return {
       output_text: JSON.stringify({
         candidates: [attempt === 1
-          ? { ...valid, supporting_business_evidence_ids: ['product-pump'] }
+          ? { ...valid, supporting_business_evidence_ids: ['missing-evidence'] }
           : valid],
       }),
     };
@@ -352,6 +562,58 @@ test('Ollama candidates with omitted grounding IDs recover only matching entity-
   assert.deepEqual(result[0]?.supporting_business_evidence_ids, ['e-product']);
 });
 
+test('evidence-first recovery uses only evidence already linked to the matched entity', () => {
+  const understanding = profile({
+    products: [],
+    services: [entity('service-ai', 'SERVICE', 'AI-led engineering services', ['e-service-ai'])],
+    capabilities: [],
+    evidence: [evidence('e-service-ai', 'LTM provides consulting and engineering services for enterprise software teams.')],
+  });
+  const ungrounded = {
+    ...candidate({
+      id: 'ai-services',
+      question: 'Which AI-led engineering service providers should enterprise teams evaluate?',
+      dimensions: ['SERVICE'],
+    }),
+    supporting_business_evidence_ids: [],
+    supporting_business_entity_ids: [],
+  };
+
+  const result = validateCandidateBatchWithOmissions({ candidates: [ungrounded] }, understanding);
+  assert.deepEqual(result[0]?.supporting_business_entity_ids, ['service-ai']);
+  assert.deepEqual(result[0]?.supporting_business_evidence_ids, ['e-service-ai']);
+});
+
+test('unsupported pricing questions are rejected even when their service entity is grounded', () => {
+  const ungrounded = {
+    ...candidate({
+      question: 'What is the pricing structure for industrial pump services?',
+      intent: 'DISCOVERY',
+      buyer_stage: 'RESEARCH',
+      dimensions: ['PRODUCT', 'SERVICE'],
+    }),
+    supporting_business_evidence_ids: [],
+    supporting_business_entity_ids: [],
+  };
+  const understanding = profile();
+  const recovered = validateCandidateBatchWithOmissions({ candidates: [ungrounded] }, understanding);
+  const filtered = filterCandidates(recovered, understanding);
+  assert.equal(filtered.accepted.length, 0);
+  assert.match(filtered.rejected[0]?.reason ?? '', /unsupported constraint: pric/);
+});
+
+test('unsupported delivery claims are rejected when no delivery evidence exists', () => {
+  const item = candidate({
+    question: 'Which industrial pump suppliers offer next-day delivery?',
+    intent: 'COMPARISON',
+    buyer_stage: 'EVALUATION',
+    dimensions: ['PRODUCT'],
+  });
+  const result = filterCandidates([item], profile());
+  assert.equal(result.accepted.length, 0);
+  assert.match(result.rejected[0]?.reason ?? '', /unsupported constraint: next, day, delivery/);
+});
+
 test('candidates without a real entity-and-evidence text match are not assigned invented grounding', () => {
   const ungrounded = {
     ...candidate({ question: 'Which aerospace satellite manufacturers should procurement teams shortlist?' }),
@@ -361,6 +623,40 @@ test('candidates without a real entity-and-evidence text match are not assigned 
   assert.throws(
     () => validateCandidateBatchWithOmissions({ candidates: [ungrounded] }, profile()),
     /expected array to have >=1 items/,
+  );
+});
+
+test('misplaced entity and evidence IDs are corrected only when they exist in canonical collections', () => {
+  const item = candidate({
+    supporting_business_entity_ids: ['e-product'],
+    supporting_business_evidence_ids: ['product-pump'],
+  });
+  const result = validateCandidateBatchWithOmissions({ candidates: [item] }, profile());
+  assert.deepEqual(result[0]?.supporting_business_entity_ids, ['product-pump']);
+  assert.deepEqual(result[0]?.supporting_business_evidence_ids, ['e-product']);
+});
+
+test('duplicate model questions are removed after grounding validation', () => {
+  const first = candidate({ id: 'duplicate-one' });
+  const second = candidate({ id: 'duplicate-two' });
+  const result = validateCandidateBatchWithOmissions({ candidates: [first, second] }, profile());
+  assert.equal(result.length, 1);
+  assert.equal(result[0]?.id, 'duplicate-one');
+});
+
+test('an evidence ID in the entity ID array is rejected with an explicit type diagnostic', () => {
+  const item = candidate({ supporting_business_entity_ids: ['evidence_9685f58c53c177b388af4071'] });
+  assert.throws(
+    () => validateCandidateBatch({ candidates: [item] }, profile()),
+    /placed an evidence ID in supporting_business_entity_ids/,
+  );
+});
+
+test('entity-only labels such as FusionIQ are rejected as incomplete buyer questions', () => {
+  const item = candidate({ question: 'FusionIQ' });
+  assert.throws(
+    () => validateCandidateBatch({ candidates: [item] }, profile()),
+    /not a complete natural buyer question/,
   );
 });
 

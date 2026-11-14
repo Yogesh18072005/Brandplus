@@ -113,9 +113,9 @@ export const geminiAdapter: EngineAdapter = {
 
   async runPrompt(prompt, _opts): Promise<EngineResult> {
     const wantGrounding = config.engineGrounding;
-    // Cache key includes the mode so an ungrounded answer is never reused
-    // as if it were grounded (and vice versa) once config/quota changes.
-    const cacheKey = wantGrounding ? 'gemini' : 'gemini:ungrounded';
+    // Cache key includes the grounding mode and model so answers are never reused
+    // across different execution configurations.
+    const cacheKey = `${wantGrounding ? 'gemini' : 'gemini:ungrounded'}:${config.engineModel}`;
 
     const cached = cacheGet<EngineResult>(cacheKey, prompt);
     if (cached && !cached.error) {
@@ -143,7 +143,7 @@ export const geminiAdapter: EngineAdapter = {
         result = await ask(prompt, false);
       }
 
-      cacheSet(result.grounded ? 'gemini' : 'gemini:ungrounded', prompt, { ...result, raw: undefined }); // raw is big; keep cache lean
+      cacheSet(`${result.grounded ? 'gemini' : 'gemini:ungrounded'}:${config.engineModel}`, prompt, { ...result, raw: undefined }); // raw is big; keep cache lean
       return result;
     } catch (err) {
       // Fail gracefully — one engine erroring must not kill the audit.

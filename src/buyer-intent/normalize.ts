@@ -24,13 +24,12 @@ best top leading good better suitable right options option alternatives alternat
 supplier suppliers vendor vendors company companies business businesses manufacturer manufacturers provider providers seller sellers platform platforms software product products service services
 offer offers offering provide provides providing handle handles handling support supports meet meets meeting need needs requirement requirements specification specifications solution solutions
 buy buying purchase purchasing order orders procurement source sourcing available availability commercial enterprise organization organisations organizations team teams customer customers buyer buyers
-use using used work works working help helps most based between near local global worldwide market markets industry industries application applications capability capabilities certified certification
-high low small large volume volumes scale scalable quality price prices pricing cost costs quote quotes trial demo implementation integrate integration export exports importing import decision research evaluate evaluation arrange planning manage coordinate coordinated coordinating coordination consolidate consolidated consolidating guarantee hire combine combined require required include including criteria set maintain maintained specialize specialized focus reduce ensure track tracking separate independently multiple single operational advantage full process shipping shipment shipments
+use using used work works working help helps most based between near local  industry industries application applications capability capabilities high low small large volume volumes scale scalable trial demo implementation integrate integration export exports importing import decision research evaluate evaluation arrange planning manage coordinate coordinated coordinating coordination consolidate consolidated consolidating guarantee hire combine combined require required include including criteria set maintain maintained specialize specialized focus reduce ensure track tracking separate independently multiple single operational advantage full process shipping shipment shipments
 directly direct unique commit committed obtain exist existing place placed there here supply supplies supplied manufacture manufactured
-make made construct constructed calculate individual individually physical sample samples approve approval approved rate rates overseas
-manage managed region regional feature features dimension dimensional custom customise customize customised customized option design designs
-range variety quickly fast reliable reliably durable bulk wholesale retail minimum maximum delivery deliver delivered lead time timeline
-request requested sourcing contact verify verified inspect inspection standard standards detail details information experience experienced
+make made construct constructed calculate individual individually physical sample samples approve approval approved overseas
+manage managed feature features dimension dimensional custom customise customize customised customized option design designs
+range variety quickly fast reliable reliably durable bulk wholesale retail minimum maximum
+request requested sourcing contact verify verified inspect inspection detail details information experience experienced
 agency agencies studio studios firm firms freelancer freelancers consultant consultants expert experts hire hiring partner partners
 select selecting selection alongside both around typical typically usually such when before after initial package packages engagement retainer`.trim();
 
@@ -81,17 +80,23 @@ function similarity(a: string, b: string): number {
   return intersection / new Set([...left, ...right]).size;
 }
 
-function companyBiased(question: string, understanding: CanonicalBusinessUnderstanding): boolean {
-  const normalized = question.toLocaleLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ');
+function companyBiasReason(question: string, understanding: CanonicalBusinessUnderstanding): string | null {
+  const normalized = question.toLocaleLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
+  const paddedQuestion = ' ' + normalized + ' ';
   const companyNames = [understanding.business.name, ...understanding.company_identity.map((item) => item.value)]
     .map((value) => value.toLocaleLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim())
     .filter(Boolean);
-  const businessVocabulary = meaningfulTokens(buyerIntentBusinessEntities(understanding).map((item) => item.value).join(' '));
-  const brandTokens = companyNames.flatMap((name) => name.split(' '))
-    .filter((token) => token.length >= 4 && !businessVocabulary.has(stem(token)) && !/^(private|limited|incorporated|company|group)$/.test(token));
-  return companyNames.some((name) => normalized.includes(name))
-    || brandTokens.some((token) => new RegExp(`\\b${token}\\b`, 'i').test(normalized))
-    || BIASED.test(question);
+
+  // Match complete known names only. Individual identity words (e.g. 'technology'
+  // or 'solutions') can be ordinary buyer language and must not trigger this guard.
+  if (companyNames.some((name) => paddedQuestion.includes(' ' + name + ' '))) {
+    return 'business name appears in question';
+  }
+  if (BIASED.test(question)) return 'promotional chooser opener';
+  return null;
+}
+function companyBiased(question: string, understanding: CanonicalBusinessUnderstanding): boolean {
+  return companyBiasReason(question, understanding) !== null;
 }
 
 function unsupportedTerms(candidate: BuyerQuestionCandidate, understanding: CanonicalBusinessUnderstanding): string[] {
@@ -130,10 +135,13 @@ export function filterCandidates(
     const words = candidate.question.replace(/[^\p{L}\p{N}]+/gu, ' ').trim().split(/\s+/);
     if (!QUESTION_OPENERS.test(candidate.question) || words.length < 5) reason = 'not a natural buyer question';
     else if (!ALLOWED_STAGE[candidate.intent].has(candidate.buyer_stage)) reason = 'intent and buyer stage are inconsistent';
-    else if (companyBiased(candidate.question, understanding)) reason = 'target-company bias';
-    else if (!hasGeography && (candidate.intent === 'GEOGRAPHIC' || candidate.dimensions.includes('GEOGRAPHY'))) reason = 'unsupported geography';
-    else if (!hasCertification && (candidate.intent === 'COMPLIANCE' || candidate.dimensions.includes('COMPLIANCE'))) reason = 'unsupported compliance requirement';
     else {
+      const biasReason = companyBiasReason(candidate.question, understanding);
+      if (biasReason) reason = `target-company bias: ${biasReason}`;
+    }
+    if (!reason && !hasGeography && (candidate.intent === 'GEOGRAPHIC' || candidate.dimensions.includes('GEOGRAPHY'))) reason = 'unsupported geography';
+    else if (!reason && !hasCertification && (candidate.intent === 'COMPLIANCE' || candidate.dimensions.includes('COMPLIANCE'))) reason = 'unsupported compliance requirement';
+    else if (!reason) {
       const unsupported = unsupportedTerms(candidate, understanding);
       if (unsupported.length) {
         reason = `unsupported constraint: ${unsupported.slice(0, 3).join(', ')}`;

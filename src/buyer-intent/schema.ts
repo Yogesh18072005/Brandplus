@@ -71,7 +71,15 @@ export function validateCandidateBatch(raw: unknown, understanding: CanonicalBus
     if (exactQuestions.has(exact)) throw new Error(`Duplicate candidate question: ${candidate.question}`);
     exactQuestions.add(exact);
 
+    for (const id of candidate.supporting_business_entity_ids) {
+      if (!entities.has(id) && id.startsWith('evidence_')) {
+        throw new Error(`Candidate ${candidate.id} placed an evidence ID in supporting_business_entity_ids: ${id}`);
+      }
+    }
     for (const id of candidate.supporting_business_evidence_ids) {
+      if (!evidenceIds.has(id) && id.startsWith('entity_')) {
+        throw new Error(`Candidate ${candidate.id} placed an entity ID in supporting_business_evidence_ids: ${id}`);
+      }
       if (!evidenceIds.has(id)) throw new Error(`Candidate ${candidate.id} references missing evidence ${id}`);
     }
     const supportedByEntities = new Set<string>();
@@ -85,6 +93,9 @@ export function validateCandidateBatch(raw: unknown, understanding: CanonicalBus
     }
     if (!candidate.supporting_business_evidence_ids.some((id) => supportedByEntities.has(id))) {
       throw new Error(`Candidate ${candidate.id} evidence is not connected to its referenced business entities`);
+    }
+    if (!candidate.question.endsWith('?') || candidate.question.trim().split(/\s+/).length < 4) {
+      throw new Error(`Candidate ${candidate.id} is not a complete natural buyer question`);
     }
   }
   return candidates;
@@ -117,8 +128,8 @@ function sharedTokenCount(left: Set<string>, right: Set<string>): number {
 
 /**
  * Small local models sometimes omit the grounding ID arrays. Recover them only
- * when the question independently matches an existing entity and evidence
- * already linked to that entity. No IDs or evidence are ever fabricated.
+ * when the question matches an existing entity, then use only evidence
+ * already linked to that entity in the canonical Business Understanding. No IDs or evidence are ever fabricated.
  */
 export function inferMissingCandidateGrounding(
   rawCandidate: unknown,
@@ -128,13 +139,37 @@ export function inferMissingCandidateGrounding(
   const candidate = rawCandidate as Record<string, unknown>;
   if (typeof candidate.question !== 'string') return rawCandidate;
 
-  const entityIds = Array.isArray(candidate.supporting_business_entity_ids)
+  const suppliedEntityIds = Array.isArray(candidate.supporting_business_entity_ids)
     ? candidate.supporting_business_entity_ids.filter((id): id is string => typeof id === 'string' && id.length > 0)
     : [];
-  const evidenceIds = Array.isArray(candidate.supporting_business_evidence_ids)
+  const suppliedEvidenceIds = Array.isArray(candidate.supporting_business_evidence_ids)
     ? candidate.supporting_business_evidence_ids.filter((id): id is string => typeof id === 'string' && id.length > 0)
     : [];
-  if (entityIds.length && evidenceIds.length) return rawCandidate;
+
+  // Classify every supplied ID against the canonical collections. Small models
+  // occasionally put a real evidence ID in the entity array (or vice versa).
+  // Correct only IDs that exist in the corresponding canonical collection;
+  // unknown IDs remain in their original array and will still fail validation.
+  const validEntityIds = new Set(buyerIntentBusinessEntities(understanding).map((item) => item.id));
+  const validEvidenceIds = new Set(understanding.evidence.map((item) => item.id));
+  const entityIds = [...new Set([
+    ...suppliedEntityIds.filter((id) => validEntityIds.has(id)),
+    ...suppliedEvidenceIds.filter((id) => validEntityIds.has(id)),
+  ])];
+  const evidenceIds = [...new Set([
+    ...suppliedEvidenceIds.filter((id) => validEvidenceIds.has(id)),
+    ...suppliedEntityIds.filter((id) => validEvidenceIds.has(id)),
+  ])];
+  const hasUnknownEntityIds = suppliedEntityIds.some((id) => !validEntityIds.has(id) && !validEvidenceIds.has(id));
+  const hasUnknownEvidenceIds = suppliedEvidenceIds.some((id) => !validEvidenceIds.has(id) && !validEntityIds.has(id));
+
+  if (entityIds.length && evidenceIds.length && !hasUnknownEntityIds && !hasUnknownEvidenceIds) {
+    return {
+      ...candidate,
+      supporting_business_entity_ids: entityIds,
+      supporting_business_evidence_ids: evidenceIds,
+    };
+  }
 
   const questionTokens = groundingTokens(candidate.question);
   if (questionTokens.size < 2) return rawCandidate;
@@ -142,25 +177,24 @@ export function inferMissingCandidateGrounding(
   const evidenceById = new Map(understanding.evidence.map((item) => [item.id, item]));
   const eligibleEntities = buyerIntentBusinessEntities(understanding)
     .filter((entity) => !entityIds.length || entityIds.includes(entity.id))
+    .filter((entity) => !evidenceIds.length || entity.evidence_ids.some((id) => evidenceIds.includes(id)))
     .filter((entity) => {
       const entityTokens = groundingTokens([entity.value, entity.description ?? '', entity.category ?? ''].join(' '));
       return sharedTokenCount(questionTokens, entityTokens) >= 2;
     });
 
+  // The entity-to-evidence relationship was established during Business Understanding.
+  // Once a question matches that entity, use only evidence already linked to it;
+  // requiring the question to repeat two words from the source text is too brittle
+  // for paraphrased buyer questions and small local models.
   const matched = eligibleEntities.flatMap((entity) => {
-    const entityTokens = groundingTokens([entity.value, entity.description ?? '', entity.category ?? ''].join(' '));
     const supportingEvidence = entity.evidence_ids
       .map((id) => evidenceById.get(id))
-      .filter((item): item is NonNullable<typeof item> => Boolean(item))
-      .filter((item) => {
-        const evidenceTokens = groundingTokens(item.evidence_text);
-        return sharedTokenCount(questionTokens, evidenceTokens) >= 2
-          && sharedTokenCount(entityTokens, evidenceTokens) >= 1;
-      });
+      .filter((item): item is NonNullable<typeof item> => Boolean(item));
     return supportingEvidence.length ? [{ entity, supportingEvidence }] : [];
   });
 
-  if (!matched.length) return rawCandidate;
+  if (!matched.length || hasUnknownEntityIds || hasUnknownEvidenceIds) return rawCandidate;
   return {
     ...candidate,
     supporting_business_entity_ids: entityIds.length ? entityIds : matched.map(({ entity }) => entity.id),
@@ -176,20 +210,26 @@ export function validateCandidateBatchWithOmissions(
 ): BuyerQuestionCandidate[] {
   const rawCandidates = candidateEnvelopeSchema.parse(raw).candidates;
   const accepted: BuyerQuestionCandidate[] = [];
+  const seenQuestions = new Set<string>();
   const diagnostics: string[] = [];
   let firstError: unknown;
 
   for (const [index, rawCandidate] of rawCandidates.entries()) {
     try {
       const groundedCandidate = inferMissingCandidateGrounding(rawCandidate, understanding);
-      accepted.push(validateCandidateBatch({ candidates: [groundedCandidate] }, understanding)[0]!);
+      const validated = validateCandidateBatch({ candidates: [groundedCandidate] }, understanding)[0]!;
+      const normalizedQuestion = validated.question.toLocaleLowerCase().replace(/\s+/g, ' ').trim();
+      // Duplicate paraphrase-free repeats from small models add no coverage.
+      if (seenQuestions.has(normalizedQuestion)) continue;
+      seenQuestions.add(normalizedQuestion);
+      accepted.push(validated);
     } catch (error) {
       firstError ??= error;
       const candidate = rawCandidate && typeof rawCandidate === 'object' && !Array.isArray(rawCandidate)
         ? rawCandidate as Record<string, unknown>
         : {};
       const question = typeof candidate.question === 'string'
-        ? candidate.question.replace(/\\s+/g, ' ').slice(0, 220)
+        ? candidate.question.replace(/\s+/g, ' ').slice(0, 220)
         : '[missing question]';
       const entityIds = Array.isArray(candidate.supporting_business_entity_ids)
         ? candidate.supporting_business_entity_ids.filter((id): id is string => typeof id === 'string')
@@ -203,14 +243,8 @@ export function validateCandidateBatchWithOmissions(
         return sharedTokenCount(questionTokens, entityTokens) >= 2;
       });
       const evidenceMatches = eligibleEntities.reduce((count, entity) => {
-        const entityTokens = groundingTokens([entity.value, entity.description ?? '', entity.category ?? ''].join(' '));
-        return count + entity.evidence_ids.filter((id) => {
-          const item = understanding.evidence.find((entry) => entry.id === id);
-          if (!item) return false;
-          const evidenceTokens = groundingTokens(item.evidence_text);
-          return sharedTokenCount(questionTokens, evidenceTokens) >= 2
-            && sharedTokenCount(entityTokens, evidenceTokens) >= 1;
-        }).length;
+        const availableIds = new Set(understanding.evidence.map((item) => item.id));
+        return count + entity.evidence_ids.filter((id) => availableIds.has(id)).length;
       }, 0);
       const reason = error instanceof Error ? error.message.slice(0, 260) : 'Unknown validation error';
       diagnostics.push(

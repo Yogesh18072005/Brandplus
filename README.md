@@ -1,47 +1,104 @@
-# AEO Engine
+# BrandPulse
 
-**A black-box evaluation harness for measuring the factual behaviour and manipulability of LLM outputs.**
+**BrandPulse is an AI visibility and business-intelligence platform.** It builds an evidence-backed understanding of a business, generates buyer questions, observes AI answers, diagnoses visibility and evidence gaps, and creates prioritized interventions.
 
-AEO Engine takes a domain (an entity type and a location), automatically generates ~40 structured natural-language queries a real user would ask, runs them through an LLM with web search, and parses each response to measure **which entities the model names, which sources it cites, and the exact evidence it uses**. It produces a quantified, evidence-linked report.
+The application is a Next.js 16 / React 19 / TypeScript project backed by Supabase and Clerk. Gemini powers the live answer-observation and analysis workflows. Engine 02 can use local Ollama for buyer-intent generation, avoiding Gemini API calls for that stage.
 
-It was originally built to check how often an LLM recommends a given business. In practice it functions as an evaluation harness: a fixed probe set, automated execution against a model, deterministic parsing, and quantified, evidence-linked outcomes.
+## Product workflow
 
----
+A canonical audit runs through five connected engines:
 
-## What it measures
+1. **Business Understanding** — crawls the business website and extracts structured entities and source-linked evidence.
+2. **Buyer Intent** — generates and validates evidence-grounded buyer questions. The provider is selected with `BUYER_INTENT_PROVIDER` (`ollama` or `gemini`).
+3. **AI Observation** — sends the frozen buyer questions to the configured answer provider and stores responses, mentions, and citations.
+4. **Evidence Diagnosis** — evaluates observed answers against the business understanding and identifies supported gaps.
+5. **Intervention Generation** — creates prioritized, evidence-linked recommendations. The execution workflow supports approval, cancellation, retries, and recorded artifacts.
 
-- **Presence rate** — the fraction of queries in which the target entity is named.
-- **Share of voice** — the target's presence relative to competing entities surfaced on the same queries.
-- **Citation frequency** — how often each source is cited by the model across the query set.
-- **Evidence** — every recorded mention links back to the verbatim sentence in the model's answer, so no claim is stored without a quote.
+The queue and worker coordinate long-running audit stages. Reports are assembled from the canonical audit lineage rather than from a single transient request.
 
-## How it works
+## Technology
 
-1. **Query generation** — programmatically generates ~40 realistic queries spanning informational, comparative, and ready-to-act intents.
-2. **Model execution** — runs each query through an LLM (currently Gemini with web search) via API, capturing the full response and cited sources.
-3. **Response parsing + deterministic evidence extraction** — identifies named entities and cited sources; when a mention cannot be confirmed structurally, a deterministic fallback extracts the exact sentence naming the entity, so every measurement is quote-backed.
-4. **Quantification + reporting** — aggregates into presence rate, share of voice, and citation counts, and renders an evidence-linked report.
+- Next.js 16, React 19, TypeScript
+- Clerk authentication and account identity
+- Supabase database, row-level security, and queue operations
+- Google Gemini via the Google GenAI SDK
+- Optional local Ollama for Engine 02
+- Razorpay billing and Brevo transactional email
+- Node.js test runner with `tsx`
 
-## Why this is relevant beyond marketing
+## Local development
 
-Running the harness at scale surfaces failure modes that matter for the reliability of LLMs as a factual interface:
+Use a supported Node.js version and install dependencies:
 
-- **Inconsistency** — presence varies sharply across semantically similar queries, with no signal to the user that an answer is unstable.
-- **Confident unevenness** — models assert specific real-world claims with uneven, unobservable accuracy.
-- **Manipulability** — the sources a model trusts are a small, identifiable, and often editable set, which means outputs can be deliberately steered. This is an information-integrity concern, not only a marketing one.
+```powershell
+npm install
+```
 
-These map onto active questions in AI evaluation: factual reliability and grounding, adversarial manipulability, and silent failure.
+Create a local `.env.local` file. Do not commit it or share its contents. The application needs the relevant Clerk and Supabase configuration; Gemini-powered stages require `GOOGLE_API_KEY`. The server-side Supabase client requires `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`.
 
-## Status
+For local Ollama-backed Buyer Intent, start Ollama and configure:
 
-Working prototype. Single model provider (Gemini). Concierge-run reports. Query generation is heuristic; manipulability is currently observed qualitatively rather than through controlled experiments.
+```dotenv
+BUYER_INTENT_PROVIDER=ollama
+OLLAMA_BASE_URL=http://127.0.0.1:11434
+OLLAMA_MODEL=qwen2.5:3b
+OLLAMA_TIMEOUT_MS=120000
+```
 
-## Roadmap
+Alternatively set `BUYER_INTENT_PROVIDER=gemini` to use Gemini for Engine 02.
 
-- Extend across multiple models to compare factual stability.
-- Formalise the query set and intent taxonomy for reproducibility.
-- Run controlled manipulability experiments: vary a trusted source, measure the causal shift in model recommendations.
+Start the Next.js application:
 
----
+```powershell
+npm run dev
+```
 
-*Built by Mehul Arora.*
+Run the background queue worker in a separate terminal:
+
+```powershell
+npm run worker
+```
+
+The worker needs valid server-side Supabase credentials and a reachable Supabase project.
+
+## Verification
+
+Run these checks before opening or merging a code change:
+
+```powershell
+npm run typecheck
+npm test
+npm run build
+```
+
+Useful operational commands:
+
+| Command | Purpose |
+| --- | --- |
+| `npm run worker` | Start the long-running queue worker |
+| `npm run queue` | Process queue work once |
+| `npm run queue:all` | Process all available queue work |
+| `npm run audit:run -- <queue-id> --free --confirm` | Run an approved free/admin audit locally |
+| `npm run audit:run -- <queue-id> --charge --confirm` | Run an approved user audit and reserve its credit |
+| `npm run validate:env` | Check environment configuration |
+
+## Repository structure
+
+- `app/` — Next.js pages and API routes
+- `components/` — dashboard, onboarding, report, and product UI
+- `lib/` — authentication, Supabase clients, billing, queue, security, and report assembly
+- `src/business-understanding/` — Engine 01
+- `src/buyer-intent/` — Engine 02
+- `src/ai-observation/` — Engine 03
+- `src/evidence-diagnosis/` — Engine 04
+- `src/intervention-generation/` — Engine 05
+- `src/execution/` — intervention execution and approvals
+- `supabase/migrations/` — database schema, policies, and database functions
+- `scripts/` — worker, queue, audit, and operational scripts
+
+## Operational notes
+
+- Keep all secrets in local environment files or the deployment secret manager.
+- Do not expose the Supabase service-role key to browser code.
+- Engine 02 validates questions against canonical business entities and linked evidence; unsupported claims are rejected rather than invented.
+- A successful build does not replace a live end-to-end audit test. Verify the queue, each engine stage, report rendering, citations, and billing behavior in the intended environment.

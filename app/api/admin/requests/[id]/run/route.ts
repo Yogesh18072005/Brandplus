@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { guardMutationRequest } from '@/lib/http/request-security';
 import { recordOperationalEvent } from '@/lib/ops/events';
-import { canRunLocally, requireOps, RUNS_DIR } from '@/lib/admin/require-ops';
+import { canRunLocally, requireOps } from '@/lib/admin/require-ops';
 
 export const dynamic = 'force-dynamic';
 
@@ -44,7 +44,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     return NextResponse.json({ error: `Already started as ${job.credit_mode === 'charge' ? 'their credit' : 'an admin credit'}. Resume it the same way.` }, { status: 409 });
   }
 
-  const dir = path.join(process.cwd(), RUNS_DIR);
+  const dir = path.join(process.cwd(), '.runs');
   mkdirSync(dir, { recursive: true });
   const stateFile = path.join(dir, `${id}.json`);
   if (existsSync(stateFile)) {

@@ -204,8 +204,9 @@ export async function generatePrompts(
     model: config.promptgenModel,
     input: software ? buildSoftwareInput(category, askCount, profile) : buildInput(category, city, askCount, profile),
     responseFormat: { type: 'text', mime_type: 'application/json', schema: PROMPTS_SCHEMA },
-    // Some temperature for variety; no thinking needed; cap output.
-    generationConfig: { thinking_level: 'minimal', temperature: 0.8, max_output_tokens: 4096 },
+    // Use minimal thinking and cap output. Prompt instructions provide variety;
+    // the Interactions API generation_config does not support temperature.
+    generationConfig: { thinking_level: 'minimal', max_output_tokens: 4096 },
   });
 
   const raw = extractJson(interaction.output_text ?? '') as { prompts?: BuyerPrompt[] };

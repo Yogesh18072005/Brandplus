@@ -45,7 +45,7 @@ export interface CitedPage {
 export interface DirectoryListing {
   domain: string;
   citedIn: number;
-  /** true: found a listing · false: none found · null: couldn't tell. */
+  /** true: a profile page was fetched and matched · false: a fetched profile page did not match · null: couldn't verify. */
   listed: boolean | null;
   url?: string;
   how: 'cited page' | 'search';
@@ -158,13 +158,29 @@ export function parseListingLines(text: string, domains: string[]): Map<string, 
   return out;
 }
 
+/** A directory listing is verified only when its URL belongs to that directory and the fetched page names the business. */
+export function verifyDirectoryListing(url: string, pageText: string, domain: string, name: string, aliases?: string[]): boolean {
+  return domainMatches(url, domain) && nameAppearsIn(pageText, name, aliases);
+}
+
 export async function checkDirectories(input: FootprintInput, citedPages: CitedPage[], citationCounts: { domain: string; count: number }[], limit = 5): Promise<DirectoryListing[]> {
   const dirs = citationCounts.filter((c) => DIRECTORY_DOMAINS.has(c.domain)).slice(0, limit);
   if (dirs.length === 0) return [];
-  const listings: DirectoryListing[] = dirs.map((d) => {
-    const found = citedPages.find((p) => p.domain === d.domain && p.status === 'read' && p.brandNamed);
-    return found ? { domain: d.domain, citedIn: d.count, listed: true, url: found.url, how: 'cited page' } : { domain: d.domain, citedIn: d.count, listed: null, how: 'search' };
-  });
+  // A cited article mentioning the brand is not proof of a directory profile.
+  // Verify the actual candidate URL before counting a listing.
+  const listings: DirectoryListing[] = await Promise.all(dirs.map(async (d) => {
+    const candidate = citedPages.find((p) => p.domain === d.domain && p.status === 'read' && p.brandNamed);
+    if (!candidate) return { domain: d.domain, citedIn: d.count, listed: null, how: 'search' as const };
+    const page = await readPage(candidate.url);
+    const verified = !!page && verifyDirectoryListing(candidate.url, page.text, d.domain, input.name, input.aliases);
+    return {
+      domain: d.domain,
+      citedIn: d.count,
+      listed: verified ? true : null,
+      url: verified ? candidate.url : undefined,
+      how: 'cited page' as const,
+    };
+  }));
   const unknown = listings.filter((l) => l.listed === null);
   if (unknown.length === 0) return listings;
 
@@ -173,13 +189,19 @@ export async function checkDirectories(input: FootprintInput, citedPages: CitedP
   const result = await getAdapter('gemini').runPrompt(question, { city: input.city });
   if (result.error) throw new Error(`directory search failed: ${result.error}`);
   const parsed = parseListingLines(result.answerText, unknown.map((l) => l.domain));
-  const citedDomains = new Set(result.citations.map((c) => c.domain));
   for (const l of unknown) {
     const p = parsed.get(l.domain);
     if (!p || p.yes === null) continue;
-    // A "yes" only counts with a link on that directory, or the search actually citing it.
-    if (p.yes && (p.url || citedDomains.has(l.domain))) { l.listed = true; l.url = p.url; }
-    else if (!p.yes) l.listed = false;
+    // A model's "no" is not evidence that no listing exists. A "yes" must
+    // include a same-directory URL which we can fetch and verify ourselves.
+    if (p.yes && p.url && domainMatches(p.url, l.domain)) {
+      const page = await readPage(p.url);
+      if (page && verifyDirectoryListing(p.url, page.text, l.domain, input.name, input.aliases)) {
+        l.listed = true;
+        l.url = p.url;
+      }
+    }
+    // Keep all unsupported negatives as unknown; search coverage is not proof of absence.
   }
   return listings;
 }
@@ -202,6 +224,16 @@ function firstSentence(text: string): string {
 }
 
 export async function probeBrand(input: FootprintInput, siteText: string): Promise<BrandProbe> {
+  if (!siteText.trim()) {
+    return {
+      question: `What is ${input.name} (${extractDomain(input.website)})? What do they do, where are they based, and who are their customers?`,
+      verdict: 'unknown',
+      summary: 'We could not verify the AI answer because the business website provided no readable ground-truth content.',
+      quote: '',
+      issues: ['The homepage could not be read, so the result was not judged against website evidence.'],
+      sources: [],
+    };
+  }
   const domain = extractDomain(input.website);
   const question = `What is ${input.name} (${domain})? What do they do, where are they based, and who are their customers?`;
   const answer = await getAdapter('gemini').runPrompt(question, { city: input.city });

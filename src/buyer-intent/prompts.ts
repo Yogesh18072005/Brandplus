@@ -2,7 +2,7 @@ import type { CanonicalBusinessUnderstanding } from '@/src/business-understandin
 import type { BuyerQuestionCandidate } from './types';
 import { buyerIntentBusinessEntities } from './schema';
 
-export const BUYER_INTENT_PROMPT_VERSION = '1.0.4' as const;
+export const BUYER_INTENT_PROMPT_VERSION = '1.0.9' as const;
 
 export const BUYER_INTENT_SYSTEM_PROMPT = `You are the Buyer Intent Discovery Engine of BRANDPULSE.
 
@@ -28,7 +28,7 @@ Every question must sound natural when asked to an AI assistant, be self-contain
 
 export function buyerIntentGrounding(understanding: CanonicalBusinessUnderstanding) {
   const entities = buyerIntentBusinessEntities(understanding);
-  const evidenceIds = new Set(entities.flatMap((entity) => entity.evidence_ids));
+  const evidenceById = new Map(understanding.evidence.map((item) => [item.id, item]));
   return {
     business: {
       name: understanding.business.name,
@@ -40,17 +40,16 @@ export function buyerIntentGrounding(understanding: CanonicalBusinessUnderstandi
       type: entity.type,
       value: entity.value,
       description: entity.description,
-      category: entity.category,
-      statement_kind: entity.statement_kind,
-      confidence: entity.confidence,
       allowed_evidence_ids: entity.evidence_ids,
-    })),
-    evidence: understanding.evidence.filter((item) => evidenceIds.has(item.id)).map((item) => ({
-      evidence_id: item.id,
-      evidence_text: item.evidence_text,
-      confidence: item.confidence,
-      source_url: item.source_url,
-      source_type: item.source_type,
+      // Evidence is included only here, beside the entity it supports.
+      // Avoid duplicating the same evidence again in a top-level evidence list.
+      evidence_options: entity.evidence_ids
+        .map((id) => evidenceById.get(id))
+        .filter((item): item is NonNullable<typeof item> => Boolean(item))
+        .map((item) => ({
+          evidence_id: item.id,
+          evidence_text: item.evidence_text,
+        })),
     })),
     unknowns: understanding.unknowns,
     conflicts: understanding.conflicts,
@@ -64,7 +63,7 @@ export function candidateGenerationPrompt(
 ): string {
   return JSON.stringify({
     task: `Generate up to ${candidateCount} distinct, commercially useful buyer-question candidates.`,
-    required_range: { preferred: candidateCount, maximum: 40 },
+    required_range: { preferred: candidateCount, maximum: candidateCount },
     buyer_decision_coverage: [
       'supplier discovery and shortlisting for an evidenced product or service',
       'comparison criteria that a buyer or procurement team would actually use',
@@ -77,9 +76,16 @@ export function candidateGenerationPrompt(
       'Do not fill the requested count with generic definitions, product trivia, or broad how-it-works questions.',
       'A question about a material, specification, price, delivery, certification, or performance must be directly supported by supplied evidence.',
       'Every question must sound natural when asked to an AI assistant, be self-contained, and end with a question mark.',
+      "Start from one supplied entity and inspect only that entity's evidence_options before writing a question.",
+      'Generate a question only when its buyer-relevant subject is supported by the selected entity and its attached evidence_options.',
+      "Copy the selected entity_id and one or more evidence_id values from that same entity's evidence_options. Do not infer pricing, locations, certifications, delivery terms, or technical specifications from generic industry knowledge.",
+      'If no entity/evidence pair supports a useful buyer question, omit that candidate instead of inventing a generic question.',
       'Every candidate must reference at least one supplied entity id and one of that entity\'s evidence ids.',
       'Never leave either supporting ID array empty. Select IDs by matching the question to the supplied entity value/description and its allowed evidence; do not guess or invent identifiers.',
       'Before returning, verify that every entity ID exists in the supplied entities list and every evidence ID exists in that entity\'s allowed_evidence_ids.',
+      'The response_contract_example is a structural example using real IDs from this input. Copy the field-to-ID mapping exactly; never swap the two ID types.',
+      'supporting_business_entity_ids is an array of entity_id values from entities[].entity_id. supporting_business_evidence_ids is an array of evidence_id values from that selected entity evidence_options.',
+      'A product or service name by itself is not a buyer question. The question must be a complete natural-language sentence ending in a question mark and express a buyer decision or research need.',
       'Copy supporting_business_entity_ids only from entity_id fields.',
       'Copy supporting_business_evidence_ids only from evidence_id fields. Never put an entity_id in supporting_business_evidence_ids.',
       'Each supporting_business_evidence_id must also appear in allowed_evidence_ids for at least one referenced entity.',
@@ -94,9 +100,26 @@ export function candidateGenerationPrompt(
       correction: {
         previous_response_rejected: true,
         validation_error: validationError,
-        instruction: 'Return a completely corrected candidate batch. Use only the exact supplied entity_id and evidence_id values.',
+        instruction: 'Return a fresh corrected candidate batch. Do not repeat rejected questions or mention the target business name. Use only the exact supplied entity_id and evidence_id values, and preserve evidence grounding.',
       },
     } : {}),
+    response_contract_example: (() => {
+      const firstEntity = buyerIntentBusinessEntities(understanding).find((entity) =>
+        entity.evidence_ids.some((id) => understanding.evidence.some((item) => item.id === id)),
+      );
+      const firstEvidence = firstEntity
+        ? understanding.evidence.find((item) => firstEntity.evidence_ids.includes(item.id))
+        : undefined;
+      return firstEntity && firstEvidence ? {
+        id: 'candidate-example',
+        question: `Which suppliers should buyers evaluate for ${firstEntity.value}?`,
+        intent: 'SHORTLIST',
+        buyer_stage: 'EVALUATION',
+        dimensions: [firstEntity.type === 'PRODUCT' ? 'PRODUCT' : 'SERVICE'],
+        supporting_business_entity_ids: [firstEntity.id],
+        supporting_business_evidence_ids: [firstEvidence.id],
+      } : null;
+    })(),
     business_understanding: buyerIntentGrounding(understanding),
   });
 }
