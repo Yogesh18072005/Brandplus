@@ -33,6 +33,10 @@ export const config = {
   // Set ENGINE_GROUNDING=true only when grounding quota is available.
   engineGrounding: env('ENGINE_GROUNDING', 'false') === 'true',
 
+  // Engine 03 Google Search grounding is an explicit opt-in. Gemini 3.x API
+  // grounding is not available on the API free tier; keep disabled at ₹0 budget.
+  geminiSearchGroundingEnabled: env('GEMINI_SEARCH_GROUNDING_ENABLED', 'false') === 'true',
+
   // Resilience knobs (M4 hardens these further).
   // Free-tier RPM limits are tight → single-file requests + a pause between prompts.
   concurrency: Number(env('CONCURRENCY', '1')),
