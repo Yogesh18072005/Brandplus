@@ -2,6 +2,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@/lib/supabase/types';
 import { SupabaseObservationRepository } from './repository';
 import { GeminiObservationProvider } from '@/src/ai-observation/gemini-provider';
+import { OpenAIObservationProvider } from '@/src/ai-observation/openai-provider';
 import { ObservationService } from '@/src/ai-observation/service';
 import { recordOperationalEvent } from '@/lib/ops/events';
 import { advanceCanonicalAfterObservation, failCanonicalAuditForStage } from '@/lib/reports/canonical-audit-orchestration';
@@ -64,7 +65,7 @@ export async function processObservationQueueJob(client: AdminClient, job: Queue
   try {
     const service = new ObservationService({
       repository,
-      providers: [new GeminiObservationProvider()],
+      providers: [new OpenAIObservationProvider(), new GeminiObservationProvider()],
       onProgress: async (completed, total) => {
         const { error } = await client.from('audit_queue').update({ last_heartbeat_at: new Date().toISOString() })
           .eq('id', job.id).eq('status', 'processing');
