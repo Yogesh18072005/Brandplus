@@ -2,7 +2,7 @@ import type { CanonicalBusinessUnderstanding } from '@/src/business-understandin
 import type { BuyerQuestionCandidate } from './types';
 import { buyerIntentBusinessEntities } from './schema';
 
-export const BUYER_INTENT_PROMPT_VERSION = '1.0.7' as const;
+export const BUYER_INTENT_PROMPT_VERSION = '1.0.8' as const;
 
 export const BUYER_INTENT_SYSTEM_PROMPT = `You are the Buyer Intent Discovery Engine of BRANDPULSE.
 
@@ -29,7 +29,6 @@ Every question must sound natural when asked to an AI assistant, be self-contain
 export function buyerIntentGrounding(understanding: CanonicalBusinessUnderstanding) {
   const entities = buyerIntentBusinessEntities(understanding);
   const evidenceById = new Map(understanding.evidence.map((item) => [item.id, item]));
-  const evidenceIds = new Set(entities.flatMap((entity) => entity.evidence_ids));
   return {
     business: {
       name: understanding.business.name,
