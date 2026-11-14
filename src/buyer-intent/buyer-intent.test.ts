@@ -394,6 +394,18 @@ test('unsupported pricing questions are rejected even when their service entity 
   assert.match(filtered.rejected[0]?.reason ?? '', /unsupported constraint: pric/);
 });
 
+test('unsupported delivery claims are rejected when no delivery evidence exists', () => {
+  const item = candidate({
+    question: 'Which industrial pump suppliers offer next-day delivery?',
+    intent: 'COMPARISON',
+    buyer_stage: 'EVALUATION',
+    dimensions: ['PRODUCT'],
+  });
+  const result = filterCandidates([item], profile());
+  assert.equal(result.accepted.length, 0);
+  assert.match(result.rejected[0]?.reason ?? '', /unsupported constraint: next, day, delivery/);
+});
+
 test('candidates without a real entity-and-evidence text match are not assigned invented grounding', () => {
   const ungrounded = {
     ...candidate({ question: 'Which aerospace satellite manufacturers should procurement teams shortlist?' }),
