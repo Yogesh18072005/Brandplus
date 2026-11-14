@@ -285,7 +285,8 @@ export function BusinessSetup({ mode }: { mode: 'first' | 'another' | 'preview' 
         ? `Business saved. Audit could not start: ${auditError.error}`
         : 'Business saved, but the audit could not start. You can retry from the business page.');
     }
-    router.push(`/dashboard/projects/${data.id}`);
+    // Use a full navigation so the server-rendered report page loads with the newly created project.
+    window.location.assign(`/dashboard/projects/${data.id}`);
   }
 
   if (account.state === 'checking') {
