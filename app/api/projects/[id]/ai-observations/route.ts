@@ -7,6 +7,7 @@ import { consumeRateLimit, rateLimitError } from '@/lib/security/rate-limit';
 import { recordOperationalEvent } from '@/lib/ops/events';
 import { SupabaseObservationRepository } from '@/lib/ai-observation/repository';
 import { GeminiObservationProvider } from '@/src/ai-observation/gemini-provider';
+import { OpenAIObservationProvider } from '@/src/ai-observation/openai-provider';
 import { ObservationInputError, ObservationService } from '@/src/ai-observation/service';
 import { founderOnly } from '@/lib/auth/founder-only';
 
@@ -15,7 +16,7 @@ export const dynamic = 'force-dynamic';
 
 const requestSchema = z.object({
   buyerQuestionSetId: z.string().uuid(),
-  provider: z.literal('gemini').default('gemini'),
+  provider: z.enum(['openai', 'gemini']).default('openai'),
 }).strict();
 const OBSERVATION_RATE_LIMIT = { scope: 'ai-observation', limit: 3, windowSeconds: 60 * 60 } as const;
 
@@ -62,7 +63,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   }
 
   const repository = new SupabaseObservationRepository(admin);
-  const service = new ObservationService({ repository, providers: [new GeminiObservationProvider()] });
+  const service = new ObservationService({ repository, providers: [new OpenAIObservationProvider(), new GeminiObservationProvider()] });
   try {
     const created = await service.createRun({
       projectId: owned.project.id,
