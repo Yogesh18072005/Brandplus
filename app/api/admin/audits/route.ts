@@ -139,9 +139,9 @@ export async function POST(request: Request) {
 
     if (approval?.reason === 'no_credit') {
       return NextResponse.json({
-        error: upgradeMessage(plan),
+        error: `No audit credits are available for the selected ${planId} plan.`,
         code: 'NO_CREDITS',
-        plan,
+        plan: planId,
       }, { status: 402 });
     }
 
