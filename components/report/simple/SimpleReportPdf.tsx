@@ -72,6 +72,13 @@ const VERDICT: Record<SimpleVerdict, { label: string; color: string; bg: string 
   unclear: { label: 'Unclear', color: c.muted, bg: c.soft },
 };
 
+const DIRECTORY_DOMAINS = new Set([
+  'justdial.com', 'sulekha.com', 'indiamart.com', 'tradeindia.com', 'exportersindia.com',
+  'connect2india.com', 'indiayellowpages.com', 'yellowpages.in', 'yelp.com', 'clutch.co',
+  'ambitionbox.com', 'mouthshut.com', 'grotal.com', 'thomasnet.com', 'kompass.com',
+  'go4worldbusiness.com', 'trustpilot.com', 'glassdoor.com', 'facebook.com', 'linkedin.com',
+]);
+
 function Mark() {
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -95,6 +102,10 @@ export function SimpleReportPdf({ model, reportUrl }: { model: SimpleReport; rep
   const named = model.recommended + model.mentioned;
   const date = formatDate(model.observedOn);
   const maxSource = Math.max(1, ...model.sources.map((source) => source.answers));
+  const missedQuestions = model.questions.filter((question) => question.verdict === 'missed').slice(0, 5);
+  const citedDirectories = model.sources
+    .filter((source) => DIRECTORY_DOMAINS.has(source.domain) && !source.isYou)
+    .slice(0, 5);
   const footer = (
     <View style={s.footer} fixed>
       <Text>{model.businessName} · AI visibility check{date ? ` · ${date}` : ''}</Text>
@@ -187,6 +198,41 @@ export function SimpleReportPdf({ model, reportUrl }: { model: SimpleReport; rep
 
         <View style={[s.card, { marginTop: 4 }]} wrap={false}>
           <Text style={{ fontSize: 10, color: c.muted }}>Ready to fix this? Get your fix plan at <Link src={`${reportUrl}#sr-fix`} style={{ color: c.blue }}>{reportUrl.replace(/^https?:\/\//, '')}</Link>.</Text>
+        </View>
+        {footer}
+      </Page>
+
+      <Page size="A4" style={s.page}>
+        <View style={s.top}><Mark /><Text style={s.topRight}>Evidence-based action plan</Text></View>
+        <Text style={s.label}>Your next steps</Text>
+        <Text style={s.section}>What to publish and where to build presence</Text>
+        <Text style={s.sub}>These recommendations are generated from the missed buyer questions and domains actually cited in this audit. No additional AI generation is used.</Text>
+
+        <View style={[s.card, { marginBottom: 12 }]}>
+          <Text style={s.label}>1 · Pages to create or improve</Text>
+          {missedQuestions.length ? missedQuestions.map((question, index) => (
+            <View key={question.id} style={{ paddingVertical: 8, borderBottomWidth: index === missedQuestions.length - 1 ? 0 : 0.6, borderBottomColor: c.line }}>
+              <Text style={{ fontSize: 9, color: c.blue, fontFamily: 'Helvetica-Bold', marginBottom: 3 }}>PRIORITY {index + 1}</Text>
+              <Text style={{ fontSize: 10.5, fontFamily: 'Helvetica-Bold', marginBottom: 3 }}>Create or improve a page answering:</Text>
+              <Text style={{ fontSize: 9.5, lineHeight: 1.45 }}>“{question.question}”</Text>
+              {question.competitorsNamed.length > 0 && <Text style={{ fontSize: 8.5, color: c.muted, marginTop: 4 }}>Competitors named in this answer: {question.competitorsNamed.join(', ')}</Text>}
+              <Text style={{ fontSize: 8.5, color: c.muted, marginTop: 4 }}>Include verified service details, relevant use cases, proof such as case studies or certifications, and a clear enquiry route. If a suitable page already exists, improve it instead of creating a duplicate.</Text>
+            </View>
+          )) : <Text style={{ fontSize: 9, color: c.muted }}>No clear missed questions were recorded, so no new page is prescribed.</Text>}
+        </View>
+
+        <View style={s.card}>
+          <Text style={s.label}>2 · Directory and profile opportunities</Text>
+          {citedDirectories.length ? citedDirectories.map((source, index) => (
+            <View key={source.domain} style={{ paddingVertical: 8, borderBottomWidth: index === citedDirectories.length - 1 ? 0 : 0.6, borderBottomColor: c.line }}>
+              <Text style={{ fontSize: 10.5, fontFamily: 'Helvetica-Bold' }}>{source.domain}</Text>
+              <Text style={{ fontSize: 8.8, color: c.muted, marginTop: 3 }}>Cited in {source.answers} audited answer{source.answers === 1 ? '' : 's'}. Check whether your business already has a complete profile; if not, verify eligibility and claim or create one.</Text>
+            </View>
+          )) : <Text style={{ fontSize: 9, color: c.muted }}>No known business directory was identified among the sources captured in this audit. BrandPulse will not invent a listing target. Re-check the source list after a future audit.</Text>}
+        </View>
+
+        <View style={{ marginTop: 12, padding: 10, backgroundColor: c.soft, borderRadius: 8 }}>
+          <Text style={{ fontSize: 8, color: c.muted }}>Important: these are evidence-led recommendations, not confirmation that a page or listing is missing. Check the live website and profile first. Only publish verified business facts. AI visibility is not guaranteed.</Text>
         </View>
         {footer}
       </Page>
