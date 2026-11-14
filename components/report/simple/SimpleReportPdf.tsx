@@ -138,7 +138,7 @@ function draftBlocks(body: string): { kind: 'h2' | 'h3' | 'p' | 'li'; text: stri
 }
 
 function countDraftWords(body: string): number {
-  return draftBlocks(body).map((block) => block.text).join(' ').trim().split(/\\s+/).filter(Boolean).length;
+  return draftBlocks(body).map((block) => block.text).join(' ').trim().split(/\s+/).filter(Boolean).length;
 }
 
 export function SimpleReportPdf({ model, reportUrl, drafts = [] }: { model: SimpleReport; reportUrl: string; drafts?: PdfContentDraft[] }) {
