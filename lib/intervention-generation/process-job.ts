@@ -36,7 +36,7 @@ async function databaseSpendUsd(client: AdminClient): Promise<number> {
 export async function processInterventionQueueJob(client: AdminClient, job: QueueJob): Promise<InterventionJobResult> {
   if (!job.intervention_run_id) return failJob(client, job, 'Intervention generation queue job has no intervention run');
   const repository = new SupabaseInterventionRepository(client);
-  const existing = await repository.getRun(job.project_id, job.intervention_run_id);
+  const existing = await repository.getRun(job.project_id, job.intervention_run_id, true);
   if (!existing) return failJob(client, job, 'Linked intervention generation run was not found');
   if (['COMPLETED', 'PARTIAL_SUCCESS', 'INCONCLUSIVE'].includes(existing.status)) {
     const canonical = await completeCanonicalAfterIntervention(client, existing);
@@ -75,7 +75,12 @@ export async function processInterventionQueueJob(client: AdminClient, job: Queu
       },
     });
     const completed = await service.executeRun(existing.id);
-    const canonical = completed.status === 'FAILED' ? null : await completeCanonicalAfterIntervention(client, completed);
+    const completedWithInterventions = completed.status === 'FAILED'
+      ? completed
+      : await repository.getRun(job.project_id, completed.id, true) ?? completed;
+    const canonical = completed.status === 'FAILED'
+      ? null
+      : await completeCanonicalAfterIntervention(client, completedWithInterventions);
     const { error } = await client.from('audit_queue').update({
       status: completed.status === 'FAILED' ? 'failed' : 'done', completed_at: new Date().toISOString(), error: null,
     }).eq('id', job.id).eq('status', 'processing');
