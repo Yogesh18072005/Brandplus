@@ -31,11 +31,11 @@ type SavedContentDraft = {
   meta_description: string | null;
 };
 
-async function loadOwnedContentDrafts(projectId: string): Promise<SavedContentDraft[] | null> {
+async function loadOwnedContentDrafts(projectId: string, auditId: string): Promise<SavedContentDraft[]> {
   try {
     const supabase = await createServerSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return null;
+    if (!user) return [];
 
     const { data: project } = await supabase
       .from('projects')
@@ -43,54 +43,20 @@ async function loadOwnedContentDrafts(projectId: string): Promise<SavedContentDr
       .eq('id', projectId)
       .eq('user_id', user.id)
       .maybeSingle();
-    if (!project) return null;
+    if (!project) return [];
 
     const admin = createAdminClient();
-    const { data: latest, error: latestError } = await admin
-      .from('generated_content')
-      .select('generation_batch_id')
-      .eq('project_id', projectId)
-      .eq('content_type', 'answer_page')
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .maybeSingle();
-    if (latestError) {
-      console.error('[report-pdf] Could not locate the latest content batch:', latestError.message);
-      return null;
-    }
-    if (!latest) return [];
-    if (!latest.generation_batch_id) {
-      // Drafts created before batch metadata was introduced: retain the latest
-      // saved set so users do not have to spend Gemini quota to export them.
-      const { data: legacyDrafts, error: legacyError } = await admin
-        .from('generated_content')
-        .select('buyer_question,title,body,meta_description')
-        .eq('project_id', projectId)
-        .eq('content_type', 'answer_page')
-        .order('created_at', { ascending: false })
-        .limit(5);
-      if (legacyError) {
-        console.error('[report-pdf] Could not load older saved drafts:', legacyError.message);
-        return null;
-      }
-      return (legacyDrafts ?? []).reverse().map((draft) => ({
-        buyer_question: draft.buyer_question,
-        title: draft.title,
-        body: draft.body,
-        meta_description: draft.meta_description,
-      }));
-    }
-
     const { data, error } = await admin
       .from('generated_content')
       .select('buyer_question,title,body,meta_description')
       .eq('project_id', projectId)
-      .eq('generation_batch_id', latest.generation_batch_id)
+      .eq('audit_id', auditId)
       .eq('content_type', 'answer_page')
-      .order('created_at', { ascending: true });
+      .order('created_at', { ascending: true })
+      .limit(5);
     if (error) {
-      console.error('[report-pdf] Could not load saved content drafts:', error.message);
-      return null;
+      console.error('[report-pdf] Could not load audit-linked drafts:', error.message);
+      return [];
     }
     return (data ?? []).map((draft) => ({
       buyer_question: draft.buyer_question,
@@ -99,7 +65,7 @@ async function loadOwnedContentDrafts(projectId: string): Promise<SavedContentDr
       meta_description: draft.meta_description,
     }));
   } catch {
-    return null;
+    return [];
   }
 }
 
@@ -112,7 +78,6 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   const { id } = await params;
   const searchParams = new URL(request.url).searchParams;
   const technical = searchParams.get('view') === 'technical';
-  const includeDrafts = searchParams.get('includeDrafts') === '1';
   const disposition = searchParams.get('disposition') === 'inline' ? 'inline' : 'attachment';
   if (!id || id.length > 100) return Response.json({ error: 'Invalid report reference.' }, { status: 400 });
   // Rendering a PDF is CPU-heavy and the link is shareable: cap it per network.
@@ -130,8 +95,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     // lists the fixes, so only the founder can download it.
     if (!technical || !(await currentViewerIsOps())) {
       const simple = await simpleReportFor(intelligence);
-      const drafts = includeDrafts ? await loadOwnedContentDrafts(intelligence.projectId) : [];
-      if (drafts === null) return Response.json({ error: 'Sign in as the project owner to view generated page drafts.' }, { status: 403 });
+      const drafts = await loadOwnedContentDrafts(intelligence.projectId, id);
       const document = createElement(SimpleReportPdf, { model: simple, reportUrl: `${getAppUrl()}/r/${id}`, drafts }) as unknown as Parameters<typeof renderToBuffer>[0];
       const buffer = await renderToBuffer(document);
       return new Response(new Uint8Array(buffer), {
