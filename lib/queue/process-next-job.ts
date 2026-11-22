@@ -225,8 +225,18 @@ async function processQueueJob(supabase: AdminClient, job: ClaimedJob): Promise<
       return { status: 'failed', message, auditId: audit.id, error: message };
     }
 
-    const savedReport = audit.report_data as { scores?: { visibilityScore?: unknown } };
+    const savedReport = audit.report_data as {
+      scores?: { visibilityScore?: unknown };
+      fixPlan?: { executionQueue?: Array<{ targetsQueries?: string[] }> };
+    };
     const savedScore = savedReport.scores?.visibilityScore;
+    const recoveredTopics = (savedReport.fixPlan?.executionQueue ?? [])
+      .flatMap((item) => item.targetsQueries ?? []);
+    await generateAuditContentDrafts(supabase, {
+      auditId: audit.id,
+      projectId: audit.project_id,
+      topics: recoveredTopics,
+    });
     return {
       status: 'completed',
       message: 'Existing completed audit recovered without rerunning model calls',
