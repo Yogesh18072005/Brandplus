@@ -211,6 +211,7 @@ export interface Database {
         Row: {
           id: string;
           project_id: string;
+          audit_id: string | null;
           content_type: string;
           buyer_question: string | null;
           generation_batch_id: string | null;
@@ -226,6 +227,7 @@ export interface Database {
         Insert: {
           id?: string;
           project_id: string;
+          audit_id?: string | null;
           content_type: string;
           buyer_question?: string | null;
           generation_batch_id?: string | null;
@@ -241,6 +243,7 @@ export interface Database {
         Update: {
           id?: string;
           project_id?: string;
+          audit_id?: string | null;
           content_type?: string;
           buyer_question?: string | null;
           generation_batch_id?: string | null;
@@ -253,7 +256,10 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
         };
-        Relationships: [{ foreignKeyName: "generated_content_project_id_fkey"; columns: ["project_id"]; isOneToOne: false; referencedRelation: "projects"; referencedColumns: ["id"] }];
+        Relationships: [
+          { foreignKeyName: "generated_content_project_id_fkey"; columns: ["project_id"]; isOneToOne: false; referencedRelation: "projects"; referencedColumns: ["id"] },
+          { foreignKeyName: "generated_content_audit_id_fkey"; columns: ["audit_id"]; isOneToOne: false; referencedRelation: "audits"; referencedColumns: ["id"] },
+        ];
       };
       schema_markups: {
         Row: {
