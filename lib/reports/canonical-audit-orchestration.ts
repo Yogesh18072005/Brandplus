@@ -22,6 +22,7 @@ import { resolveReportRecipient } from '@/lib/email/recipients';
 import { intelligenceCompleteEmail } from '@/lib/email/templates';
 import { getAppUrl } from '@/lib/app-url';
 import { generateAuditContentDrafts } from '@/lib/reports/generate-audit-content';
+import { loadIntelligenceReport } from '@/lib/reports/load-intelligence-report';
 import {
   canonicalAuditJson,
   parseCanonicalAuditEnvelope,
@@ -132,7 +133,15 @@ export async function processCanonicalAuditBootstrap(client: AdminClient, job: Q
         client.from('audits').update({ status: 'completed', completed_at: completedAt }).eq('id', audit.id),
         client.from('audit_queue').update({ status: 'done', error: null, completed_at: completedAt }).eq('id', job.id).eq('status', 'processing'),
       ]);
-      return { status: 'completed', message: 'Existing canonical report recovered without model calls', auditId: audit.id, reportUrl: `${getAppUrl()}/r/${audit.id}`, emailed: false };
+      const recoveredReport = await loadIntelligenceReport(audit.id);
+      if (recoveredReport?.status === 'COMPLETE') {
+        await generateAuditContentDrafts(client, {
+          auditId: audit.id,
+          projectId: audit.project_id,
+          topics: recoveredReport.interventionRun.interventions.map((item) => item.exactBuyerQuestion),
+        });
+      }
+      return { status: 'completed', message: 'Existing canonical report recovered without rerunning model calls', auditId: audit.id, reportUrl: `${getAppUrl()}/r/${audit.id}`, emailed: false };
     }
 
     if (envelope.chain.observationRunId) {
