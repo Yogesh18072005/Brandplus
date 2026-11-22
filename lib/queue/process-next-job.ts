@@ -18,6 +18,7 @@ import { processInterventionQueueJob } from '@/lib/intervention-generation/proce
 import { processExecutionQueueJob } from '@/lib/execution/process-job';
 import { parseCanonicalAuditEnvelope } from '@/lib/reports/canonical-audit-envelope';
 import { processCanonicalAuditBootstrap } from '@/lib/reports/canonical-audit-orchestration';
+import { generateAuditContentDrafts } from '@/lib/reports/generate-audit-content';
 
 type AdminClient = SupabaseClient<Database>;
 
@@ -469,6 +470,17 @@ async function processQueueJob(supabase: AdminClient, job: ClaimedJob): Promise<
         costCents,
       },
     }, supabase);
+
+    // Drafts are generated after the audit is durable. The helper catches its
+    // own failures so Gemini issues cannot change the audit's completed state.
+    const recommendedTopics = pipelineResult.report.fixPlan.executionQueue
+      .flatMap((item) => item.targetsQueries)
+      .filter((question): question is string => typeof question === 'string' && question.trim().length > 0);
+    await generateAuditContentDrafts(supabase, {
+      auditId: audit.id,
+      projectId: project.id,
+      topics: recommendedTopics,
+    });
 
     const answered = pipelineResult.report.totals.promptCount - pipelineResult.report.totals.failedPrompts;
     const mentioned = Math.round(pipelineResult.report.scores.presenceRate * answered);
