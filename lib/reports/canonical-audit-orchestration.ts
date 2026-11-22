@@ -21,6 +21,7 @@ import { sendEmail } from '@/lib/email/mailer';
 import { resolveReportRecipient } from '@/lib/email/recipients';
 import { intelligenceCompleteEmail } from '@/lib/email/templates';
 import { getAppUrl } from '@/lib/app-url';
+import { generateAuditContentDrafts } from '@/lib/reports/generate-audit-content';
 import {
   canonicalAuditJson,
   parseCanonicalAuditEnvelope,
@@ -254,6 +255,15 @@ export async function completeCanonicalAfterIntervention(client: AdminClient, ru
   const completedAt = run.completedAt ?? new Date().toISOString();
   const envelope = mergeEnvelope(active.envelope, 'COMPLETE', { interventionRunId: run.id });
   await saveEnvelope(client, active.row.id, envelope, { status: 'completed', completed_at: completedAt });
+
+  // Use the five highest-priority intervention questions as the page topics.
+  // This runs after the audit is marked complete and is best-effort only.
+  await generateAuditContentDrafts(client, {
+    auditId: active.row.id,
+    projectId: run.projectId,
+    topics: (run.interventions ?? []).map((item) => item.exactBuyerQuestion),
+  });
+
   const reportUrl = `${getAppUrl()}/r/${active.row.id}`;
   const { data: project } = await client.from('projects').select('business_name,user_id').eq('id', run.projectId).maybeSingle();
   // Free-audit lead first, then the account email on the profile (Clerk users), then legacy auth.
