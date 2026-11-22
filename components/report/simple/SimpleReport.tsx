@@ -172,12 +172,7 @@ export function SimpleReport({
           <h2>{model.gaps > 0 ? `You’re missing from ${model.gaps} of ${model.total} answers. Start with these pages.` : 'Keep strengthening the answers AI already knows.'}</h2>
           <p className="sr-sub">Each page recommendation is based on a buyer question from this saved audit. Review every business fact before publishing.</p>
           {model.gaps > 0 ? (
-            <SimpleReportFixPlan
-              projectId={model.projectId}
-              reportId={model.reportId}
-              questions={model.questions.filter((question) => question.verdict === 'missed').slice(0, 5).map((question) => ({ id: question.id, question: question.question, quote: question.quote, competitorsNamed: question.competitorsNamed }))}
-              canGenerate={mode === 'dashboard' && !sample}
-            />
+            <SimpleReportFixPlan reportId={model.reportId} />
           ) : <p className="sr-sub">No missed buyer questions were recorded in this audit.</p>}
           {model.sources.length === 0 && <p className="sr-sub">No websites were cited in this audit, so we can’t responsibly recommend specific directory listings from this evidence.</p>}
           <div className="sr-fix-offer">{cta}</div>
