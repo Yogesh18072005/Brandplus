@@ -5,11 +5,14 @@ import { NextResponse } from 'next/server';
 import { generateContentBatch } from '@/lib/tools/content-writer';
 import type { Json } from '@/lib/supabase/types';
 import { consumeRateLimit, rateLimitError, RATE_LIMITS } from '@/lib/security/rate-limit';
+import { founderOnly } from '@/lib/auth/founder-only';
 
 export async function POST(request: Request) {
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const founderGuard = founderOnly(user.email);
+  if (founderGuard) return founderGuard;
 
   const body = await request.json().catch(() => null);
   if (!body || typeof body !== 'object') return NextResponse.json({ error: 'Invalid request.' }, { status: 400 });
