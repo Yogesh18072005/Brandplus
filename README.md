@@ -119,3 +119,38 @@ Useful operational commands:
 - Do not expose the Supabase service-role key to browser code.
 - Engine 02 validates questions against canonical business entities and linked evidence; unsupported claims are rejected rather than invented.
 - A successful build does not replace a live end-to-end audit test. Verify the queue, each engine stage, report rendering, citations, and billing behavior in the intended environment.
+
+
+## Engineering architecture
+
+```text
+Next.js / React dashboard and API routes
+             |
+        Clerk identity
+             |
+    Server-side application layer
+       |             |
+ Supabase/Postgres  AI providers
+       |             |
+ Audit queue       Gemini / Ollama
+       |
+ Background worker
+       |
+ Evidence-based visibility report
+```
+
+## Resume project highlights
+
+**BrandPulse — AI Visibility & Business Intelligence Platform**
+
+- Developed a full-stack AI visibility platform using Next.js, React, TypeScript, Node.js, Supabase/PostgreSQL and Clerk.
+- Built a multi-stage audit workflow for business context, buyer-intent discovery, AI visibility observations, evidence diagnosis and prioritized recommendations.
+- Implemented background audit processing, report history and server-side API workflows.
+- Integrated AI-provider workflows with configurable provider credentials and usage safeguards.
+- Added GitHub Actions automation for type checking, automated tests and production builds.
+
+BrandPulse uses Supabase/PostgreSQL; it is not a MERN-stack application. List only capabilities you have personally verified in a live deployment on your resume.
+
+## Verification
+
+The GitHub Actions workflow runs type checking, the test suite and a production build for pushes and pull requests to `main`. A successful CI run validates those automated checks with CI configuration values; live authentication, database, AI-provider, email and payment integrations still require real credentials and end-to-end testing.
