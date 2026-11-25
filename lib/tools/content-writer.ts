@@ -202,6 +202,10 @@ Return only valid JSON in this shape:
   }
 
   return parsed.drafts.map((draft, index) => {
+    const question = input.topics[index];
+    if (typeof question !== 'string' || question.length === 0) {
+      throw new Error(`Missing original buyer question at draft position ${index + 1}. No drafts were saved.`);
+    }
     if (typeof draft.title !== 'string' || typeof draft.body !== 'string' || typeof draft.metaDescription !== 'string') {
       throw new Error('Gemini returned an incomplete draft. No drafts were saved.');
     }
@@ -216,7 +220,7 @@ Return only valid JSON in this shape:
       schemaMarkup: schemaMarkup as Record<string, unknown>,
       keywords: Array.isArray(draft.keywords) ? draft.keywords : input.keywords,
       wordCount: draft.body.replace(/<[^>]*>/g, ' ').split(/\s+/).filter(Boolean).length,
-      question: input.topics[index],
+      question,
     };
   });
 }
