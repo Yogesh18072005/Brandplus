@@ -1,0 +1,55 @@
+name: BrandPulse CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: brandpulse-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Typecheck, tests and production build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript typecheck
+        run: npm run typecheck
+
+      - name: Unit and integration tests
+        run: npm test
+
+      - name: Production build
+        run: npm run build
+        env:
+          # Build-time placeholders only. Never use these values in a deployment.
+          NEXT_PUBLIC_APP_URL: https://example.invalid
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: pk_test_placeholder
+          CLERK_SECRET_KEY: sk_test_placeholder
+          SUPABASE_URL: https://example.supabase.co
+          SUPABASE_ANON_KEY: placeholder-anon-key
+          SUPABASE_SERVICE_ROLE_KEY: placeholder-service-role-key
+          GOOGLE_API_KEY: placeholder-google-api-key
+          RATE_LIMIT_SALT: ci-only-placeholder-rate-limit-salt-000000000000
+          CRON_SECRET: ci-only-placeholder-cron-secret
+          ADMIN_SECRET: ci-only-placeholder-admin-secret
