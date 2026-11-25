@@ -1,5 +1,22 @@
 # BrandPulse
 
+[![BrandPulse CI](https://github.com/Yogesh18072005/Brandplus/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Yogesh18072005/Brandplus/actions/workflows/ci.yml)
+
+> **AI Visibility Engine** — an evidence-backed platform that helps businesses understand how AI assistants represent their brand, identify visibility gaps, and prioritize improvements.
+
+## Why this project matters
+
+BrandPulse brings together full-stack product engineering, AI-assisted analysis, evidence validation, background job processing, and secure multi-tenant data access. Its core pipeline is designed to keep each stage traceable: business evidence → buyer questions → AI observations → gap diagnosis → approved interventions.
+
+**Core engineering highlights**
+- Five-stage, modular AI analysis pipeline with persisted audit lineage.
+- Evidence-linked buyer-intent generation and answer observation.
+- Background processing with queue, worker, retry, and approval workflows.
+- Clerk authentication, Supabase-backed persistence, and server-side secrets.
+- Cost controls and operational safeguards for provider-backed jobs.
+- Automated TypeScript checks and regression tests through GitHub Actions.
+
+
 **BrandPulse is an AI visibility and business-intelligence platform.** It builds an evidence-backed understanding of a business, generates buyer questions, observes AI answers, diagnoses visibility and evidence gaps, and creates prioritized interventions.
 
 The application is a Next.js 16 / React 19 / TypeScript project backed by Supabase and Clerk. Gemini powers the live answer-observation and analysis workflows. Engine 02 can use local Ollama for buyer-intent generation, avoiding Gemini API calls for that stage.
