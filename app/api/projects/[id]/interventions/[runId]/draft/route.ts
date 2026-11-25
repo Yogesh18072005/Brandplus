@@ -4,6 +4,7 @@ import { generateContent } from '@/lib/tools/content-writer';
 import type { Json } from '@/lib/supabase/types';
 import { guardMutationRequest } from '@/lib/http/request-security';
 import { consumeRateLimit, rateLimitError } from '@/lib/security/rate-limit';
+import { founderOnly } from '@/lib/auth/founder-only';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -22,6 +23,8 @@ export async function POST(
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Sign in to generate a content draft.' }, { status: 401 });
+  const founderGuard = founderOnly(user.email);
+  if (founderGuard) return founderGuard;
 
   const { data: project, error: projectError } = await supabase
     .from('projects')
